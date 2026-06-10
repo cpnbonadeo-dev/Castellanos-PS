@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Departamento Castellanos</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; font-size: 13px; background: #1a1a2e; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── OVERLAYS ── */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.overlay.hidden { display: none; }
+.modal { background: #16213e; border-radius: 10px; padding: 32px; width: 400px; max-width: 95vw; border-top: 4px solid #e63946; }
+.modal h2 { color: white; font-size: 18px; margin-bottom: 6px; }
+.modal .sub { color: #888; font-size: 12px; margin-bottom: 20px; }
+.modal label { display: block; font-size: 11px; color: #888; margin-bottom: 3px; margin-top: 12px; }
+.modal input, .modal select { width: 100%; padding: 9px 12px; border-radius: 5px; border: 1px solid #2a3a5a; background: #0d1b2e; color: white; font-size: 13px; }
+.modal input:focus, .modal select:focus { outline: 2px solid #e63946; border-color: transparent; }
+.modal .err { color: #f44336; font-size: 12px; margin-top: 8px; min-height: 18px; }
+.modal .btn-primary { width: 100%; margin-top: 16px; padding: 11px; background: #e63946; color: white; border: none; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; }
+.modal .btn-primary:hover { background: #c62828; }
+.modal .btn-primary:disabled { background: #555; cursor: not-allowed; }
+.modal .hint { font-size: 11px; color: #666; margin-top: 12px; line-height: 1.5; }
+.modal .hint a { color: #aaa; }
+.setup-steps { margin: 10px 0; padding-left: 16px; }
+.setup-steps li { margin: 6px 0; font-size: 12px; color: #aaa; line-height: 1.5; }
+.setup-steps code { background: #0d1b2e; padding: 1px 5px; border-radius: 3px; font-family: monospace; color: #4caf50; }
+
+/* ── HEADER ── */
+header { background: #e63946; padding: 7px 14px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+header h1 { color: white; font-size: 15px; font-weight: bold; }
+header .sub { color: #ffcdd2; font-size: 10px; margin-top: 1px; }
+.leyenda { display: flex; gap: 8px; margin-left: auto; align-items: center; flex-wrap: wrap; }
+.leyenda-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: white; }
+.dot-leg { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.user-badge { background: rgba(0,0,0,0.25); border-radius: 20px; padding: 3px 10px; font-size: 11px; color: white; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.user-badge:hover { background: rgba(0,0,0,0.4); }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; }
+.sync-dot.ok { background: #4caf50; }
+.sync-dot.err { background: #f44336; }
+.sync-dot.loading { background: #ff9800; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── MAIN LAYOUT ── */
+.main { display: flex; flex: 1; overflow: hidden; }
+.left-panel { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+.tabs { display: flex; background: #16213e; border-bottom: 2px solid #e63946; flex-shrink: 0; }
+.tab { padding: 8px 16px; cursor: pointer; color: #aaa; font-size: 12px; font-weight: 600; letter-spacing: 0.4px; }
+.tab.active { color: white; background: #e63946; }
+.tab-content { flex: 1; overflow: auto; }
+
+/* ── MAP ── */
+#view-mapa { padding: 10px; display: flex; justify-content: center; align-items: flex-start; }
+.map-wrapper { position: relative; display: inline-block; flex-shrink: 0; }
+.map-wrapper img.map-bg { display: block; width: 555px; height: 719px; }
+.loc-dot-el { position: absolute; transform: translate(-50%,-50%); cursor: pointer; z-index: 2; transition: transform 0.15s; overflow: visible; }
+.loc-dot-el:hover { transform: translate(-50%,-50%) scale(1.4); z-index: 10; }
+.loc-label { position: absolute; font-size: 9px; font-weight: bold; color: #111;
+  text-shadow: 0 0 3px white, 0 0 3px white; white-space: nowrap; pointer-events: none; z-index: 3; transform: translate(-50%,0); }
+.tooltip-map { position: absolute; background: rgba(0,0,0,0.9); color: white; padding: 6px 9px;
+  border-radius: 5px; font-size: 11px; pointer-events: none; z-index: 20; white-space: nowrap;
+  display: none; border-left: 3px solid #e63946; }
+
+/* ── TABLE ── */
+#view-tabla { padding: 8px; }
+.table-controls { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
+.table-controls input, .table-controls select {
+  padding: 5px 8px; border-radius: 4px; border: 1px solid #444; background: #16213e; color: white; font-size: 12px; }
+.table-controls input { flex: 1; min-width: 140px; }
+.btn { padding: 5px 11px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
+.btn-red { background: #e63946; color: white; }
+.btn-green { background: #2a9d8f; color: white; }
+.btn-blue { background: #1976d2; color: white; }
+.btn-gray { background: #555; color: white; }
+.btn:hover { filter: brightness(1.15); }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: #16213e; color: #ccc; padding: 6px 8px; text-align: left; position: sticky; top: 0;
+  cursor: pointer; white-space: nowrap; border-bottom: 2px solid #e63946; }
+th:hover { background: #1e3a5f; }
+td { padding: 5px 8px; border-bottom: 1px solid #2a2a4a; vertical-align: middle; }
+tr:hover td { background: #1e3a5f; cursor: pointer; }
+tr.sel-row td { background: #2a4a7f; }
+.badge { padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; white-space: nowrap; }
+.b-fuerte { background: #28a745; color: white; }
+.b-debil { background: #fd7e14; color: white; }
+.b-nula { background: #dc3545; color: white; }
+.b-sin_datos { background: #6c757d; color: white; }
+.c-unidos { color: #4caf50; font-weight: bold; }
+.c-mas { color: #f44336; }
+.c-otro { color: #ff9800; }
+.who-tag { font-size: 10px; color: #666; }
+
+/* ── LOG TAB ── */
+#view-log { padding: 10px; }
+.log-item { background: #0d1b2e; border-radius: 5px; padding: 8px 12px; margin-bottom: 6px; border-left: 3px solid #e63946; }
+.log-item .log-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.log-item .log-user { font-weight: bold; color: #e63946; font-size: 12px; }
+.log-item .log-ts { font-size: 10px; color: #666; }
+.log-item .log-loc { font-size: 12px; color: #ddd; }
+.log-item .log-fields { font-size: 10px; color: #888; margin-top: 3px; }
+
+/* ── ADMIN TAB ── */
+#view-admin { padding: 12px; }
+.admin-section { background: #0d1b2e; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+.admin-section h3 { color: #e63946; font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid #2a3a5a; padding-bottom: 6px; }
+.user-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #1a2a40; }
+.user-row:last-child { border-bottom: none; }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: #e63946; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: white; flex-shrink: 0; }
+.user-info { flex: 1; }
+.user-info .uname { font-weight: bold; font-size: 12px; }
+.user-info .urole { font-size: 10px; color: #666; }
+.add-user-form { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+.add-user-form input, .add-user-form select { padding: 6px 8px; border-radius: 4px; border: 1px solid #2a3a5a; background: #16213e; color: white; font-size: 11px; }
+.add-user-form .btn { grid-column: 1/-1; }
+
+/* ── DETALLE ── */
+.right-panel { width: 370px; background: #16213e; border-left: 2px solid #e63946;
+  display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+.detail-empty { flex: 1; display: flex; align-items: center; justify-content: center;
+  color: #555; font-style: italic; font-size: 12px; text-align: center; padding: 20px; line-height: 1.8; }
+#detailContent { display: none; flex-direction: column; height: 100%; }
+.dh { padding: 10px 14px; background: #e63946; color: white; flex-shrink: 0; }
+.dh h2 { font-size: 15px; }
+.dh .dsub { font-size: 10px; color: #ffcdd2; margin-top: 2px; }
+.dbody { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.sec { font-size: 10px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
+  color: #e63946; padding: 8px 12px 4px; border-bottom: 1px solid #2a3a5a; }
+.pbox { margin: 5px 10px; background: #0d1b2e; border-radius: 5px; padding: 6px 10px; font-size: 11px; }
+.prow { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px solid #1a2a40; gap: 8px; }
+.prow:last-child { border-bottom: none; }
+.plabel { color: #777; flex-shrink: 0; }
+.pval { color: #ddd; font-weight: bold; text-align: right; word-break: break-word; }
+.pval.g { color: #4caf50; } .pval.o { color: #f44336; } .pval.ot { color: #ff9800; }
+.rtable { margin: 5px 10px; background: #0d1b2e; border-radius: 5px; overflow: hidden; font-size: 11px; }
+.rrow { display: grid; grid-template-columns: 1fr 55px 46px; padding: 4px 8px; gap: 4px; border-bottom: 1px solid #1a2a40; }
+.rrow:last-child { border-bottom: none; }
+.rrow.rhead { background: #1a2a4a; font-size: 10px; color: #777; font-weight: bold; }
+.rnombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rvotos { text-align: right; color: #999; }
+.rpct { text-align: right; font-weight: bold; }
+.pct-unidos { color: #4caf50; } .pct-mas { color: #f44336; } .pct-otro { color: #ff9800; }
+.who-edited { margin: 4px 10px; font-size: 10px; color: #555; font-style: italic; }
+.eform { padding: 0 0 4px; }
+.frow { padding: 3px 10px; }
+.frow label { display: block; font-size: 10px; color: #777; margin-bottom: 2px; }
+.frow select, .frow input, .frow textarea {
+  width: 100%; padding: 5px 7px; border-radius: 4px; border: 1px solid #2a3a5a;
+  background: #0d1b2e; color: #ddd; font-size: 11px; font-family: Arial, sans-serif; }
+.frow textarea { resize: vertical; min-height: 48px; }
+.dactions { padding: 7px 10px; display: flex; gap: 8px; flex-shrink: 0; border-top: 1px solid #2a3a5a; }
+.dactions .btn { flex: 1; padding: 7px; }
+.saving-indicator { font-size: 10px; color: #888; text-align: center; padding: 2px 0; }
+</style>
+</head>
+<body>
+
+<!-- ══ OVERLAY: CONFIGURACIÓN (primera vez) ══════════════════ -->
+<div class="overlay" id="ovSetup">
+  <div class="modal">
+    <h2>⚙️ Configuración inicial</h2>
+    <div class="sub">Conectá la app con tu Google Sheet</div>
+    <p style="font-size:12px;color:#aaa;line-height:1.6;margin-bottom:10px">
+      Para centralizar datos necesitás configurar el backend de Google Apps Script. <strong style="color:white">Solo se hace una vez.</strong>
+    </p>
+    <ol class="setup-steps">
+      <li>Abrí <a href="https://sheets.google.com" target="_blank" style="color:#4caf50">Google Sheets</a> y creá una planilla nueva</li>
+      <li>En el menú: <code>Extensiones → Apps Script</code></li>
+      <li>Borrá el código existente y pegá el contenido de <strong style="color:white">apps_script_castellanos.txt</strong></li>
+      <li>Guardá y ejecutá la función <code>testSetup</code> (autoriza permisos)</li>
+      <li>Clic en <code>Implementar → Nueva implementación</code> → Tipo: <em>Aplicación web</em><br>
+          Ejecutar como: <em>Yo</em> · Quién accede: <em>Cualquier persona</em></li>
+      <li>Copiá la <strong style="color:white">URL de implementación</strong> y pegala abajo</li>
+    </ol>
+    <label>URL del Web App (Apps Script)</label>
+    <input type="url" id="setupUrl" placeholder="https://script.google.com/macros/s/AKfy.../exec">
+    <div class="err" id="setupErr"></div>
+    <button class="btn-primary" onclick="saveSetup()">Guardar y continuar →</button>
+    <p class="hint">💡 Si querés usar la app <em>sin</em> Google Sheets (solo local), ingresá cualquier URL y usarás solo el almacenamiento local.</p>
+  </div>
+</div>
+
+<!-- ══ OVERLAY: LOGIN ════════════════════════════════════════ -->
+<div class="overlay hidden" id="ovLogin">
+  <div class="modal">
+    <h2>🌹 Partido Socialista</h2>
+    <div class="sub">Departamento Castellanos — Ingresá tus datos</div>
+    <label>Usuario</label>
+    <input type="text" id="loginUser" placeholder="tu_usuario" autocomplete="username">
+    <label>Contraseña</label>
+    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="err" id="loginErr"></div>
+    <button class="btn-primary" id="loginBtn" onclick="doLogin()">Ingresar</button>
+    <p class="hint" id="loginHint" style="display:none">
+      🔑 Usuario inicial: <code style="color:#4caf50">admin</code> / contraseña: <code style="color:#4caf50">admin123</code>
+    </p>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════════ -->
+<header>
+  <div>
+    <h1>🌹 PS — Departamento Castellanos</h1>
+    <div class="sub">Análisis territorial · 46 localidades · Santa Fe</div>
+  </div>
+  <div class="leyenda">
+    <div class="leyenda-item"><div class="dot-leg" style="background:#28a745"></div> Fuerte</div>
+    <div class="leyenda-item"><div class="dot-leg" style="background:#fd7e14"></div> Débil</div>
+    <div class="leyenda-item"><div class="dot-leg" style="background:#dc3545"></div> Sin pres.</div>
+    <div class="leyenda-item"><div class="dot-leg" style="background:#6c757d"></div> Sin datos</div>
+    <div class="user-badge" onclick="showUserMenu()" id="userBadge">
+      <div class="sync-dot ok" id="syncDot"></div>
+      <span id="userLabel">—</span>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="left-panel">
+    <div class="tabs" id="tabsBar">
+      <div class="tab active" onclick="showTab('mapa')">🗺 Mapa</div>
+      <div class="tab" onclick="showTab('tabla')">📋 Tabla</div>
+      <!-- Admin tabs added dynamically -->
+    </div>
+    <div class="tab-content">
+      <div id="view-mapa">
+        <div class="map-wrapper" id="mapWrapper">
+          <img class="map-bg"
+            src="https://www.senadosantafe.gob.ar/sites/default/files/imagen/mapa-completo/castellanos_0.png"
+            alt="Mapa Departamento Castellanos"
+            onerror="this.style.cssText='width:555px;height:719px;background:#1e3a5f;display:block'">
+          <div class="tooltip-map" id="tooltip"></div>
+        </div>
+      </div>
+      <div id="view-tabla" style="display:none">
+        <div class="table-controls">
+          <input type="text" id="searchInput" placeholder="🔍 Buscar..." oninput="renderTable()">
+          <select id="filterPres" onchange="renderTable()">
+            <option value="">Todas</option>
+            <option value="fuerte">Fuerte</option>
+            <option value="debil">Débil</option>
+            <option value="nula">Sin presencia</option>
+            <option value="sin_datos">Sin datos</option>
+          </select>
+          <button class="btn btn-blue" onclick="syncFromServer(true)">🔄 Actualizar</button>
+          <button class="btn btn-green" onclick="exportCSV()">⬇ CSV</button>
+        </div>
+        <div style="overflow-x:auto; max-height:calc(100vh - 130px); overflow-y:auto;">
+          <table id="mainTable">
+            <thead><tr>
+              <th onclick="sortBy('nombre')">Localidad ↕</th>
+              <th onclick="sortBy('presencia')">Presencia ↕</th>
+              <th onclick="sortBy('partido')">Partido ↕</th>
+              <th onclick="sortBy('electores')">Electores ↕</th>
+              <th>Resultado</th>
+              <th onclick="sortBy('centro')">Centro ↕</th>
+              <th onclick="sortBy('afiliados')">Afil. ↕</th>
+              <th>Editado por</th>
+            </tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="view-log" style="display:none">
+        <div style="padding:8px;display:flex;gap:8px;align-items:center">
+          <strong style="color:#e63946;font-size:13px">📋 Historial de cambios</strong>
+          <button class="btn btn-blue" onclick="loadLog()" style="margin-left:auto">🔄 Actualizar</button>
+        </div>
+        <div id="logContainer" style="padding:0 10px 10px;"></div>
+      </div>
+      <div id="view-admin" style="display:none">
+        <div class="admin-section">
+          <h3>👥 Usuarios del sistema</h3>
+          <div id="usersList"></div>
+          <div class="add-user-form" id="addUserForm" style="margin-top:12px;border-top:1px solid #2a3a5a;padding-top:10px">
+            <input type="text" id="nu_user" placeholder="Nombre de usuario">
+            <input type="password" id="nu_pass" placeholder="Contraseña">
+            <input type="text" id="nu_nombre" placeholder="Nombre completo">
+            <select id="nu_role"><option value="user">Usuario normal</option><option value="admin">Admin (premium)</option></select>
+            <button class="btn btn-green" onclick="addUser()">➕ Agregar usuario</button>
+          </div>
+          <div class="err" id="adminErr" style="margin-top:6px"></div>
+        </div>
+        <div class="admin-section">
+          <h3>📊 Resumen de carga</h3>
+          <div id="adminStats" style="font-size:12px;color:#aaa;line-height:1.8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL DERECHO ════════════════════════════════════ -->
+  <div class="right-panel">
+    <div class="detail-empty" id="detailEmpty">← Hacé clic en una<br>localidad del mapa o tabla</div>
+    <div id="detailContent">
+      <div class="dh">
+        <h2 id="dNombre">—</h2>
+        <div class="dsub" id="dSub">—</div>
+      </div>
+      <div class="dbody">
+        <div class="sec">📊 Panorama político (2023)</div>
+        <div class="pbox" id="panoBox"></div>
+        <div class="rtable" id="resTable" style="display:none"></div>
+        <div class="who-edited" id="whoEdited"></div>
+
+        <div class="sec" style="margin-top:4px">🌹 Datos PS</div>
+        <div class="eform">
+          <div class="frow">
+            <label>Presencia PS</label>
+            <select id="f_pres">
+              <option value="fuerte">🟢 Fuerte</option>
+              <option value="debil">🟠 Débil</option>
+              <option value="nula">🔴 Sin presencia</option>
+              <option value="sin_datos">⚫ Sin datos</option>
+            </select>
+          </div>
+          <div class="frow">
+            <label>Centro Socialista</label>
+            <select id="f_centro">
+              <option value="">— no confirmado —</option>
+              <option value="si">✅ Sí tiene Centro</option>
+              <option value="no">❌ No tiene Centro</option>
+            </select>
+          </div>
+          <div class="frow">
+            <label>Dirección Centro</label>
+            <input type="text" id="f_dir" placeholder="Dirección del local...">
+          </div>
+          <div class="frow">
+            <label>N° Afiliados PS</label>
+            <input type="number" id="f_afil" placeholder="0" min="0">
+          </div>
+          <div class="frow">
+            <label>Referente/a</label>
+            <input type="text" id="f_ref" placeholder="Nombre y apellido...">
+          </div>
+          <div class="frow">
+            <label>Teléfono</label>
+            <input type="text" id="f_tel" placeholder="+54 3492 ...">
+          </div>
+          <div class="frow">
+            <label>Prioridad</label>
+            <select id="f_prio">
+              <option value="">— sin definir —</option>
+              <option value="alta">🔴 Alta</option>
+              <option value="media">🟡 Media</option>
+              <option value="baja">🟢 Baja</option>
+            </select>
+          </div>
+          <div class="sec" style="margin-top:4px">🎯 Estrategia</div>
+          <div class="frow">
+            <label>Crecimiento electoral</label>
+            <textarea id="f_ec" placeholder="¿Cómo crecer electoralmente?"></textarea>
+          </div>
+          <div class="frow">
+            <label>Formación de grupo político</label>
+            <textarea id="f_eg" placeholder="¿Cómo armar o fortalecer el grupo PS?"></textarea>
+          </div>
+          <div class="frow">
+            <label>Observaciones generales</label>
+            <textarea id="f_eo" placeholder="Otras notas relevantes..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="saving-indicator" id="savingInd"></div>
+      <div class="dactions">
+        <button class="btn btn-red" onclick="saveDetail()">💾 Guardar</button>
+        <button class="btn btn-gray" onclick="clearSel()">✕ Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// BASE DE DATOS ELECTORAL (solo lectura — viene del docx 2023)
+// ============================================================
+const BASE = [
+  {id:"rafaela",       n:"Rafaela",              x:356,y:340,G:true, px:"Soltermam Valeria",         pp:"Más para SFE",        sc:"Concejal UNIDOS: Scavino Brusa Juan M.", el:83002,vv:null, vg:14651,p2:"Más para SFE",    v2:11808,p3:"LLA",               pres:"nula"},
+  {id:"sunchales",     n:"Sunchales",            x:315,y:172,G:true, px:"Delmastro José Santiago",   pp:"Ahora Sunchales",     sc:"Concejal UNIDOS: Cattaneo Fernando",     el:19552,vv:null, vg:2910, p2:"Ahora Sunchales",  v2:2592, p3:"LLA",               pres:"debil"},
+  {id:"frontera",      n:"Frontera",             x:65, y:523,G:true, px:"Milanesio Fabio",           pp:"UNIDOS",              sc:null,                                     el:7243, vv:null, vg:1571, p2:"UNIDOS",           v2:951,  p3:"Más para SFE",     pres:"debil"},
+  {id:"san_vicente",   n:"San Vicente",          x:322,y:663,G:true, px:"Aira Gonzalo (UCR-UNIDOS)", pp:"UNIDOS",              sc:"Concejal PS: Marchese Juan Carlos",      el:5427, vv:null, vg:1711, p2:"UNIDOS",           v2:1076, p3:"Somos Vida y Lib.",pres:"debil"},
+  {id:"humberto",      n:"Humberto Primo",       x:442,y:112,G:true, px:"Gilabert Mauro Alejandro",  pp:"UNIDOS",              sc:null,                                     el:4677, vv:null, vg:1500, p2:"UNIDOS",           v2:403,  p3:"BLANCOS",          pres:"debil"},
+  {id:"maria_juana",   n:"María Juana",          x:242,y:659,G:true, px:"Maciel Zulma Norma",        pp:"UNIDOS",              sc:null,                                     el:4157, vv:null, vg:1306, p2:"UNIDOS",           v2:1208, p3:"Más para SFE",     pres:"debil"},
+  {id:"col_aldao",     n:"Colonia Aldao",        x:208,y:202,        px:"Eberhardt Lorena",          pp:"UNIDOS",              sc:"✅ Socialista",                          el:1692, vv:1012, vg:538,  p2:"UNIDOS",           v2:448,  p3:"Más para SFE",     pres:"fuerte"},
+  {id:"angelica",      n:"Angélica",             x:350,y:556,        px:"ANDRES Marcos",             pp:"Más para SFE",        sc:null,                                     el:1201, vv:932,  vg:634,  p2:"Más para SFE",    v2:293,  p3:"UNIDOS",            pres:"nula"},
+  {id:"ataliva",       n:"Ataliva",              x:393,y:212,        px:"ALVAREZ Jose Manuel",       pp:"UNIDOS",              sc:"Lista única",                            el:1777, vv:868,  vg:641,  p2:"UNIDOS",           v2:227,  p3:"BLANCOS",          pres:"debil"},
+  {id:"aurelia",       n:"Aurelia",              x:400,y:430,        px:"MOREL Roberto Adrian",      pp:"Esfuerzo Vecinal",    sc:null,                                     el:138,  vv:67,   vg:67,   p2:"Esf. x Aurelia",   v2:12,   p3:"BLANCOS",          pres:"sin_datos"},
+  {id:"bauer_sigel",   n:"Bauer y Sigel",        x:93, y:379,        px:"SERRANI Franco",            pp:"UNIDOS",              sc:"Lista única",                            el:247,  vv:146,  vg:117,  p2:"UNIDOS",           v2:29,   p3:"BLANCOS",          pres:"debil"},
+  {id:"bella_italia",  n:"Bella Italia",         x:424,y:367,        px:"PEROTTI Hector",            pp:"Más para SFE",        sc:null,                                     el:1499, vv:849,  vg:733,  p2:"UNIDOS",           v2:116,  p3:"BLANCOS",          pres:"nula"},
+  {id:"col_bicha",     n:"Col. Bicha",           x:153,y:115,        px:"ALOCHIS Miguel Edgardo",    pp:"UNIDOS",              sc:"Lista única",                            el:179,  vv:79,   vg:72,   p2:"UNIDOS",           v2:7,    p3:"BLANCOS",          pres:"debil"},
+  {id:"col_bigand",    n:"Col. Bigand",          x:228,y:232,        px:"OGGERO Adrian",             pp:"Más para SFE",        sc:null,                                     el:51,   vv:40,   vg:38,   p2:"Más para SFE",    v2:2,    p3:"BLANCOS",           pres:"nula"},
+  {id:"castellanos_c", n:"Castellanos",          x:215,y:314,        px:"AUDINO Diego",              pp:"UNIDOS",              sc:"Lista única",                            el:305,  vv:168,  vg:138,  p2:"UNIDOS",           v2:30,   p3:"BLANCOS",          pres:"debil"},
+  {id:"col_cello",     n:"Colonia Cello",        x:158,y:472,        px:"HECK Maria del Carmen",     pp:"UNIDOS",              sc:null,                                     el:174,  vv:104,  vg:87,   p2:"UNIDOS",           v2:17,   p3:"BLANCOS",          pres:"debil"},
+  {id:"col_iturraspe", n:"Col. Iturraspe",       x:298,y:499,        px:"PICCO Dario",               pp:"UNIDOS",              sc:"ps? (confirmar)",                        el:48,   vv:31,   vg:24,   p2:"UNIDOS",           v2:7,    p3:"BLANCOS",          pres:"debil"},
+  {id:"col_margarita", n:"Col. Margarita",       x:261,y:679,        px:"MURATORE Maria Soledad",    pp:"UNIDOS",              sc:"✅ PS",                                  el:313,  vv:249,  vg:166,  p2:"UNIDOS",           v2:82,   p3:"Más para SFE",     pres:"fuerte"},
+  {id:"maua",          n:"Mauá",                 x:497,y:48,         px:"Garbagnoli Ricardo",        pp:"UNIDOS",              sc:"Lista única",                            el:53,   vv:23,   vg:23,   p2:null,               v2:null, p3:null,               pres:"debil"},
+  {id:"col_raquel",    n:"Colonia Raquel",       x:355,y:72,         px:"Peter Luciana",             pp:"UNIDOS",              sc:null,                                     el:305,  vv:140,  vg:111,  p2:"UNIDOS",           v2:29,   p3:"BLANCOS",          pres:"debil"},
+  {id:"coronel_fraga", n:"Coronel Fraga",        x:108,y:313,        px:"Palacio Marisabel Inés",    pp:"UNIDOS",              sc:null,                                     el:283,  vv:235,  vg:166,  p2:"UNIDOS",           v2:69,   p3:"Más para SFE",     pres:"debil"},
+  {id:"plaza_cluc",    n:"Plaza Clucellas",      x:232,y:481,        px:"BONO Gabriel",              pp:"UNIDOS",              sc:null,                                     el:1290, vv:602,  vg:403,  p2:"UNIDOS",           v2:199,  p3:"BLANCOS",          pres:"debil"},
+  {id:"egusquiza",     n:"Egusquiza",            x:280,y:246,        px:"Celis Ma. Florencia",       pp:"UNIDOS",              sc:null,                                     el:376,  vv:223,  vg:196,  p2:"UNIDOS",           v2:27,   p3:"BLANCOS",          pres:"debil"},
+  {id:"esmeralda",     n:"Esmeralda",            x:88, y:623,        px:"Berra Luis Alberto",        pp:"UNIDOS",              sc:"Lista única",                            el:514,  vv:322,  vg:257,  p2:"UNIDOS",           v2:65,   p3:"BLANCOS",          pres:"debil"},
+  {id:"est_cluc",      n:"Est. Clucellas",       x:232,y:535,        px:"Peretti Eduardo",           pp:"UNIDOS",              sc:null,                                     el:778,  vv:516,  vg:433,  p2:"UNIDOS",           v2:83,   p3:"BLANCOS",          pres:"debil"},
+  {id:"eusebia",       n:"Eusebia y Carolina",   x:143,y:141,        px:"Gimnez Susana",             pp:"UNIDOS",              sc:null,                                     el:718,  vv:319,  vg:274,  p2:"UNIDOS",           v2:45,   p3:"BLANCOS",          pres:"debil"},
+  {id:"eustolia",      n:"Eustolia",             x:190,y:600,        px:"Beltramo Juan Marcelo",     pp:"Más para SFE",        sc:null,                                     el:141,  vv:119,  vg:77,   p2:"Más para SFE",    v2:42,   p3:"UNIDOS",            pres:"nula"},
+  {id:"fidela",        n:"Fidela",               x:181,y:233,        px:"Ovena Jorge Antonio",       pp:"UNIDOS",              sc:"Lista única",                            el:88,   vv:53,   vg:44,   p2:"UNIDOS",           v2:9,    p3:"BLANCOS",          pres:"debil"},
+  {id:"galisteo",      n:"Galisteo",             x:455,y:210,        px:"CANAVESE Javier",           pp:"UNIDOS",              sc:null,                                     el:159,  vv:130,  vg:111,  p2:"UNIDOS",           v2:19,   p3:"Más para SFE",     pres:"debil"},
+  {id:"garibaldi",     n:"Garibaldi",            x:162,y:650,        px:"Gamboa Maribel Natalia",    pp:"Más para SFE",        sc:null,                                     el:168,  vv:138,  vg:80,   p2:"Más para SFE",    v2:58,   p3:"UNIDOS",            pres:"nula"},
+  {id:"hugentobler",   n:"Hugentobler",          x:205,y:152,        px:"MILANESIO Luciano René",    pp:"Más para SFE",        sc:null,                                     el:46,   vv:33,   vg:32,   p2:"Más para SFE",    v2:1,    p3:"BLANCOS",           pres:"nula"},
+  {id:"josefina",      n:"Josefina",             x:72, y:448,        px:"Sicardi Jorgelina Andrea",  pp:"UNIDOS",              sc:null,                                     el:1659, vv:445,  vg:345,  p2:"UNIDOS",           v2:100,  p3:"BLANCOS",          pres:"debil"},
+  {id:"lehmann",       n:"Lehmann",              x:380,y:267,        px:"Bett Marcelo Antonio",      pp:"UNIDOS",              sc:null,                                     el:2649, vv:1213, vg:922,  p2:"UNIDOS",           v2:291,  p3:"BLANCOS",          pres:"debil"},
+  {id:"pte_roca",      n:"Presidente Roca",      x:278,y:326,        px:"Montenegro Jessica Soledad",pp:"Somos Vida y Lib.",   sc:null,                                     el:746,  vv:517,  vg:282,  p2:"Somos Vida y Lib.",v2:235,  p3:"UNIDOS",           pres:"nula"},
+  {id:"pueblo_marini", n:"Pueblo Marini",        x:133,y:203,        px:"Ferrer Amalia Romina",      pp:"Más para SFE",        sc:null,                                     el:104,  vv:60,   vg:55,   p2:"Más para SFE",    v2:5,    p3:"BLANCOS",           pres:"nula"},
+  {id:"ramona",        n:"Ramona",               x:110,y:253,        px:"Barbero José Alberto",      pp:"Unión Vecinal Ramona",sc:null,                                     el:1575, vv:1170, vg:835,  p2:"Unión Vec. Ramona",v2:335,  p3:"UNIDOS",           pres:"sin_datos"},
+  {id:"saguier",       n:"Saguier",              x:247,y:406,        px:"Ramos Sergio Daniel",       pp:"UNIDOS",              sc:null,                                     el:645,  vv:310,  vg:247,  p2:"UNIDOS",           v2:63,   p3:"BLANCOS",          pres:"debil"},
+  {id:"san_antonio",   n:"San Antonio",          x:212,y:355,        px:"Previotto Mauro Damián",    pp:"UNIDOS",              sc:null,                                     el:298,  vv:146,  vg:111,  p2:"UNIDOS",           v2:35,   p3:"BLANCOS",          pres:"debil"},
+  {id:"sta_clara",     n:"Sta. Clara de Saguier",x:165,y:414,        px:"Tivano Sergio José",        pp:"Más para SFE",        sc:null,                                     el:1801, vv:1087, vg:617,  p2:"Más para SFE",    v2:470,  p3:"UNIDOS",            pres:"nula"},
+  {id:"susana",        n:"Susana",               x:345,y:424,        px:"Perino Jorge",              pp:"UNIDOS",              sc:null,                                     el:1303, vv:801,  vg:493,  p2:"UNIDOS",           v2:308,  p3:"Más para SFE",     pres:"debil"},
+  {id:"tacural",       n:"Tacural",              x:298,y:73,         px:"Sola Adrián José",          pp:"Más para SFE",        sc:null,                                     el:1339, vv:678,  vg:483,  p2:"Más para SFE",    v2:195,  p3:"BLANCOS",           pres:"nula"},
+  {id:"tacurales",     n:"Tacurales",            x:212,y:65,         px:null,                        pp:null,                  sc:null,                                     el:null, vv:null, vg:null, p2:null,               v2:null, p3:null,               pres:"sin_datos"},
+  {id:"vila",          n:"Vila",                 x:163,y:311,        px:"Borgatello Ma. Leticia",    pp:"UNIDOS",              sc:null,                                     el:1292, vv:821,  vg:418,  p2:"UNIDOS",           v2:403,  p3:"Más para SFE",     pres:"debil"},
+  {id:"villa_san_jose",n:"Villa San José",       x:285,y:424,        px:"Forni Julio Cesar",         pp:"UNIDOS",              sc:null,                                     el:346,  vv:207,  vg:162,  p2:"UNIDOS",           v2:45,   p3:"BLANCOS",          pres:"debil"},
+  {id:"virginia",      n:"Virginia",             x:455,y:25,         px:null,                        pp:"UNIDOS",              sc:null,                                     el:168,  vv:null, vg:null, p2:"UNIDOS",           v2:12,   p3:"BLANCOS",          pres:"debil"},
+  {id:"zenon_pereyra", n:"Zenón Pereyra",        x:120,y:566,        px:"GALLO Veronica",            pp:"UNIDOS",              sc:null,                                     el:1460, vv:670,  vg:431,  p2:"UNIDOS",           v2:239,  p3:"BLANCOS",          pres:"debil"},
+];
+
+// ─── CONFIGURACIÓN / SESIÓN ────────────────────────────────
+const LS_CFG  = "ps_castellanos_cfg";
+const LS_DATA = "ps_castellanos_v4";
+const LS_SESS = "ps_castellanos_session";
+
+let cfg  = JSON.parse(localStorage.getItem(LS_CFG)||"{}");
+let sess = JSON.parse(localStorage.getItem(LS_SESS)||"null");
+let D    = JSON.parse(localStorage.getItem(LS_DATA)||"{}");  // cache local
+
+let selId = null, sortF = "nombre", sortA = true;
+
+const COLORS = {fuerte:"#28a745",debil:"#fd7e14",nula:"#dc3545",sin_datos:"#6c757d"};
+const LBLS   = {fuerte:"Fuerte",debil:"Débil",nula:"Sin presencia",sin_datos:"Sin datos"};
+const pcls = p => { if(!p)return""; const l=p.toLowerCase(); return l.includes("unidos")?"unidos":l.includes("más para")||l.includes("mas para")?"mas":"otro"; };
+const pct  = (v,t) => (!v||!t)?"—":(v/t*100).toFixed(1)+"%";
+const fmt  = n => n!=null?Number(n).toLocaleString("es-AR"):"—";
+const api  = (params) => {
+  if(!cfg.url) return Promise.resolve({error:"Sin URL configurada"});
+  const url = cfg.url + "?" + Object.entries(params).map(([k,v])=>k+"="+encodeURIComponent(v)).join("&");
+  return fetch(url).then(r=>r.json()).catch(()=>({error:"Sin conexión"}));
+};
+
+// ─── INIT ──────────────────────────────────────────────────
+window.onload = () => {
+  BASE.forEach(b => { if(!D[b.id]) D[b.id] = {presencia:b.pres,centro:"",dir:"",afil:"",ref:"",tel:"",prio:"",ec:"",eg:"",eo:"",updated_by:"",updated_at:""}; });
+  if (!cfg.url) { document.getElementById("ovSetup").classList.remove("hidden"); return; }
+  if (!sess)    { document.getElementById("ovSetup").classList.add("hidden"); document.getElementById("ovLogin").classList.remove("hidden"); document.getElementById("loginHint").style.display="block"; return; }
+  startApp();
+};
+
+// ─── SETUP ─────────────────────────────────────────────────
+function saveSetup() {
+  const url = document.getElementById("setupUrl").value.trim();
+  if (!url) { document.getElementById("setupErr").textContent = "Ingresá la URL"; return; }
+  cfg.url = url;
+  localStorage.setItem(LS_CFG, JSON.stringify(cfg));
+  document.getElementById("ovSetup").classList.add("hidden");
+  document.getElementById("ovLogin").classList.remove("hidden");
+  document.getElementById("loginHint").style.display = "block";
+  api({action:"initSheets"}).then(r => console.log("initSheets:", r));
+}
+
+// ─── LOGIN ─────────────────────────────────────────────────
+function doLogin() {
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  if (!user || !pass) { document.getElementById("loginErr").textContent = "Completá usuario y contraseña"; return; }
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "Verificando...";
+  document.getElementById("loginErr").textContent = "";
+  api({action:"login", user, pass}).then(r => {
+    btn.disabled = false; btn.textContent = "Ingresar";
+    if (r.ok) {
+      sess = {user, pass, role: r.role, nombre: r.nombre || user};
+      localStorage.setItem(LS_SESS, JSON.stringify(sess));
+      document.getElementById("ovLogin").classList.add("hidden");
+      startApp();
+    } else {
+      document.getElementById("loginErr").textContent = r.error || "Error desconocido";
+    }
+  }).catch(() => {
+    btn.disabled = false; btn.textContent = "Ingresar";
+    document.getElementById("loginErr").textContent = "Sin conexión — entrando en modo local";
+    setTimeout(() => {
+      sess = {user, pass:"(local)", role:"user", nombre: user};
+      localStorage.setItem(LS_SESS, JSON.stringify(sess));
+      document.getElementById("ovLogin").classList.add("hidden");
+      startApp();
+    }, 1200);
+  });
+}
+
+function showUserMenu() {
+  if (confirm("Sesión: " + (sess?.nombre||"?") + "\n¿Cerrar sesión?")) {
+    localStorage.removeItem(LS_SESS);
+    location.reload();
+  }
+}
+
+// ─── ARRANCAR APP ──────────────────────────────────────────
+function startApp() {
+  document.getElementById("userLabel").textContent = sess.nombre || sess.user;
+  if (sess.role === "admin") {
+    const tb = document.getElementById("tabsBar");
+    tb.innerHTML += '<div class="tab" onclick="showTab(\'log\')">📋 Historial</div>';
+    tb.innerHTML += '<div class="tab" onclick="showTab(\'admin\')">⚙️ Admin</div>';
+  }
+  showTab("mapa");
+  syncFromServer(false);
+}
+
+// ─── SYNC ──────────────────────────────────────────────────
+function syncFromServer(showFeedback) {
+  setSyncState("loading");
+  api({action:"getData", user:sess.user, pass:sess.pass}).then(r => {
+    if (r.datos) {
+      Object.assign(D, r.datos);
+      localStorage.setItem(LS_DATA, JSON.stringify(D));
+      setSyncState("ok");
+      renderMap(); renderTable();
+      if (showFeedback) showSavingInd("✅ Datos actualizados desde el servidor");
+    } else {
+      setSyncState("err");
+      if (showFeedback) showSavingInd("⚠️ " + (r.error||"Sin datos"));
+    }
+  }).catch(()=>{ setSyncState("err"); if(showFeedback) showSavingInd("⚠️ Sin conexión"); });
+}
+
+function setSyncState(s) { document.getElementById("syncDot").className = "sync-dot " + s; }
+
+// ─── MAPA ──────────────────────────────────────────────────
+function renderMap() {
+  const w = document.getElementById("mapWrapper");
+  w.querySelectorAll(".loc-dot-el,.loc-label").forEach(e=>e.remove());
+  BASE.forEach(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    const color = COLORS[pres]||COLORS.sin_datos;
+    const r = b.G ? 9 : 6;
+    const xp = (b.x/555*100).toFixed(2)+"%";
+    const yp = (b.y/719*100).toFixed(2)+"%";
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns,"svg");
+    const sz = (r+4)*2;
+    svg.setAttribute("width",sz); svg.setAttribute("height",sz);
+    svg.style.cssText = "position:absolute;left:"+xp+";top:"+yp+";transform:translate(-50%,-50%);cursor:pointer;z-index:"+(selId===b.id?10:2)+";overflow:visible;";
+    svg.className = "loc-dot-el";
+    const c = document.createElementNS(ns,"circle");
+    c.setAttribute("cx",r+4); c.setAttribute("cy",r+4); c.setAttribute("r",r);
+    c.setAttribute("fill",color);
+    c.setAttribute("stroke",selId===b.id?"white":"rgba(0,0,0,0.5)");
+    c.setAttribute("stroke-width",selId===b.id?"2.5":"1.5");
+    svg.appendChild(c);
+    svg.addEventListener("click",()=>selectLoc(b.id));
+    svg.addEventListener("mouseenter",e=>showTip(e,b));
+    svg.addEventListener("mouseleave",hideTip);
+    w.appendChild(svg);
+    if (b.G || selId===b.id) {
+      const lbl = document.createElement("div");
+      lbl.className = "loc-label";
+      lbl.style.cssText = "left:"+xp+";top:calc("+yp+" + "+(r+5)+"px);";
+      lbl.textContent = b.n;
+      w.appendChild(lbl);
+    }
+  });
+}
+
+function showTip(e,b) {
+  const d = D[b.id]||{};
+  const pres = d.presencia||b.pres||"sin_datos";
+  let h = "<strong>"+b.n+"</strong> — "+({"fuerte":"Fuerte","debil":"Débil","nula":"Sin presencia","sin_datos":"Sin datos"}[pres]||pres);
+  if(b.pp) h += "<br>🏛 "+(b.px||"?")+" <em>("+b.pp+")</em>";
+  if(b.el) { const tot=b.vv||(b.vg&&b.v2?b.vg+b.v2:null); h += "<br>👥 "+fmt(b.el)+" electores"+(tot&&b.vg?" · "+pct(b.vg,tot)+" 1°":""); }
+  if(d.updated_by) h += "<br>✏️ "+d.updated_by+(d.updated_at?" · "+d.updated_at:"");
+  const tip = document.getElementById("tooltip");
+  tip.innerHTML = h; tip.style.display = "block";
+  const wr = document.getElementById("mapWrapper").getBoundingClientRect();
+  let tx = e.clientX-wr.left+12, ty = e.clientY-wr.top+12;
+  if(tx+210>555) tx-=220; if(ty+90>719) ty-=100;
+  tip.style.left=tx+"px"; tip.style.top=ty+"px";
+}
+function hideTip() { document.getElementById("tooltip").style.display="none"; }
+
+// ─── TABLA ─────────────────────────────────────────────────
+function renderTable() {
+  const q  = document.getElementById("searchInput").value.toLowerCase();
+  const fp = document.getElementById("filterPres").value;
+  const ord={fuerte:0,debil:1,nula:2,sin_datos:3};
+  let list = BASE.filter(b=>{
+    const pres=(D[b.id]||{}).presencia||b.pres||"sin_datos";
+    if(fp&&pres!==fp) return false;
+    if(q&&!b.n.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  list.sort((a,z)=>{
+    const da=D[a.id]||{},dz=D[z.id]||{};
+    const pa=da.presencia||a.pres||"sin_datos", pz=dz.presencia||z.pres||"sin_datos";
+    let va,vz;
+    if(sortF==="nombre"){va=a.n;vz=z.n;}
+    else if(sortF==="presencia"){va=ord[pa]??9;vz=ord[pz]??9;}
+    else if(sortF==="partido"){va=a.pp||"";vz=z.pp||"";}
+    else if(sortF==="electores"){va=-(a.el||0);vz=-(z.el||0);}
+    else if(sortF==="centro"){va=da.centro||"";vz=dz.centro||"";}
+    else if(sortF==="afiliados"){va=-(parseInt(da.afil)||0);vz=-(parseInt(dz.afil)||0);}
+    else{va=a.n;vz=z.n;}
+    return (va<vz?-1:va>vz?1:0)*(sortA?1:-1);
+  });
+  const tb = document.getElementById("tableBody");
+  tb.innerHTML = "";
+  list.forEach(b=>{
+    const d=D[b.id]||{};
+    const pres=d.presencia||b.pres||"sin_datos";
+    const tot=b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
+    const p1pct=b.vg&&tot?(b.vg/tot*100).toFixed(0)+"%":"—";
+    const cl=pcls(b.pp);
+    const who=d.updated_by?'<span class="who-tag">'+d.updated_by+'</span>':"";
+    const tr=document.createElement("tr");
+    if(selId===b.id) tr.classList.add("sel-row");
+    tr.innerHTML='<td><strong>'+b.n+'</strong></td><td><span class="badge b-'+pres+'">'+LBLS[pres]+'</span></td><td><span class="c-'+cl+'">'+(b.pp||"—")+'</span></td><td>'+fmt(b.el)+'</td><td>'+p1pct+'</td><td>'+(d.centro==="si"?'<span style="color:#28a745;font-weight:bold">✅</span>':d.centro==="no"?"❌":"")+'</td><td>'+(d.afil||"—")+'</td><td>'+who+'</td>';
+    tr.addEventListener("click",()=>selectLoc(b.id));
+    tb.appendChild(tr);
+  });
+}
+function sortBy(f){if(sortF===f)sortA=!sortA;else{sortF=f;sortA=true;}renderTable();}
+
+// ─── DETALLE ───────────────────────────────────────────────
+function selectLoc(id){ selId=id; openDetail(id); renderMap(); renderTable(); }
+
+function openDetail(id) {
+  const b=BASE.find(x=>x.id===id), d=D[id]||{};
+  document.getElementById("detailEmpty").style.display="none";
+  document.getElementById("detailContent").style.display="flex";
+  document.getElementById("dNombre").textContent=b.n;
+  const sub=[];
+  if(b.el) sub.push(fmt(b.el)+" electores");
+  if(b.G) sub.push("Municipio");
+  if(b.sc) sub.push(b.sc);
+  document.getElementById("dSub").textContent=sub.join(" · ")||"Sin datos electorales";
+  const rw=(l,v)=>'<div class="prow"><span class="plabel">'+l+'</span>'+v+'</div>';
+  let ph="";
+  if(b.px) ph+=rw("Intendente/a",'<span class="pval">'+b.px+'</span>');
+  if(b.pp){const cl2=pcls(b.pp);ph+=rw("Partido ganador",'<span class="pval '+(cl2==="unidos"?"g":cl2==="mas"?"o":"ot")+'">'+b.pp+'</span>');}
+  if(b.sc) ph+=rw("Sector PS",'<span class="pval g">'+b.sc+'</span>');
+  if(b.el) ph+=rw("Electores",'<span class="pval">'+fmt(b.el)+'</span>');
+  if(b.vv) ph+=rw("Votos válidos",'<span class="pval">'+fmt(b.vv)+" ("+pct(b.vv,b.el)+" particip.)"+'</span>');
+  document.getElementById("panoBox").innerHTML=ph||'<span style="color:#555">Sin datos electorales</span>';
+  const rt=document.getElementById("resTable");
+  const tot=b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
+  if(b.vg&&b.pp){
+    const cl1=pcls(b.pp),cl2=pcls(b.p2),cl3=pcls(b.p3);
+    let rh='<div class="rrow rhead"><span>Partido</span><span style="text-align:right">Votos</span><span style="text-align:right">%</span></div>';
+    rh+='<div class="rrow"><span class="rnombre pct-'+cl1+'">'+b.pp+'</span><span class="rvotos">'+fmt(b.vg)+'</span><span class="rpct pct-'+cl1+'">'+pct(b.vg,tot)+'</span></div>';
+    if(b.p2&&b.v2) rh+='<div class="rrow"><span class="rnombre pct-'+cl2+'">'+b.p2+'</span><span class="rvotos">'+fmt(b.v2)+'</span><span class="rpct pct-'+cl2+'">'+pct(b.v2,tot)+'</span></div>';
+    if(b.p3&&b.p3!=="BLANCOS") rh+='<div class="rrow"><span class="rnombre pct-'+cl3+'">'+b.p3+'</span><span class="rvotos">—</span><span class="rpct pct-'+cl3+'">3°</span></div>';
+    rt.innerHTML=rh; rt.style.display="block";
+  } else rt.style.display="none";
+  document.getElementById("whoEdited").textContent=d.updated_by?"✏️ Último cambio: "+d.updated_by+(d.updated_at?" el "+d.updated_at:""):"";
+  document.getElementById("f_pres").value=d.presencia||"sin_datos";
+  document.getElementById("f_centro").value=d.centro||"";
+  document.getElementById("f_dir").value=d.dir||"";
+  document.getElementById("f_afil").value=d.afil||"";
+  document.getElementById("f_ref").value=d.ref||"";
+  document.getElementById("f_tel").value=d.tel||"";
+  document.getElementById("f_prio").value=d.prio||"";
+  document.getElementById("f_ec").value=d.ec||"";
+  document.getElementById("f_eg").value=d.eg||"";
+  document.getElementById("f_eo").value=d.eo||"";
+  document.getElementById("savingInd").textContent="";
+}
+
+function saveDetail() {
+  if(!selId) return;
+  const nd={presencia:document.getElementById("f_pres").value,centro:document.getElementById("f_centro").value,
+    dir:document.getElementById("f_dir").value,afil:document.getElementById("f_afil").value,
+    ref:document.getElementById("f_ref").value,tel:document.getElementById("f_tel").value,
+    prio:document.getElementById("f_prio").value,ec:document.getElementById("f_ec").value,
+    eg:document.getElementById("f_eg").value,eo:document.getElementById("f_eo").value};
+  D[selId]=Object.assign(D[selId]||{},nd,{updated_by:sess?.user||"?",updated_at:new Date().toLocaleDateString("es-AR")});
+  localStorage.setItem(LS_DATA,JSON.stringify(D));
+  renderMap(); renderTable(); showSavingInd("💾 Guardado local...");
+  api({action:"save",user:sess.user,pass:sess.pass,id:selId,data:JSON.stringify(nd)}).then(r=>{
+    if(r.ok){
+      if(r.updated_at) D[selId].updated_at=r.updated_at;
+      localStorage.setItem(LS_DATA,JSON.stringify(D));
+      showSavingInd("✅ Guardado en servidor · "+r.updated_at);
+      document.getElementById("whoEdited").textContent="✏️ Último cambio: "+sess.user+" el "+(r.updated_at||"");
+    } else showSavingInd("⚠️ Solo local: "+(r.error||"error"));
+  }).catch(()=>showSavingInd("⚠️ Sin conexión — guardado solo local"));
+}
+
+function showSavingInd(msg) {
+  const el=document.getElementById("savingInd");
+  if(el){el.textContent=msg;setTimeout(()=>{if(el.textContent===msg)el.textContent="";},4000);}
+}
+
+function clearSel(){selId=null;document.getElementById("detailEmpty").style.display="flex";document.getElementById("detailContent").style.display="none";renderMap();renderTable();}
+
+// ─── TABS ──────────────────────────────────────────────────
+function showTab(t) {
+  ["mapa","tabla","log","admin"].forEach(id=>{
+    const el=document.getElementById("view-"+id);
+    if(el) el.style.display=id===t?(id==="mapa"?"flex":"block"):"none";
+  });
+  document.querySelectorAll(".tab").forEach(el=>{
+    const labels={mapa:"mapa",tabla:"tabla",log:"historial",admin:"admin"};
+    el.classList.toggle("active",el.textContent.toLowerCase().includes(labels[t]||t));
+  });
+  if(t==="tabla") renderTable();
+  if(t==="log")   loadLog();
+  if(t==="admin") loadAdmin();
+}
+
+// ─── LOG ───────────────────────────────────────────────────
+function loadLog() {
+  const cont=document.getElementById("logContainer");
+  cont.innerHTML='<p style="color:#666;font-size:12px">Cargando historial...</p>';
+  api({action:"getLog",user:sess.user,pass:sess.pass}).then(r=>{
+    if(r.log&&r.log.length>0){
+      cont.innerHTML=r.log.map(entry=>{
+        const b=BASE.find(x=>x.id===entry.id)||{n:entry.id};
+        const pColor=COLORS[(entry.cambios||{}).presencia]||"#aaa";
+        const pLabel=LBLS[(entry.cambios||{}).presencia]||"";
+        const fields=Object.keys(entry.cambios||{}).filter(k=>k!=="presencia"&&entry.cambios[k]).slice(0,4);
+        return '<div class="log-item"><div class="log-header"><span class="log-user">✏️ '+entry.user+'</span><span class="log-ts">'+entry.ts+'</span></div><div class="log-loc">📍 '+b.n+(pLabel?' — <span style="color:'+pColor+'">'+pLabel+'</span>':"")+'</div>'+(fields.length?'<div class="log-fields">Campos: '+fields.join(", ")+'</div>':"")+'</div>';
+      }).join("");
+    } else cont.innerHTML='<p style="color:#555;font-size:12px;padding:10px">No hay cambios registrados aún.</p>';
+  }).catch(()=>{cont.innerHTML='<p style="color:#666;font-size:12px">Sin conexión</p>';});
+}
+
+// ─── ADMIN ─────────────────────────────────────────────────
+function loadAdmin() {
+  const total=BASE.length;
+  const cargados=BASE.filter(b=>(D[b.id]||{}).updated_by).length;
+  const fuerte=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres;return p==="fuerte";}).length;
+  const nula=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres;return p==="nula";}).length;
+  const sdat=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres;return p==="sin_datos"||!p;}).length;
+  const debil=total-fuerte-nula-sdat;
+  document.getElementById("adminStats").innerHTML=
+    "📍 "+total+" localidades · "+cargados+" con datos cargados<br>🟢 "+fuerte+" Fuerte · 🟠 "+debil+" Débil · 🔴 "+nula+" Sin presencia · ⚫ "+sdat+" Sin datos";
+  api({action:"getUsers",user:sess.user,pass:sess.pass}).then(r=>{
+    if(r.users) document.getElementById("usersList").innerHTML=r.users.map(u=>'<div class="user-row"><div class="user-avatar">'+(u.nombre||u.username).charAt(0).toUpperCase()+'</div><div class="user-info"><div class="uname">'+(u.nombre||u.username)+'</div><div class="urole">'+u.username+" · "+(u.role==="admin"?"⭐ Admin":"Usuario")+'</div></div>'+(u.username!==sess.user?'<button class="btn btn-gray" style="padding:3px 8px;font-size:10px" onclick="delUser(\''+u.username+'\')">✕</button>':"")+'</div>').join("");
+    else document.getElementById("usersList").innerHTML='<p style="color:#666;font-size:12px">'+( r.error||"Sin conexión")+'</p>';
+  });
+}
+
+function addUser() {
+  const nu=document.getElementById("nu_user").value.trim();
+  const np=document.getElementById("nu_pass").value;
+  const nn=document.getElementById("nu_nombre").value.trim();
+  const nr=document.getElementById("nu_role").value;
+  if(!nu||!np){document.getElementById("adminErr").textContent="Completá usuario y contraseña";return;}
+  api({action:"addUser",user:sess.user,pass:sess.pass,newuser:nu,newpass:np,newnombre:nn||nu,newrole:nr}).then(r=>{
+    if(r.ok){document.getElementById("adminErr").textContent="✅ Usuario creado";document.getElementById("nu_user").value="";document.getElementById("nu_pass").value="";document.getElementById("nu_nombre").value="";loadAdmin();}
+    else document.getElementById("adminErr").textContent=r.error||"Error";
+  });
+}
+function delUser(u){if(!confirm('¿Eliminar usuario "'+u+'"?'))return;api({action:"deleteUser",user:sess.user,pass:sess.pass,deluser:u}).then(r=>{if(r.ok)loadAdmin();else document.getElementById("adminErr").textContent=r.error||"Error";});}
+
+// ─── EXPORT CSV ────────────────────────────────────────────
+function exportCSV() {
+  const H=["Localidad","Electores","Partido","Presidente/a Comunal","Sector PS","Presencia PS","Centro","Afiliados","Referente","Teléfono","Prioridad","Estrategia electoral","Estrategia grupo","Observaciones","Editado por","Fecha"];
+  const rows=BASE.map(b=>{
+    const d=D[b.id]||{};
+    const pres=d.presencia||b.pres||"sin_datos";
+    return[b.n,b.el||"",b.pp||"",b.px||"",b.sc||"",LBLS[pres]||"",d.centro||"",d.afil||"",d.ref||"",d.tel||"",d.prio||"",(d.ec||"").replace(/\n/g," "),(d.eg||"").replace(/\n/g," "),(d.eo||"").replace(/\n/g," "),d.updated_by||"",d.updated_at||""].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",");
+  });
+  const csv=[H.join(","),...rows].join("\n");
+  const a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,﻿"+encodeURIComponent(csv);
+  a.download="castellanos_ps_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+</script>
+</body>
+</html>
+ => {
+  // Asegurar que todos los IDs existen en caché local
+  BASE.forEach(b => { if(!D[b.id]) D[b.id] = {presencia:b.pres,centro:"",dir:"",afil:"",ref:"",tel:"",prio:"",ec:"",eg:"",eo:"",updated_by:"",updated_at:""}; });
+
+  if (!cfg.url) {
+    document.getElementById("ovSetup").classList.remove("hidden");
+    return;
+  }
+  if (!sess) {
+    document.getElementById("ovSetup").classList.add("hidden");
+    document.getElementById("ovLogin").classList.remove("hidden");
+    document.getElementById("loginHint").style.display = "block";
+    return;
+  }
+  startApp();
+};
+
+// ─── SETUP ─────────────────────────────────────────────────
+function saveSetup() {
+  const url = document.getElementById("setupUrl").value.trim();
+  if (!url) { document.getElementById("setupErr").textContent = "Ingresá la URL"; return; }
+  cfg.url = url;
+  localStorage.setItem(LS_CFG, JSON.stringify(cfg));
+  document.getElementById("ovSetup").classList.add("hidden");
+  document.getElementById("ovLogin").classList.remove("hidden");
+  document.getElementById("loginHint").style.display = "block";
+  // Inicializar hojas remotas
+  api({action:"initSheets"}).then(r => console.log("initSheets:", r));
+}
+
+// ─── LOGIN ─────────────────────────────────────────────────
+function doLogin() {
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  if (!user || !pass) { document.getElementById("loginErr").textContent = "Completá usuario y contraseña"; return; }
+
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "Verificando...";
+  document.getElementById("loginErr").textContent = "";
+
+  api({action:"login", user, pass}).then(r => {
+    btn.disabled = false; btn.textContent = "Ingresar";
+    if (r.ok) {
+      sess = {user, pass, role: r.role, nombre: r.nombre || user};
+      localStorage.setItem(LS_SESS, JSON.stringify(sess));
+      document.getElementById("ovLogin").classList.add("hidden");
+      startApp();
+    } else {
+      document.getElementById("loginErr").textContent = r.error || "Error desconocido";
+    }
+  }).catch(() => {
+    // Modo offline: usar localStorage
+    btn.disabled = false; btn.textContent = "Ingresar";
+    document.getElementById("loginErr").textContent = "Sin conexión — entrando en modo local";
+    setTimeout(() => {
+      sess = {user, pass:"(local)", role:"user", nombre: user};
+      localStorage.setItem(LS_SESS, JSON.stringify(sess));
+      document.getElementById("ovLogin").classList.add("hidden");
+      startApp();
+    }, 1200);
+  });
+}
+
+function showUserMenu() {
+  if (confirm(`Sesión de: ${sess?.nombre||"?"}\n¿Cerrar sesión?`)) {
+    localStorage.removeItem(LS_SESS);
+    location.reload();
+  }
+}
+
+// ─── ARRANCAR APP ──────────────────────────────────────────
+function startApp() {
+  document.getElementById("userLabel").textContent = sess.nombre || sess.user;
+
+  // Tabs admin
+  if (sess.role === "admin") {
+    const tb = document.getElementById("tabsBar");
+    tb.innerHTML += `<div class="tab" onclick="showTab('log')">📋 Historial</div>`;
+    tb.innerHTML += `<div class="tab" onclick="showTab('admin')">⚙️ Admin</div>`;
+  }
+
+  renderMap();
+  syncFromServer(false);
+}
+
+// ─── SYNC DESDE SERVIDOR ───────────────────────────────────
+function syncFromServer(showFeedback) {
+  setSyncState("loading");
+  api({action:"getData", user:sess.user, pass:sess.pass}).then(r => {
+    if (r.datos) {
+      Object.assign(D, r.datos);
+      localStorage.setItem(LS_DATA, JSON.stringify(D));
+      setSyncState("ok");
+      renderMap();
+      renderTable();
+      if (showFeedback) showSavingInd("✅ Datos actualizados desde el servidor");
+    } else {
+      setSyncState("err");
+      if (showFeedback) showSavingInd("⚠️ "+( r.error||"Sin datos del servidor"));
+    }
+  }).catch(()=>{ setSyncState("err"); if(showFeedback) showSavingInd("⚠️ Sin conexión"); });
+}
+
+function setSyncState(s) {
+  const dot = document.getElementById("syncDot");
+  dot.className = "sync-dot " + s;
+}
+
+// ─── MAPA ──────────────────────────────────────────────────
+function renderMap() {
+  const w = document.getElementById("mapWrapper");
+  w.querySelectorAll(".loc-dot-el,.loc-label").forEach(e=>e.remove());
+  BASE.forEach(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia || b.pres || "sin_datos";
+    const color = COLORS[pres] || COLORS.sin_datos;
+    const r = b.G ? 9 : 6;
+    const xp = (b.x/555*100).toFixed(2)+"%";
+    const yp = (b.y/719*100).toFixed(2)+"%";
+
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns,"svg");
+    const sz = (r+4)*2;
+    svg.setAttribute("width",sz); svg.setAttribute("height",sz);
+    svg.style.cssText = `position:absolute;left:${xp};top:${yp};transform:translate(-50%,-50%);cursor:pointer;z-index:${selId===b.id?10:2};overflow:visible;`;
+    svg.className = "loc-dot-el";
+    const c = document.createElementNS(ns,"circle");
+    c.setAttribute("cx",r+4); c.setAttribute("cy",r+4); c.setAttribute("r",r);
+    c.setAttribute("fill",color);
+    c.setAttribute("stroke",selId===b.id?"white":"rgba(0,0,0,0.5)");
+    c.setAttribute("stroke-width",selId===b.id?"2.5":"1.5");
+    svg.appendChild(c);
+    svg.addEventListener("click",()=>selectLoc(b.id));
+    svg.addEventListener("mouseenter",e=>showTip(e,b));
+    svg.addEventListener("mouseleave",hideTip);
+    w.appendChild(svg);
+
+    if (b.G || selId===b.id) {
+      const lbl = document.createElement("div");
+      lbl.className = "loc-label";
+      lbl.style.cssText = `left:${xp};top:calc(${yp} + ${r+5}px);`;
+      lbl.textContent = b.n;
+      w.appendChild(lbl);
+    }
+  });
+}
+
+function showTip(e,b) {
+  const d = D[b.id]||{};
+  const pres = d.presencia||b.pres||"sin_datos";
+  let h = `<strong>${b.n}</strong> — ${LBLS[pres]||"?"}`;
+  if(b.pp) h += `<br>🏛 ${b.px||"?"} <em>(${b.pp})</em>`;
+  if(b.el) { const tot=b.vv||(b.vg&&b.v2?b.vg+b.v2:null); h += `<br>👥 ${fmt(b.el)} electores${tot&&b.vg?" · "+pct(b.vg,tot)+" 1°":""}`; }
+  if(d.updated_by) h += `<br>✏️ ${d.updated_by}${d.updated_at?" · "+d.updated_at:""}`;
+  const tip = document.getElementById("tooltip");
+  tip.innerHTML = h; tip.style.display = "block";
+  const wr = document.getElementById("mapWrapper").getBoundingClientRect();
+  let tx = e.clientX-wr.left+12, ty = e.clientY-wr.top+12;
+  if(tx+210>555) tx-=220; if(ty+90>719) ty-=100;
+  tip.style.left=tx+"px"; tip.style.top=ty+"px";
+}
+function hideTip() { document.getElementById("tooltip").style.display="none"; }
+
+// ─── TABLA ─────────────────────────────────────────────────
+function renderTable() {
+  const q  = document.getElementById("searchInput").value.toLowerCase();
+  const fp = document.getElementById("filterPres").value;
+  const ord = {fuerte:0,debil:1,nula:2,sin_datos:3};
+  const prord = {alta:0,media:1,baja:2};
+  let list = BASE.filter(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    if(fp && pres!==fp) return false;
+    if(q && !b.n.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  list.sort((a,z) => {
+    const da=D[a.id]||{}, dz=D[z.id]||{};
+    const pa=da.presencia||a.pres||"sin_datos", pz=dz.presencia||z.pres||"sin_datos";
+    let va,vz;
+    if(sortF==="nombre"){va=a.n;vz=z.n;}
+    else if(sortF==="presencia"){va=ord[pa]??9;vz=ord[pz]??9;}
+    else if(sortF==="partido"){va=a.pp||"";vz=z.pp||"";}
+    else if(sortF==="electores"){va=-(a.el||0);vz=-(z.el||0);}
+    else if(sortF==="centro"){va=da.centro||"";vz=dz.centro||"";}
+    else if(sortF==="afiliados"){va=-(parseInt(da.afil)||0);vz=-(parseInt(dz.afil)||0);}
+    else{va=a.n;vz=z.n;}
+    return (va<vz?-1:va>vz?1:0)*(sortA?1:-1);
+  });
+  const tb = document.getElementById("tableBody");
+  tb.innerHTML = "";
+  list.forEach(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    const tot = b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
+    const p1pct = b.vg&&tot?`${(b.vg/tot*100).toFixed(0)}%`:"—";
+    const cl = pcls(b.pp);
+    const who = d.updated_by ? `<span class="who-tag">${d.updated_by}</span>` : "";
+    const tr = document.createElement("tr");
+    if(selId===b.id) tr.classList.add("sel-row");
+    tr.innerHTML = `
+      <td><strong>${b.n}</strong></td>
+      <td><span class="badge b-${pres}">${LBLS[pres]}</span></td>
+      <td><span class="c-${cl}">${b.pp||"—"}</span></td>
+      <td>${fmt(b.el)}</td>
+      <td>${p1pct}</td>
+      <td>${d.centro==="si"?'<span style="color:#28a745;font-weight:bold">✅</span>':d.centro==="no"?"❌":""}</td>
+      <td>${d.afil||"—"}</td>
+      <td>${who}</td>`;
+    tr.addEventListener("click",()=>selectLoc(b.id));
+    tb.appendChild(tr);
+  });
+}
+function sortBy(f){if(sortF===f)sortA=!sortA;else{sortF=f;sortA=true;}renderTable();}
+
+// ─── DETALLE ───────────────────────────────────────────────
+function selectLoc(id) {
+  selId = id;
+  openDetail(id);
+  renderMap();
+  renderTable();
+}
+
+function openDetail(id) {
+  const b = BASE.find(x=>x.id===id);
+  const d = D[id]||{};
+  document.getElementById("detailEmpty").style.display = "none";
+  const dc = document.getElementById("detailContent");
+  dc.style.display = "flex";
+
+  document.getElementById("dNombre").textContent = b.n;
+  const sub = [];
+  if(b.el) sub.push(`${fmt(b.el)} electores`);
+  if(b.G) sub.push("Municipio");
+  if(b.sc) sub.push(b.sc);
+  document.getElementById("dSub").textContent = sub.join(" · ")||"Sin datos electorales";
+
+  // Panorama
+  const pb = document.getElementById("panoBox");
+  let ph = "";
+  const row2 = (l,v) => `<div class="prow"><span class="plabel">${l}</span>${v}</div>`;
+  if(b.px) ph += row2("Intendente/a",`<span class="pval">${b.px}</span>`);
+  if(b.pp){const cl2=pcls(b.pp);ph+=row2("Partido ganador",`<span class="pval ${cl2==="unidos"?"g":cl2==="mas"?"o":"ot"}">${b.pp}</span>`);}
+  if(b.sc) ph += row2("Sector PS",`<span class="pval g">${b.sc}</span>`);
+  if(b.el) ph += row2("Electores",`<span class="pval">${fmt(b.el)}</span>`);
+  if(b.vv) ph += row2("Votos válidos",`<span class="pval">${fmt(b.vv)} (${pct(b.vv,b.el)} particip.)</span>`);
+  pb.innerHTML = ph||'<span style="color:#555">Sin datos electorales</span>';
+
+  // Resultados
+  const rt = document.getElementById("resTable");
+  const tot = b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
+  if(b.vg&&b.pp){
+    const cl1=pcls(b.pp),cl2=pcls(b.p2),cl3=pcls(b.p3);
+    let rh=`<div class="rrow rhead"><span>Partido</span><span style="text-align:right">Votos</span><span style="text-align:right">%</span></div>`;
+    rh+=`<div class="rrow"><span class="rnombre pct-${cl1}">${b.pp}</span><span class="rvotos">${fmt(b.vg)}</span><span class="rpct pct-${cl1}">${pct(b.vg,tot)}</span></div>`;
+    if(b.p2&&b.v2) rh+=`<div class="rrow"><span class="rnombre pct-${cl2}">${b.p2}</span><span class="rvotos">${fmt(b.v2)}</span><span class="rpct pct-${cl2}">${pct(b.v2,tot)}</span></div>`;
+    if(b.p3&&b.p3!=="BLANCOS") rh+=`<div class="rrow"><span class="rnombre pct-${cl3}">${b.p3}</span><span class="rvotos">—</span><span class="rpct pct-${cl3}">3°</span></div>`;
+    rt.innerHTML=rh; rt.style.display="block";
+  } else { rt.style.display="none"; }
+
+  // Quién editó
+  const we = document.getElementById("whoEdited");
+  we.textContent = d.updated_by ? `✏️ Último cambio: ${d.updated_by}${d.updated_at?" el "+d.updated_at:""}` : "";
+
+  // Campos editables
+  document.getElementById("f_pres").value   = d.presencia||"sin_datos";
+  document.getElementById("f_centro").value = d.centro||"";
+  document.getElementById("f_dir").value    = d.dir||"";
+  document.getElementById("f_afil").value   = d.afil||"";
+  document.getElementById("f_ref").value    = d.ref||"";
+  document.getElementById("f_tel").value    = d.tel||"";
+  document.getElementById("f_prio").value   = d.prio||"";
+  document.getElementById("f_ec").value     = d.ec||"";
+  document.getElementById("f_eg").value     = d.eg||"";
+  document.getElementById("f_eo").value     = d.eo||"";
+  document.getElementById("savingInd").textContent = "";
+}
+
+function saveDetail() {
+  if(!selId) return;
+  const newData = {
+    presencia: document.getElementById("f_pres").value,
+    centro:    document.getElementById("f_centro").value,
+    dir:       document.getElementById("f_dir").value,
+    afil:      document.getElementById("f_afil").value,
+    ref:       document.getElementById("f_ref").value,
+    tel:       document.getElementById("f_tel").value,
+    prio:      document.getElementById("f_prio").value,
+    ec:        document.getElementById("f_ec").value,
+    eg:        document.getElementById("f_eg").value,
+    eo:        document.getElementById("f_eo").value,
+  };
+
+  // Guardar local inmediatamente
+  D[selId] = Object.assign(D[selId]||{}, newData, {
+    updated_by: sess?.user||"?",
+    updated_at: new Date().toLocaleDateString("es-AR")
+  });
+  localStorage.setItem(LS_DATA, JSON.stringify(D));
+  renderMap(); renderTable();
+  showSavingInd("💾 Guardado local...");
+
+  // Intentar guardar en servidor
+  const params = {
+    action: "save",
+    user:   sess.user,
+    pass:   sess.pass,
+    id:     selId,
+    data:   encodeURIComponent(JSON.stringify(newData))
+  };
+  api(params).then(r => {
+    if(r.ok) {
+      if(r.updated_at) D[selId].updated_at = r.updated_at;
+      localStorage.setItem(LS_DATA, JSON.stringify(D));
+      showSavingInd("✅ Guardado en servidor · "+r.updated_at);
+      document.getElementById("whoEdited").textContent = `✏️ Último cambio: ${sess.user} el ${r.updated_at}`;
+    } else {
+      showSavingInd("⚠️ Solo guardado local: "+(r.error||"error"));
+    }
+  }).catch(()=>showSavingInd("⚠️ Sin conexión — guardado solo local"));
+}
+
+function showSavingInd(msg) {
+  const el = document.getElementById("savingInd");
+  if(el) { el.textContent = msg; setTimeout(()=>{ if(el.textContent===msg) el.textContent=""; },4000); }
+}
+
+function clearSel() {
+  selId = null;
+  document.getElementById("detailEmpty").style.display="flex";
+  document.getElementById("detailContent").style.display="none";
+  renderMap(); renderTable();
+}
+
+// ─── TABS ──────────────────────────────────────────────────
+function showTab(t) {
+  ["mapa","tabla","log","admin"].forEach(id=>{
+    const el = document.getElementById("view-"+id);
+    if(el) el.style.display = id===t ? (id==="mapa"?"flex":"block") : "none";
+  });
+  document.querySelectorAll(".tab").forEach((el,i)=>{
+    const tabs=["mapa","tabla","log","admin"];
+    el.classList.toggle("active", el.textContent.toLowerCase().includes(t) || (t==="mapa"&&i===0));
+  });
+  if(t==="tabla") renderTable();
+  if(t==="log") loadLog();
+  if(t==="admin") loadAdmin();
+}
+
+// ─── LOG ───────────────────────────────────────────────────
+function loadLog() {
+  const cont = document.getElementById("logContainer");
+  cont.innerHTML = '<p style="color:#666;font-size:12px">Cargando historial...</p>';
+  api({action:"getLog", user:sess.user, pass:sess.pass}).then(r => {
+    if(r.log && r.log.length > 0) {
+      cont.innerHTML = r.log.map(entry => {
+        const b = BASE.find(x=>x.id===entry.id)||{n:entry.id};
+        const fields = Object.keys(entry.cambios||{}).filter(k=>entry.cambios[k]).slice(0,4);
+        return `<div class="log-item">
+          <div class="log-header">
+            <span class="log-user">✏️ ${entry.user}</span>
+            <span class="log-ts">${entry.ts}</span>
+          </div>
+          <div class="log-loc">📍 ${b.n}</div>
+          ${fields.length ? `<div class="log-fields">Campos: ${fields.join(", ")}</div>` : ""}
+        </div>`;
+      }).join("");
+    } else {
+      cont.innerHTML = '<p style="color:#555;font-size:12px;padding:10px">No hay cambios registrados aún.</p>';
+    }
+  }).catch(()=>{ cont.innerHTML = '<p style="color:#666;font-size:12px">Sin conexión</p>'; });
+}
+
+// ─── ADMIN ─────────────────────────────────────────────────
+function loadAdmin() {
+  // Stats
+  const total = BASE.length;
+  const cargados = BASE.filter(b => D[b.id]?.updated_by).length;
+  const fuerte = BASE.filter(b => (D[b.id]?.presencia||b.pres)==="fuerte").length;
+  const nula   = BASE.filter(b => (D[b.id]?.presencia||b.pres)==="nula").length;
+  document.getElementById("adminStats").innerHTML =
+    `📍 ${total} localidades · ${cargados} con datos cargados<br>
+     🟢 ${fuerte} Fuerte · 🟠 ${total-fuerte-nula-BASE.filter(b=>(D[b.id]?.presencia||b.pres)==="sin_datos").length} Débil · 🔴 ${nula} Sin presencia`;
+
+  // Users list
+  api({action:"getUsers", user:sess.user, pass:sess.pass}).then(r => {
+    if(r.users) {
+      document.getElementById("usersList").innerHTML = r.users.map(u => `
+        <div class="user-row">
+          <div class="user-avatar">${(u.nombre||u.username).charAt(0).toUpperCase()}</div>
+          <div class="user-info">
+            <div class="uname">${u.nombre||u.username}</div>
+            <div class="urole">${u.username} · ${u.role==="admin"?"⭐ Admin":"Usuario"}</div>
+          </div>
+          ${u.username!==sess.user?`<button class="btn btn-gray" style="padding:3px 8px;font-size:10px" onclick="delUser('${u.username}')">✕</button>`:""}
+        </div>`).join("");
+    }
+  });
+}
+
+function addUser() {
+  const u={user:sess.user,pass:sess.pass, newuser:document.getElementById("nu_user").value.trim(),
+    newpass:document.getElementById("nu_pass").value, newnombre:document.getElementById("nu_nombre").value.trim(),
+    newrole:document.getElementById("nu_role").value};
+  if(!u.newuser||!u.newpass){document.getElementById("adminErr").textContent="Completá usuario y contraseña";return;}
+  api({action:"addUser",...u}).then(r=>{
+    if(r.ok){document.getElementById("adminErr").textContent="✅ Usuario creado";loadAdmin();}
+    else document.getElementById("adminErr").textContent=r.error||"Error";
+  });
+}
+function delUser(u) {
+  if(!confirm(`¿Eliminar usuario "${u}"?`)) return;
+  api({action:"deleteUser",user:sess.user,pass:sess.pass,deluser:u}).then(r=>{
+    if(r.ok) loadAdmin();
+    else document.getElementById("adminErr").textContent=r.error||"Error";
+  });
+}
+
+// ─── EXPORT CSV ────────────────────────────────────────────
+function exportCSV() {
+  const H = ["Localidad","Electores","Partido","Presidente/a Comunal","Sector PS","Presencia PS","Centro","Afiliados","Referente","Teléfono","Prioridad","Estrategia electoral","Estrategia grupo","Observaciones","Editado por","Fecha"];
+  const rows = BASE.map(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    return [b.n,b.el||"",b.pp||"",b.px||"",b.sc||"",LBLS[pres]||"",d.centro||"",d.afil||"",d.ref||"",d.tel||"",d.prio||"",
+      (d.ec||"").replace(/\n/g," "),(d.eg||"").replace(/\n/g," "),(d.eo||"").replace(/\n/g," "),d.updated_by||"",d.updated_at||""
+    ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",");
+  });
+  const csv = [H.join(","),...rows].join("\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8,﻿"+encodeURIComponent(csv);
+  a.download = "castellanos_ps_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+</script>
+</body>
+</html>
