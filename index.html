@@ -414,10 +414,18 @@ const LBLS   = {fuerte:"Fuerte",debil:"Débil",nula:"Sin presencia",sin_datos:"S
 const pcls = p => { if(!p)return""; const l=p.toLowerCase(); return l.includes("unidos")?"unidos":l.includes("más para")||l.includes("mas para")?"mas":"otro"; };
 const pct  = (v,t) => (!v||!t)?"—":(v/t*100).toFixed(1)+"%";
 const fmt  = n => n!=null?Number(n).toLocaleString("es-AR"):"—";
-const api  = (params) => {
-  const url = "/api/proxy?" + Object.entries(params).map(([k,v])=>k+"="+encodeURIComponent(v)).join("&");
-  return fetch(url).then(r=>r.json()).catch(()=>({error:"Sin conexión"}));
-};
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmeFLM1Y3B4wpBvmazhBXRlRH0ro4PykVGeLE6usDbqV2gIrC4EFibN4_mOXFSiPaE/exec";
+
+const api = (params) => new Promise((resolve) => {
+  const cb = "_cb" + Date.now();
+  const t = setTimeout(() => { cleanup(); resolve({error:"Sin conexión"}); }, 8000);
+  const cleanup = () => { delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); clearTimeout(t); };
+  window[cb] = (data) => { cleanup(); resolve(data); };
+  const s = document.createElement("script");
+  s.src = SCRIPT_URL + "?" + Object.entries({...params, callback:cb}).map(([k,v])=>k+"="+encodeURIComponent(v)).join("&");
+  s.onerror = () => { cleanup(); resolve({error:"Sin conexión"}); };
+  document.head.appendChild(s);
+});
 
 // ─── INIT ──────────────────────────────────────────────────
 window.onload = () => {
