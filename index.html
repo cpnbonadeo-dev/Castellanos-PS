@@ -414,7 +414,7 @@ const LBLS   = {fuerte:"Fuerte",debil:"Débil",nula:"Sin presencia",sin_datos:"S
 const pcls = p => { if(!p)return""; const l=p.toLowerCase(); return l.includes("unidos")?"unidos":l.includes("más para")||l.includes("mas para")?"mas":"otro"; };
 const pct  = (v,t) => (!v||!t)?"—":(v/t*100).toFixed(1)+"%";
 const fmt  = n => n!=null?Number(n).toLocaleString("es-AR"):"—";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmeFLM1Y3B4wpBvmazhBXRlRH0ro4PykVGeLE6usDbqV2gIrC4EFibN4_mOXFSiPaE/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBKa91PttuokGQEP0s6uDHPQfS1Vsh66F5rOQtexzKd06y38aBZMDWMss_3PmMrusc-Q/exec";
 
 const api = (params) => new Promise((resolve) => {
   const cb = "_cb" + Date.now();
