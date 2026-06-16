@@ -59,22 +59,27 @@ body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;backgrou
 /* ══ PANINI CARD ══════════════════════════════ */
 .pcard{width:175px;border-radius:10px;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1.5px rgba(255,255,255,.22);transition:transform .22s ease,box-shadow .22s ease;user-select:none;display:flex;flex-direction:column;background:linear-gradient(155deg,#9ec8e8 0%,#c8e0f5 50%,#74acdf 100%)}
 .pcard:hover{transform:translateY(-14px) scale(1.05) rotate(-1.5deg);box-shadow:0 28px 60px rgba(0,0,0,.55),0 0 0 2.5px rgba(255,255,255,.5);z-index:50}
-.foil-oro{background:linear-gradient(155deg,#b8cce0 0%,#dce8f5 50%,#9ab8d8 100%)}
-.foil-rojo{background:linear-gradient(155deg,#74acdf 0%,#a8d4f5 48%,#5a9ad0 100%)}
-.foil-verde{background:linear-gradient(155deg,#88c098 0%,#b0d8b8 48%,#6aaa7a 100%)}
-.pcard::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(-55deg,rgba(255,255,255,.11) 0,rgba(255,255,255,.11) 1px,transparent 1px,transparent 14px)}
+.foil-oro{background:linear-gradient(155deg,#f5f0e2 0%,#fffaee 50%,#ede0c4 100%)}
+.foil-rojo{background:linear-gradient(155deg,#dceefa 0%,#f0f8ff 50%,#c8e4f5 100%)}
+.foil-verde{background:linear-gradient(155deg,#e2f5e8 0%,#f2fff6 50%,#d0ecd8 100%)}
+.foil-azul{background:linear-gradient(155deg,#dde8fa 0%,#eef4ff 50%,#c8d8f2 100%)}
+.foil-azul .p-top-strip{background:linear-gradient(90deg,#1a3a8a 33%,#4a7ad0 33%,#4a7ad0 67%,#1a3a8a 67%)}
+.foil-azul .p-name-band{border-top-color:#1a3a8a}
+.foil-azul .p-num-bg{color:rgba(0,25,110,.17)}
+
+.pcard::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(-55deg,rgba(0,60,120,.055) 0,rgba(0,60,120,.055) 1px,transparent 1px,transparent 14px)}
 .p-top-strip{height:8px;background:linear-gradient(90deg,#5a9ad0 33%,#fff 33%,#fff 67%,#5a9ad0 67%);position:relative;z-index:3;flex-shrink:0}
 .foil-oro .p-top-strip{background:linear-gradient(90deg,#b8860b 33%,#f5d94e 33%,#f5d94e 67%,#b8860b 67%)}
 .foil-verde .p-top-strip{background:linear-gradient(90deg,#228022 33%,#90d090 33%,#90d090 67%,#228022 67%)}
-.p-num-bg{position:absolute;bottom:48px;left:-5px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:115px;line-height:1;color:rgba(0,55,140,.12);z-index:1;pointer-events:none;letter-spacing:-5px;font-weight:900}
-.foil-oro .p-num-bg{color:rgba(70,45,0,.10)}
-.foil-verde .p-num-bg{color:rgba(0,45,0,.10)}
+.p-num-bg{position:absolute;bottom:48px;left:-5px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:115px;line-height:1;color:rgba(0,40,130,.20);z-index:7;pointer-events:none;letter-spacing:-5px;font-weight:900}
+.foil-oro .p-num-bg{color:rgba(90,55,0,.20)}
+.foil-verde .p-num-bg{color:rgba(0,55,0,.20)}
 .p-badge{position:absolute;top:10px;right:9px;width:30px;height:30px;border-radius:50%;overflow:hidden;z-index:10;box-shadow:0 2px 7px rgba(0,0,0,.4),0 0 0 1.5px rgba(255,255,255,.65)}
 .p-country{position:absolute;top:10px;left:9px;width:28px;height:28px;border-radius:50%;overflow:hidden;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,.3),0 0 0 1.5px rgba(255,255,255,.5)}
-.p-photo-wrap{position:relative;width:100%;height:185px;overflow:hidden;background:rgba(0,50,110,.08);z-index:2;flex-shrink:0}
+.p-photo-wrap{position:relative;width:100%;height:185px;overflow:hidden;background:transparent;z-index:2;flex-shrink:0}
 .p-photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
 .p-photo-wrap .p-sil{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px}
-.p-jersey-overlay{position:absolute;bottom:0;left:0;right:0;height:50%;background:repeating-linear-gradient(90deg,#5a9ad0 0px,#5a9ad0 9px,#ffffff 9px,#ffffff 18px);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 26%,rgba(0,0,0,.92) 52%,black 70%);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 26%,rgba(0,0,0,.92) 52%,black 70%);z-index:6}
+.p-jersey-overlay{position:absolute;bottom:0;left:0;right:0;height:50%;background:repeating-linear-gradient(90deg,#4a8ec0 0px,#4a8ec0 9px,#eef6ff 9px,#eef6ff 18px);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 26%,rgba(0,0,0,.92) 52%,black 70%);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 26%,rgba(0,0,0,.92) 52%,black 70%);z-index:6}
 .has-jersey .p-jersey-overlay{display:none}
 .p-collar{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:30px;height:16px;border-radius:0 0 14px 14px;background:#74b3e8;border:2px solid rgba(255,255,255,.85);border-top:none;z-index:8}
 .has-jersey .p-collar{display:none}
@@ -90,11 +95,11 @@ body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;backgrou
 .p-name-band{position:relative;z-index:10;background:rgba(255,255,255,.97);padding:7px 9px 9px;border-top:3px solid #5a9ad0;flex-shrink:0}
 .foil-oro .p-name-band{border-top-color:#c8960c}
 .foil-verde .p-name-band{border-top-color:#228022}
-.p-firstname{font-size:8px;color:rgba(0,0,0,.38);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;line-height:1}
+.p-firstname{font-size:8px;color:rgba(0,0,0,.45);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;line-height:1}
 .p-lastname{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:21px;color:#0a0a0a;font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1;margin-top:2px}
-.p-info{font-size:8px;color:rgba(0,0,0,.38);margin-top:3px;letter-spacing:.3px;text-transform:uppercase}
+.p-info{font-size:8px;color:rgba(0,0,0,.45);margin-top:3px;letter-spacing:.3px;text-transform:uppercase}
 .p-club{display:flex;align-items:center;justify-content:space-between;margin-top:5px;border-top:1px solid rgba(0,0,0,.07);padding-top:4px}
-.p-club-name{font-size:8.5px;font-weight:900;color:rgba(0,0,0,.58);text-transform:uppercase;letter-spacing:.4px}
+.p-club-name{font-size:8.5px;font-weight:900;color:rgba(0,0,0,.70);text-transform:uppercase;letter-spacing:.4px}
 .p-panini{font-size:7.5px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;color:#fff;background:#cc0018;padding:1px 5px 2px;border-radius:2px;letter-spacing:.5px}
 .p-cong{font-size:7px;color:rgba(180,0,10,.8);letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:700}
 .pcard.sz-grande{width:208px}
@@ -180,6 +185,9 @@ footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,
 <div class="cards" id="featured-wrap"></div>
 <div class="subsec-label">— PRESIDENTES COMUNALES —</div>
 <div class="cards" id="comunal-wrap"></div>
+
+<div class="subsec-label">— CONGRESALES TITULARES PROVINCIALES —</div>
+<div class="cards" id="cong-wrap"></div>
 
 <!-- SUMATE -->
 <div style="text-align:center;padding:40px 16px 32px;max-width:700px;margin:0 auto">
@@ -336,10 +344,22 @@ const COMUNALES = [
 ];
 
 // ══ RENDER ═══════════════════════════════════════
+const CONGRESALES = [
+  {_id:"cong_ochat",  num:1, nombre:"Ochat Andrea Ivana",   cargo:"Congresala Titular", localidad:"Sunchales",    photo:FOTO.ochat, realJersey:true},
+  {_id:"cong_galli",  num:2, nombre:"Galli Funes Jose A.",  cargo:"Congresale Titular", localidad:"Sunchales",    photo:FOTO.jose},
+  {_id:"cong_perezS", num:3, nombre:"Perez Susana",         cargo:"Congresala Titular", localidad:"Frontera",     photo:null},
+  {_id:"cong_perezC", num:4, nombre:"Perez Carlos",         cargo:"Congresale Titular", localidad:"Frontera",     photo:null},
+  {_id:"cong_bazzoni",num:5, nombre:"Bazzoni Amadeo",       cargo:"Congresale Titular", localidad:"Maria Juana",  photo:null},
+  {_id:"cong_tabin",  num:6, nombre:"Tabin Duggo Juan P.",  cargo:"Congresale Titular", localidad:"Susana",       photo:null},
+  {_id:"cong_gallo",  num:7, nombre:"Gallo Veronica J.",    cargo:"Congresala Titular", localidad:"Zenon Pereyra",photo:null},
+  {_id:"cong_peter",  num:8, nombre:"Peter Luciana M.",     cargo:"Congresala Titular", localidad:"Col.Raquel",   photo:null},
+];
+
 document.getElementById('mesa-wrap').innerHTML    = MESA.map(p=>mkCard(p,'foil-oro',{noClick:true})).join('');
 document.getElementById('plantel-wrap').innerHTML  = PLANTEL.map(p=>mkCard(p,'foil-rojo',{})).join('');
 document.getElementById('featured-wrap').innerHTML = FEATURED_GOB.map(p=>mkCard(p,'foil-oro',{grande:true,noClick:true})).join('');
 document.getElementById('comunal-wrap').innerHTML  = COMUNALES.map(p=>mkCard(p,'foil-verde',{noClick:true})).join('');
+document.getElementById('cong-wrap').innerHTML     = CONGRESALES.map(p=>mkCard(p,'foil-azul',{noClick:true})).join('');
 
 // ══ MODAL ════════════════════════════════════════
 const IDX={};
