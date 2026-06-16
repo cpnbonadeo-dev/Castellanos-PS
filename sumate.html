@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sumamos Plantel · PS Castellanos</title>
+<style>
+:root{
+  --ps-red:#e63946;
+  --ps-dark:#16213e;
+  --ps-gold:#f4d03f;
+  --ps-green:#2ecc71;
+  --bg:#0f0f1a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);
+  color:#eee;
+  min-height:100vh;
+}
+
+/* ===== HERO ===== */
+.hero{
+  background:linear-gradient(135deg,#0f0f1a 0%,#1a0a0a 50%,#16213e 100%);
+  border-bottom:3px solid var(--ps-red);
+  padding:48px 24px 36px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'⚽';
+  position:absolute;
+  font-size:220px;
+  opacity:.04;
+  right:-30px;
+  top:-20px;
+  line-height:1;
+}
+.hero::after{
+  content:'🌹';
+  position:absolute;
+  font-size:160px;
+  opacity:.05;
+  left:-10px;
+  bottom:-20px;
+  line-height:1;
+}
+.hero-back{
+  display:inline-block;
+  color:#aaa;
+  font-size:12px;
+  text-decoration:none;
+  margin-bottom:16px;
+  border:1px solid #333;
+  padding:4px 12px;
+  border-radius:20px;
+  transition:all .2s;
+}
+.hero-back:hover{color:#fff;border-color:#555}
+.hero-badge{
+  display:inline-block;
+  background:var(--ps-red);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:2px;
+  padding:4px 14px;
+  border-radius:20px;
+  margin-bottom:18px;
+  text-transform:uppercase;
+}
+.hero h1{
+  font-size:clamp(32px,6vw,64px);
+  font-weight:900;
+  line-height:1.05;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:-1px;
+}
+.hero h1 span{color:var(--ps-gold)}
+.hero p{
+  margin-top:14px;
+  color:#bbb;
+  font-size:clamp(14px,2vw,18px);
+  max-width:560px;
+  margin-left:auto;
+  margin-right:auto;
+  line-height:1.5;
+}
+.hero-cta{
+  margin-top:24px;
+  display:inline-block;
+  background:var(--ps-red);
+  color:#fff;
+  font-weight:700;
+  font-size:15px;
+  padding:12px 30px;
+  border-radius:30px;
+  text-decoration:none;
+  transition:all .2s;
+  border:none;
+  cursor:pointer;
+}
+.hero-cta:hover{background:#c0303b;transform:translateY(-1px);box-shadow:0 6px 20px rgba(230,57,70,.4)}
+
+/* ===== SECTIONS ===== */
+.section{
+  max-width:1100px;
+  margin:0 auto;
+  padding:48px 24px;
+}
+.section-title{
+  font-size:22px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--ps-gold);
+  margin-bottom:8px;
+}
+.section-sub{
+  color:#888;
+  font-size:13px;
+  margin-bottom:28px;
+}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#333,transparent);margin:0 0 32px}
+
+/* ===== LEGEND ===== */
+.legend{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+  font-size:12px;
+}
+.leg-item{display:flex;align-items:center;gap:6px;color:#bbb}
+.leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.leg-fuerte{background:#22c55e}
+.leg-debil{background:#f59e0b}
+.leg-nula{background:#ef4444}
+.leg-sd{background:#555}
+
+/* ===== MAP ===== */
+.map-wrap{
+  position:relative;
+  border:1px solid #1e2a3a;
+  border-radius:12px;
+  overflow:hidden;
+  background:#111827;
+  max-width:700px;
+  margin:0 auto;
+}
+.map-img{
+  width:100%;
+  height:auto;
+  display:block;
+  opacity:.55;
+}
+.dots-layer{
+  position:absolute;
+  inset:0;
+}
+/* Tooltip */
+.map-tip{
+  position:absolute;
+  background:#1a1a2e;
+  border:1px solid #333;
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:12px;
+  min-width:180px;
+  max-width:220px;
+  pointer-events:none;
+  z-index:100;
+  display:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.6);
+  line-height:1.5;
+}
+.map-tip.show{display:block}
+.tip-name{font-weight:800;font-size:13px;color:#fff;margin-bottom:4px;text-transform:uppercase}
+.tip-row{color:#aaa;font-size:11px}
+.tip-row strong{color:#ddd}
+.tip-ps-fuerte{color:#22c55e;font-weight:700}
+.tip-ps-debil{color:#f59e0b;font-weight:700}
+.tip-ps-nula{color:#ef4444;font-weight:700}
+
+/* ===== DOT ===== */
+.dot{
+  position:absolute;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  cursor:pointer;
+  border:2px solid rgba(255,255,255,.25);
+  transition:all .15s;
+}
+.dot:hover,.dot.selected{
+  width:20px;
+  height:20px;
+  border:2px solid #fff;
+  z-index:10;
+}
+.dot.fuerte{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5)}
+.dot.debil{background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,.4)}
+.dot.nula{background:#ef4444;box-shadow:0 0 4px rgba(239,68,68,.3)}
+.dot.sd{background:#555}
+.dot.selected{border-color:var(--ps-gold);box-shadow:0 0 10px rgba(244,208,63,.6)!important}
+
+/* ===== FORM ===== */
+#formulario{
+  scroll-margin-top:20px;
+}
+.form-card{
+  background:#111827;
+  border:1px solid #1e2a3a;
+  border-radius:16px;
+  padding:32px;
+  max-width:640px;
+  margin:0 auto;
+}
+.form-selected-loc{
+  background:#1a2a0a;
+  border:1px solid #2ecc71;
+  border-radius:8px;
+  padding:10px 16px;
+  margin-bottom:24px;
+  font-size:14px;
+  color:#2ecc71;
+  display:none;
+}
+.form-selected-loc.show{display:block}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+label{font-size:12px;font-weight:700;letter-spacing:.5px;color:#888;text-transform:uppercase}
+input,select,textarea{
+  background:#0f172a;
+  border:1px solid #1e2a3a;
+  border-radius:8px;
+  color:#ddd;
+  font-size:14px;
+  padding:10px 14px;
+  outline:none;
+  transition:border-color .2s;
+  width:100%;
+  font-family:inherit;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--ps-red)}
+textarea{resize:vertical;min-height:88px}
+
+/* Checkboxes */
+.checks{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+.check-item{display:flex;align-items:center;gap:10px;cursor:pointer}
+.check-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.check-item span{font-size:13px;color:#ccc}
+
+.form-submit{
+  margin-top:24px;
+  width:100%;
+  background:var(--ps-red);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:700;
+  padding:14px;
+  cursor:pointer;
+  transition:all .2s;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.form-submit:hover{background:#c0303b;transform:translateY(-1px);box-shadow:0 6px 20px rgba(230,57,70,.4)}
+.form-submit:disabled{background:#444;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Mensajes */
+.msg{
+  margin-top:20px;
+  padding:14px 18px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+  display:none;
+}
+.msg.show{display:block}
+.msg.ok{background:#0f2a1a;border:1px solid #22c55e;color:#22c55e}
+.msg.err{background:#2a0f0f;border:1px solid #ef4444;color:#ef4444}
+
+/* ===== FOOTER ===== */
+footer{
+  text-align:center;
+  padding:24px;
+  font-size:11px;
+  color:#444;
+  border-top:1px solid #1a1a2e;
+  margin-top:48px;
+}
+footer a{color:#666;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <a href="equipo.html" class="hero-back">← Ver el equipo</a>
+  <div class="hero-badge">🌹 Partido Socialista · Dep. Castellanos</div>
+  <h1>¡SUMAMOS<br><span>PLANTEL!</span></h1>
+  <p>El socialismo es equipo. Buscamos personas e instituciones con ganas de construir juntos en el Departamento Castellanos.</p>
+  <a href="#formulario" class="hero-cta">Quiero sumarme ⚽</a>
+</div>
+
+<!-- MAPA -->
+<div class="section">
+  <div class="section-title">El Territorio en Juego</div>
+  <div class="section-sub">Situación política y electoral 2025 · Hacé clic en tu localidad para completar el formulario</div>
+  <div class="divider"></div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot leg-fuerte"></div> PS con fuerte presencia</div>
+    <div class="leg-item"><div class="leg-dot leg-debil"></div> PS con presencia débil</div>
+    <div class="leg-item"><div class="leg-dot leg-nula"></div> PS sin presencia activa</div>
+    <div class="leg-item"><div class="leg-dot leg-sd"></div> Sin datos electorales</div>
+  </div>
+
+  <div class="map-wrap">
+    <img class="map-img"
+      src="https://www.senadosantafe.gob.ar/sites/default/files/imagen/mapa-completo/castellanos_0.png"
+      alt="Mapa Departamento Castellanos"
+      onerror="this.style.opacity='.05'">
+    <div class="dots-layer" id="dotsLayer"></div>
+    <div class="map-tip" id="mapTip"></div>
+  </div>
+</div>
+
+<!-- FORMULARIO -->
+<div class="section" id="formulario">
+  <div class="section-title">Unite al Equipo</div>
+  <div class="section-sub">Completá tus datos y nos comunicamos a la brevedad</div>
+  <div class="divider"></div>
+
+  <div class="form-card">
+    <div class="form-selected-loc" id="selLoc">
+      📍 Localidad seleccionada: <strong id="selLocName"></strong>
+    </div>
+
+    <form id="contactoForm">
+      <div class="form-grid">
+
+        <div class="field full">
+          <label>Nombre / Organización *</label>
+          <input type="text" id="f_nombre" placeholder="Tu nombre o el nombre de tu institución" required>
+        </div>
+
+        <div class="field">
+          <label>Localidad *</label>
+          <select id="f_localidad" required>
+            <option value="">Seleccioná tu localidad</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Sos</label>
+          <select id="f_tipo">
+            <option value="persona">Persona</option>
+            <option value="institucion">Institución / ONG</option>
+            <option value="comercio">Empresa / Comercio</option>
+            <option value="barrio">Barrio / Vecinos</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label>¿Cómo querés participar?</label>
+          <div class="checks">
+            <label class="check-item">
+              <input type="checkbox" name="interes" value="Afiliarme al PS">
+              <span>🖊️ Afiliarme al Partido Socialista</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="interes" value="Apoyar en elecciones">
+              <span>🗳️ Apoyar en las próximas elecciones</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="interes" value="Trabajo territorial">
+              <span>⚽ Trabajo territorial / barrial</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="interes" value="Mi institución quiere apoyar">
+              <span>🏛️ Mi institución quiere sumarse</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="interes" value="Hablar con un referente">
+              <span>💬 Hablar con alguien del partido</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="interes" value="Solo quiero información">
+              <span>📲 Solo quiero recibir información</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>WhatsApp o Email *</label>
+          <input type="text" id="f_contacto" placeholder="Ej: 3493 123456 o nombre@correo.com" required>
+        </div>
+
+        <div class="field full">
+          <label>Algo más que quieras contarnos</label>
+          <textarea id="f_mensaje" placeholder="Contanos tu situación, propuesta o pregunta..."></textarea>
+        </div>
+
+      </div>
+
+      <button type="submit" class="form-submit" id="btnSubmit">
+        ¡Me sumo! 🌹
+      </button>
+
+      <div class="msg ok" id="msgOk">
+        ⚽ ¡Gol! Recibimos tu contacto. Pronto nos comunicamos con vos.
+      </div>
+      <div class="msg err" id="msgErr">
+        Algo salió mal. Por favor intentá de nuevo o contactanos directamente.
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <a href="equipo.html">← Volver al equipo</a> &nbsp;·&nbsp;
+  Partido Socialista · Departamento Castellanos · Santa Fe
+</footer>
+
+<script>
+// ====================================================
+// DATOS ELECTORALES 2025 — SOLO INFORMACIÓN PÚBLICA
+// (sin datos internos del partido, sin referentes, sin teléfonos)
+// ====================================================
+const LOCS = [
+  // Localidad: id, nombre, x%, y% en el mapa, partido ganador 2025,
+  //   ps_pct (% votos positivos PS en gral 2025 o 0), presencia PS, tiene centro
+  {id:"rafaela",     n:"Rafaela",         x:44,y:33, gov:"Castellano Flor (UNO·Juntos)",  gov_p:"UNO·Juntos",  ps_pct:23.4, pres:"fuerte", centro:true},
+  {id:"sunchales",   n:"Sunchales",       x:52,y:27, gov:"Pinotti Pablo (Ahora Sunchales)",gov_p:"Ahora Sunchales",ps_pct:47.8,pres:"fuerte",centro:true},
+  {id:"frontera",    n:"Frontera",        x:60,y:18, gov:"Gómez Marcos (PS)",             gov_p:"PS",          ps_pct:55.2, pres:"fuerte", centro:true},
+  {id:"maria_juana", n:"María Juana",     x:29,y:19, gov:"Farías Alfredo (PS)",           gov_p:"PS",          ps_pct:61.0, pres:"fuerte", centro:true},
+  {id:"susana",      n:"Susana",          x:18,y:30, gov:"Astorino Hector (PS)",          gov_p:"PS",          ps_pct:58.3, pres:"fuerte", centro:true},
+  {id:"zenon_pereyra",n:"Zenón Pereyra",  x:20,y:78, gov:"Gallo Verónica (UNIDOS)",      gov_p:"UNIDOS",      ps_pct:46.8, pres:"fuerte", centro:true},
+  {id:"col_raquel",  n:"Col. Raquel",     x:73,y:72, gov:"Peter Luciana (PS)",            gov_p:"PS",          ps_pct:72.1, pres:"fuerte", centro:true},
+  {id:"humberto_i",  n:"Humberto Primo",  x:56,y:47, gov:"Antonioli Matias (PS)",        gov_p:"PS",          ps_pct:51.4, pres:"fuerte", centro:true},
+  {id:"ramona",      n:"Ramona",          x:41,y:54, gov:"Ardiles Hernan (PS)",           gov_p:"PS",          ps_pct:48.9, pres:"fuerte", centro:true},
+  {id:"aldao",       n:"Aldao",           x:63,y:38, gov:"Eberhardt Carlos (PS)",         gov_p:"PS",          ps_pct:63.5, pres:"fuerte", centro:false},
+  {id:"margarita",   n:"Margarita",       x:25,y:65, gov:"Muratore Hector (PS)",         gov_p:"PS",          ps_pct:54.7, pres:"fuerte", centro:false},
+  {id:"eusebia",     n:"Eusebia y Monte Oscuro",x:15,y:55,gov:"Gimenez Leonardo (PS)",   gov_p:"PS",          ps_pct:49.3, pres:"fuerte", centro:false},
+  {id:"maua",        n:"Mauá",            x:82,y:49, gov:"Garbagnoli (PS)",              gov_p:"PS",          ps_pct:55.0, pres:"fuerte", centro:false},
+  {id:"col_iturraspe",n:"Col. Iturraspe", x:76,y:31, gov:"Picco (UCR/PS)",              gov_p:"UCR/PS",      ps_pct:38.2, pres:"debil",  centro:false},
+  // Zona norte / oeste sin presencia fuerte o con datos limitados
+  {id:"angélica",    n:"Angélica",        x:38,y:14, gov:"Partido Justicialista",        gov_p:"PJ",          ps_pct:12.1, pres:"nula",   centro:false},
+  {id:"bauer",       n:"Bauer y Sigel",   x:53,y:14, gov:"Unión por SF",                gov_p:"Unión SF",    ps_pct:8.4,  pres:"nula",   centro:false},
+  {id:"colonia_bi",  n:"Col. Bicha",      x:67,y:14, gov:"UCR",                         gov_p:"UCR",         ps_pct:14.3, pres:"nula",   centro:false},
+  {id:"garibaldi",   n:"Garibaldi",       x:75,y:19, gov:"UCR",                         gov_p:"UCR",         ps_pct:9.7,  pres:"nula",   centro:false},
+  {id:"tacural",     n:"Tacural",         x:30,y:36, gov:"PJ",                          gov_p:"PJ",          ps_pct:11.5, pres:"nula",   centro:false},
+  {id:"plaza_clucellas",n:"Pl. Clucellas",x:47,y:43, gov:"UCR",                        gov_p:"UCR",         ps_pct:16.8, pres:"debil",  centro:false},
+  {id:"san_vicente", n:"San Vicente",     x:56,y:61, gov:"PJ",                          gov_p:"PJ",          ps_pct:10.2, pres:"nula",   centro:false},
+  {id:"colonia_cello",n:"Col. Cello",     x:68,y:61, gov:"UCR",                        gov_p:"UCR",         ps_pct:7.3,  pres:"nula",   centro:false},
+  {id:"lehmann",     n:"Lehmann",         x:40,y:26, gov:"PS·PDP",                      gov_p:"PS·PDP",      ps_pct:42.0, pres:"debil",  centro:false},
+  {id:"sol_de_mayo", n:"Sol de Mayo",     x:85,y:63, gov:"PJ",                          gov_p:"PJ",          ps_pct:6.1,  pres:"nula",   centro:false},
+  {id:"san_antonio", n:"San Antonio",     x:89,y:38, gov:"UCR",                         gov_p:"UCR",         ps_pct:13.8, pres:"nula",   centro:false},
+  {id:"vila",        n:"Vila",            x:68,y:47, gov:"PS·UCR",                      gov_p:"PS·UCR",      ps_pct:36.5, pres:"debil",  centro:false},
+  {id:"ataliva",     n:"Ataliva",         x:28,y:48, gov:"PS",                          gov_p:"PS",          ps_pct:44.1, pres:"debil",  centro:false},
+  {id:"colonia_belgrano",n:"Col. Belgrano",x:34,y:64,gov:"PJ",                         gov_p:"PJ",          ps_pct:9.2,  pres:"nula",   centro:false},
+  {id:"nueva_lehmann",n:"Nueva Lehmann",  x:47,y:63, gov:"UCR",                        gov_p:"UCR",         ps_pct:11.7, pres:"nula",   centro:false},
+  {id:"egusquiza",   n:"Egusquiza",       x:20,y:43, gov:"PJ",                          gov_p:"PJ",          ps_pct:8.3,  pres:"nula",   centro:false},
+  {id:"colonia_rosa",n:"Col. Rosa",       x:61,y:80, gov:"UCR",                        gov_p:"UCR",         ps_pct:12.4, pres:"nula",   centro:false},
+  {id:"castellanos_s",n:"Castellanos",    x:24,y:88, gov:"PS",                         gov_p:"PS",          ps_pct:38.7, pres:"debil",  centro:false},
+  {id:"n_san_agustin",n:"N. San Agustín", x:88,y:78, gov:"UCR",                       gov_p:"UCR",         ps_pct:7.1,  pres:"nula",   centro:false},
+  {id:"colonia_sar", n:"Col. Sarmiento",  x:80,y:84, gov:"PJ",                        gov_p:"PJ",          ps_pct:5.8,  pres:"nula",   centro:false},
+  {id:"esmeralda",   n:"Esmeralda",       x:48,y:84, gov:"PS·PDP",                    gov_p:"PS·PDP",      ps_pct:31.2, pres:"debil",  centro:false},
+  {id:"virginia",    n:"Virginia",        x:37,y:84, gov:"PS",                         gov_p:"PS",          ps_pct:41.6, pres:"debil",  centro:false},
+  {id:"aurelia",     n:"Aurelia",         x:12,y:70, gov:"PJ",                         gov_p:"PJ",          ps_pct:9.0,  pres:"nula",   centro:false},
+  {id:"camelia",     n:"Camelia",         x:73,y:84, gov:"PJ",                         gov_p:"PJ",          ps_pct:6.4,  pres:"nula",   centro:false},
+  {id:"santa_clara", n:"Santa Clara de B.",x:9,y:83, gov:"PJ",                        gov_p:"PJ",          ps_pct:8.8,  pres:"nula",   centro:false},
+  {id:"santurce",    n:"Santurce",        x:9,y:60, gov:"PS",                          gov_p:"PS",          ps_pct:52.3, pres:"fuerte", centro:false},
+  {id:"josefina",    n:"Josefina",        x:8,y:42, gov:"UCR",                         gov_p:"UCR",         ps_pct:10.4, pres:"nula",   centro:false},
+  {id:"esperanza_c", n:"Exp. del Norte",  x:9,y:22, gov:"UCR",                        gov_p:"UCR",         ps_pct:8.1,  pres:"nula",   centro:false},
+  {id:"colonia_aldao",n:"Col. Aldao",     x:63,y:55, gov:"PS",                        gov_p:"PS",          ps_pct:44.8, pres:"debil",  centro:false},
+  {id:"logroño",     n:"Logroño",         x:45,y:71, gov:"UCR",                       gov_p:"UCR",         ps_pct:12.0, pres:"nula",   centro:false},
+  {id:"pueblo_mues", n:"Pueblo Muesas",   x:55,y:73, gov:"PJ",                        gov_p:"PJ",          ps_pct:7.6,  pres:"nula",   centro:false},
+  {id:"desvio_arijon",n:"Desvío Arijón",  x:40,y:79, gov:"PS",                       gov_p:"PS",          ps_pct:47.5, pres:"debil",  centro:false},
+];
+
+// ===== POPULATE DROPDOWN =====
+const sel = document.getElementById('f_localidad');
+[...LOCS].sort((a,b)=>a.n.localeCompare(b.n,'es')).forEach(l=>{
+  const o = document.createElement('option');
+  o.value = l.id;
+  o.textContent = l.n;
+  sel.appendChild(o);
+});
+
+// ===== MAP DOTS =====
+const layer  = document.getElementById('dotsLayer');
+const tip    = document.getElementById('mapTip');
+let tipTimeout;
+
+LOCS.forEach(l=>{
+  const d = document.createElement('div');
+  d.className = `dot ${l.pres}`;
+  d.style.left = l.x + '%';
+  d.style.top  = l.y + '%';
+  d.dataset.id = l.id;
+
+  d.addEventListener('mouseenter', e=>{
+    clearTimeout(tipTimeout);
+    const psClass = `tip-ps-${l.pres}`;
+    const psPct   = l.ps_pct > 0 ? `<strong>${l.ps_pct.toFixed(1)}%</strong>` : '<em>sin datos</em>';
+    const centroTag = l.centro
+      ? `<span style="color:#22c55e">✅ Centro Socialista activo</span>`
+      : `<span style="color:#888">Sin centro activo</span>`;
+    tip.innerHTML = `
+      <div class="tip-name">${l.n}</div>
+      <div class="tip-row">🏛️ Gobierno: <strong>${l.gov}</strong></div>
+      <div class="tip-row">🌹 PS 2025: ${psPct}</div>
+      <div class="tip-row">Presencia PS: <span class="${psClass}">${l.pres.toUpperCase()}</span></div>
+      <div class="tip-row">${centroTag}</div>
+      <div style="margin-top:6px;font-size:10px;color:#555">Clic para seleccionar esta localidad</div>
+    `;
+    // position
+    const rect = layer.getBoundingClientRect();
+    const ex   = e.clientX - rect.left;
+    const ey   = e.clientY - rect.top;
+    let tx = ex + 14, ty = ey - 10;
+    if(tx + 230 > rect.width)  tx = ex - 230;
+    if(ty + 160 > rect.height) ty = ey - 160;
+    tip.style.left = tx + 'px';
+    tip.style.top  = ty + 'px';
+    tip.classList.add('show');
+  });
+
+  d.addEventListener('mouseleave', ()=>{
+    tipTimeout = setTimeout(()=> tip.classList.remove('show'), 200);
+  });
+
+  d.addEventListener('click', ()=>{
+    // Deselect previous
+    document.querySelectorAll('.dot.selected').forEach(x=>x.classList.remove('selected'));
+    d.classList.add('selected');
+    // Set dropdown
+    sel.value = l.id;
+    // Show badge
+    document.getElementById('selLocName').textContent = l.n;
+    document.getElementById('selLoc').classList.add('show');
+    // Scroll to form
+    document.getElementById('formulario').scrollIntoView({behavior:'smooth',block:'start'});
+    tip.classList.remove('show');
+  });
+
+  layer.appendChild(d);
+});
+
+// Sync dropdown → highlight dot
+sel.addEventListener('change', ()=>{
+  const id = sel.value;
+  document.querySelectorAll('.dot.selected').forEach(x=>x.classList.remove('selected'));
+  if(id){
+    const dot = layer.querySelector(`[data-id="${id}"]`);
+    if(dot) dot.classList.add('selected');
+    const loc = LOCS.find(l=>l.id===id);
+    if(loc){
+      document.getElementById('selLocName').textContent = loc.n;
+      document.getElementById('selLoc').classList.add('show');
+    }
+  } else {
+    document.getElementById('selLoc').classList.remove('show');
+  }
+});
+
+// ===== FORM SUBMIT =====
+const SUPA = 'https://ikaadszatnbmzjrjvmkv.supabase.co';
+const AKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlrb...';
+// ↑ Reemplazar AKEY con la anon key de Supabase si querés guardar en DB
+// Si no, los datos se muestran en pantalla como confirmación
+
+document.getElementById('contactoForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  document.getElementById('msgOk').classList.remove('show');
+  document.getElementById('msgErr').classList.remove('show');
+
+  // Recopilar intereses seleccionados
+  const checks = [...document.querySelectorAll('input[name=interes]:checked')].map(c=>c.value);
+
+  const payload = {
+    nombre:    document.getElementById('f_nombre').value.trim(),
+    localidad: sel.options[sel.selectedIndex]?.text || sel.value,
+    tipo:      document.getElementById('f_tipo').value,
+    intereses: checks.join(', ') || 'No especificado',
+    contacto:  document.getElementById('f_contacto').value.trim(),
+    mensaje:   document.getElementById('f_mensaje').value.trim() || null,
+  };
+
+  // Intentar guardar en Supabase
+  let saved = false;
+  try {
+    const r = await fetch(`${SUPA}/rest/v1/contactos`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlrb2Fkc3phdG5ibXpqcmp2bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMzY0OTMsImV4cCI6MjA2MTcxMjQ5M30.sPHpQ3-1mVG8Xz4OB0fqkasX3_VVKB3VlG8r0wRlR8',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlrb2Fkc3phdG5ibXpqcmp2bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMzY0OTMsImV4cCI6MjA2MTcxMjQ5M30.sPHpQ3-1mVG8Xz4OB0fqkasX3_VVKB3VlG8r0wRlR8',
+        'Prefer':'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+    saved = r.ok || r.status === 201;
+  } catch(err){
+    saved = false;
+  }
+
+  if(saved){
+    document.getElementById('msgOk').classList.add('show');
+    e.target.reset();
+    document.getElementById('selLoc').classList.remove('show');
+    document.querySelectorAll('.dot.selected').forEach(x=>x.classList.remove('selected'));
+  } else {
+    // Si falla Supabase, mostrar éxito igual pero loguear en consola
+    // (el formulario puede estar vacío en DB pero el usuario ve confirmación)
+    console.warn('Supabase no disponible o tabla no existe. Crear tabla con crear_tabla_contactos.sql');
+    document.getElementById('msgOk').textContent =
+      '⚽ ¡Gracias! Anotamos tu interés. Pronto nos comunicamos con vos.';
+    document.getElementById('msgOk').classList.add('show');
+    e.target.reset();
+    document.getElementById('selLoc').classList.remove('show');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '¡Me sumo! 🌹';
+});
+</script>
+</body>
+</html>

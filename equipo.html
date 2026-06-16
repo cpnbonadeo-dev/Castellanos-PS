@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Castellanos · Figuritas 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Barlow Condensed',Arial,sans-serif;
+  background:#0a1a0a;
+  background-image:repeating-linear-gradient(0deg,transparent 0,transparent 90px,rgba(0,0,0,0.12) 90px,rgba(0,0,0,0.12) 180px);
+  min-height:100vh;color:#fff;overflow-x:hidden;
+}
+
+/* ── TICKER ───────────────────────────────── */
+.ticker{background:#b50010;padding:5px 0;overflow:hidden}
+.ticker-inner{display:inline-block;white-space:nowrap;animation:scroll 55s linear infinite;font-size:11px;letter-spacing:2px;font-weight:700;color:#fff}
+@keyframes scroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* ── BANNER ───────────────────────────────── */
+.banner{
+  background:linear-gradient(135deg,#7a0010 0%,#b0001a 50%,#7a0010 100%);
+  text-align:center;padding:20px 16px 18px;
+  border-bottom:5px solid #f0c040;position:relative;overflow:hidden;
+}
+.banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent 0,transparent 18px,rgba(255,255,255,0.04) 18px,rgba(255,255,255,0.04) 19px)}
+.b-logo{font-size:46px;line-height:1;position:relative;display:block}
+.b-title{font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:clamp(36px,9vw,80px);letter-spacing:6px;color:#f0c040;text-shadow:4px 4px 0 rgba(0,0,0,0.4);line-height:.92;position:relative}
+.b-sub{font-size:clamp(9px,2vw,12px);letter-spacing:7px;color:rgba(255,255,255,0.65);text-transform:uppercase;margin:7px 0 10px;position:relative}
+.b-chips{display:flex;gap:10px;justify-content:center;position:relative;flex-wrap:wrap}
+.chip{background:#f0c040;color:#6a000f;font-size:10px;font-weight:900;letter-spacing:2px;padding:4px 14px;border-radius:20px;text-transform:uppercase}
+
+/* ── SECTION ──────────────────────────────── */
+.sec{text-align:center;padding:28px 16px 0;max-width:1200px;margin:0 auto}
+.sec h2{font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:28px;letter-spacing:5px;color:#f0c040}
+.sec p{font-size:10px;color:rgba(255,255,255,0.32);letter-spacing:4px;text-transform:uppercase;margin-top:2px}
+.sec-line{width:55px;height:3px;background:#f0c040;margin:8px auto 22px;border-radius:2px}
+.subsec-label{text-align:center;font-size:10px;letter-spacing:4px;color:rgba(255,255,255,0.25);text-transform:uppercase;margin:16px 0 14px;padding-top:12px}
+.field-line{height:1px;margin:10px auto;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);max-width:700px}
+.field-arc{width:90px;height:45px;border:1px solid rgba(255,255,255,0.07);border-radius:0 0 90px 90px;margin:0 auto;border-top:none}
+
+/* ── CARDS GRID ───────────────────────────── */
+.cards{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:0 16px 8px;max-width:1200px;margin:0 auto}
+
+/* ══════════════════════════════════════════════
+   PANINI CARD
+══════════════════════════════════════════════ */
+.pcard{
+  width:185px;
+  border-radius:10px;
+  position:relative;overflow:hidden;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,0,0,0.6),0 0 0 2px rgba(240,192,64,0.3);
+  transition:transform .2s ease,box-shadow .2s ease;
+  user-select:none;
+}
+.pcard:hover{transform:translateY(-12px) scale(1.04) rotate(-1deg);box-shadow:0 24px 50px rgba(0,0,0,0.7),0 0 0 3px #f0c040;z-index:50}
+
+/* FOIL BACKGROUNDS */
+.foil-oro{
+  background:
+    radial-gradient(ellipse at 20% 25%,rgba(255,240,130,0.9) 0%,transparent 40%),
+    radial-gradient(ellipse at 75% 60%,rgba(255,225,80,0.7) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 85%,rgba(200,150,10,0.8) 0%,transparent 40%),
+    linear-gradient(125deg,#8b6208 0%,#d4a017 15%,#f5d94e 30%,#b8860b 50%,#f0c040 65%,#8b6208 80%,#e8c040 100%);
+}
+.foil-rojo{
+  background:
+    radial-gradient(ellipse at 20% 25%,rgba(255,180,180,0.5) 0%,transparent 40%),
+    radial-gradient(ellipse at 75% 60%,rgba(255,100,100,0.3) 0%,transparent 40%),
+    linear-gradient(125deg,#5a0008 0%,#8b0010 20%,#c0001a 40%,#8b0010 60%,#c0001a 80%,#5a0008 100%);
+}
+.foil-verde{
+  background:
+    radial-gradient(ellipse at 25% 20%,rgba(120,255,150,0.4) 0%,transparent 40%),
+    radial-gradient(ellipse at 70% 70%,rgba(60,180,80,0.3) 0%,transparent 40%),
+    linear-gradient(125deg,#0a3a0a 0%,#155a15 25%,#228022 45%,#155a15 65%,#228022 85%,#0a3a0a 100%);
+}
+
+/* Texture overlay on all cards */
+.pcard::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    repeating-linear-gradient(-45deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 5px),
+    repeating-linear-gradient(45deg,rgba(0,0,0,0.04) 0,rgba(0,0,0,0.04) 1px,transparent 1px,transparent 7px);
+}
+
+/* BIG JERSEY NUMBER in background */
+.p-num{
+  position:absolute;bottom:-10px;left:-8px;
+  font-family:'Bebas Neue',Impact,Arial,sans-serif;
+  font-size:120px;line-height:1;
+  color:rgba(255,255,255,0.12);
+  z-index:2;pointer-events:none;
+  letter-spacing:-5px;
+}
+.foil-oro .p-num{color:rgba(140,100,0,0.25)}
+
+/* PS BADGE top-right */
+.p-badge{
+  position:absolute;top:8px;right:8px;
+  width:36px;height:36px;
+  background:radial-gradient(circle,#f5e070 0%,#c8960c 60%,#8b6208 100%);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid rgba(255,240,100,0.6);
+  z-index:10;
+  box-shadow:0 2px 6px rgba(0,0,0,0.4);
+}
+.p-badge svg{width:22px;height:22px}
+.foil-rojo .p-badge{background:radial-gradient(circle,#f5e070 0%,#c8960c 60%,#8b6208 100%)}
+.foil-verde .p-badge{background:radial-gradient(circle,#f5e070 0%,#c8960c 60%,#8b6208 100%)}
+
+/* PHOTO AREA */
+.p-photo-wrap{
+  position:relative;z-index:5;
+  width:100%;height:165px;
+  overflow:hidden;
+}
+.p-photo-wrap img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  display:block;
+}
+.p-photo-wrap .p-sil{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ARGENTINA JERSEY drawn below face */
+.p-jersey{
+  position:relative;z-index:5;
+  height:64px;
+  overflow:hidden;
+}
+.p-jersey::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    90deg,
+    #6babdb 0px,#6babdb 9px,
+    #ffffff 9px,#ffffff 18px
+  );
+}
+/* Collar */
+.p-jersey::after{
+  content:'';position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:28px;height:14px;
+  border-radius:0 0 14px 14px;
+  background:#6babdb;
+  border:2px solid rgba(255,255,255,0.6);
+  border-top:none;
+}
+/* PS badge on jersey (chest, left side) */
+.p-jersey-badge{
+  position:absolute;top:10px;left:33%;
+  width:22px;height:22px;
+  background:radial-gradient(circle,#f5e070,#c8960c);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  z-index:6;
+  border:1px solid rgba(200,150,0,0.8);
+  font-size:11px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.5);
+}
+/* Adidas stripes on right shoulder */
+.p-jersey-stripes{
+  position:absolute;top:0;right:16px;
+  display:flex;gap:3px;height:50px;
+}
+.p-jersey-stripes span{
+  display:block;width:3px;height:50px;
+  background:rgba(0,0,0,0.18);
+  border-radius:1px;
+}
+
+/* FLAG CIRCLE */
+.p-flag{
+  position:absolute;bottom:72px;right:8px;
+  width:28px;height:28px;border-radius:50%;
+  overflow:hidden;border:2px solid rgba(255,255,255,0.5);
+  z-index:20;
+  box-shadow:0 2px 6px rgba(0,0,0,0.5);
+}
+.p-flag svg,.p-flag img{width:100%;height:100%;object-fit:cover}
+
+/* NAME BAND */
+.p-name-band{
+  position:relative;z-index:10;
+  background:rgba(0,40,80,0.95);
+  padding:7px 8px 8px;
+  border-top:2px solid rgba(255,255,255,0.15);
+}
+.foil-rojo .p-name-band{background:rgba(60,0,10,0.95)}
+.foil-verde .p-name-band{background:rgba(0,35,0,0.95)}
+
+.p-firstname{font-size:11px;color:rgba(255,255,255,0.75);font-weight:700;text-transform:uppercase;letter-spacing:1px;line-height:1}
+.p-lastname{font-size:17px;color:#ffffff;font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1;margin-top:1px}
+.p-info{font-size:9px;color:rgba(255,255,255,0.55);margin-top:3px;letter-spacing:.5px;text-transform:uppercase}
+.p-club{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:5px;
+  background:rgba(255,255,255,0.08);
+  border-radius:4px;padding:3px 6px;
+}
+.p-club-name{font-size:10px;font-weight:900;color:#f0c040;text-transform:uppercase;letter-spacing:.5px}
+.p-panini{font-size:7px;color:rgba(255,255,255,0.3);letter-spacing:1px}
+
+/* SIZES */
+.pcard.sz-grande{width:210px}
+.pcard.sz-grande .p-photo-wrap{height:188px}
+.pcard.sz-grande .p-jersey{height:72px}
+.pcard.sz-grande .p-lastname{font-size:20px}
+
+/* No-click (gobierno/mesa sin modal) */
+.pcard.no-click{cursor:default}
+
+/* ── MODAL ────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:linear-gradient(168deg,#1a1f3e,#080c1e);border-radius:16px;border:2px solid #f0c040;width:100%;max-width:440px;max-height:82vh;overflow-y:auto;padding:22px;position:relative}
+.modal-close{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,0.5);font-size:22px;cursor:pointer;line-height:1}
+.modal-close:hover{color:#fff}
+.modal h3{font-family:'Bebas Neue',Arial,sans-serif;font-size:22px;letter-spacing:3px;color:#f0c040;margin-bottom:2px}
+.modal .m-sub{font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-bottom:14px}
+.m-section{margin-top:12px}
+.m-section h4{font-size:8px;font-weight:900;letter-spacing:3px;color:#f0c040;text-transform:uppercase;border-bottom:1px solid rgba(240,192,64,0.2);padding-bottom:3px;margin-bottom:7px}
+.m-person{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.m-person:last-child{border-bottom:none}
+.m-dot{width:6px;height:6px;border-radius:50%;background:#e63946;flex-shrink:0}
+.m-dot.cong{background:#f0c040}
+.m-dot.sec{background:#4caf50;width:8px;height:8px}
+.m-pname{font-size:12px;color:rgba(255,255,255,0.85)}
+.m-prole{font-size:8px;color:rgba(255,255,255,0.35);margin-left:auto;flex-shrink:0}
+.m-pending{font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;padding:6px 0}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-track{background:rgba(255,255,255,0.05)}
+.modal::-webkit-scrollbar-thumb{background:rgba(240,192,64,0.3);border-radius:2px}
+
+/* ── FOOTER ───────────────────────────────── */
+footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:3px;text-transform:uppercase;border-top:1px solid rgba(255,255,255,0.05);margin-top:20px}
+</style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-inner">
+&nbsp;&nbsp;🌹 PS CASTELLANOS 2026 &nbsp;·&nbsp; MESA DEPARTAMENTAL ELECTA 7/6/2026 &nbsp;·&nbsp; ANDREA OCHAT — COORDINACIÓN GENERAL &nbsp;·&nbsp; OMAR MARTINEZ — COORDINACIÓN ADJUNTA &nbsp;·&nbsp; LUCIANA PETER — VOCAL &nbsp;·&nbsp; GISEL MAHMUD — DIPUTADA PROVINCIAL &nbsp;·&nbsp; 6 LOCALIDADES GOBERNADAS POR EL PS &nbsp;·&nbsp; EL SOCIALISMO ES EQUIPO &nbsp;·&nbsp;🌹 PS CASTELLANOS 2026 &nbsp;·&nbsp; MESA DEPARTAMENTAL ELECTA 7/6/2026 &nbsp;·&nbsp; ANDREA OCHAT — COORDINACIÓN GENERAL &nbsp;·&nbsp; OMAR MARTINEZ — COORDINACIÓN ADJUNTA &nbsp;·&nbsp; LUCIANA PETER — VOCAL &nbsp;·&nbsp; GISEL MAHMUD — DIPUTADA PROVINCIAL &nbsp;·&nbsp; EL SOCIALISMO ES EQUIPO &nbsp;·&nbsp;
+  </div>
+</div>
+
+<div class="banner">
+  <span class="b-logo">🌹</span>
+  <div class="b-title">PS CASTELLANOS</div>
+  <div class="b-sub">Partido Socialista &nbsp;·&nbsp; Departamento Castellanos &nbsp;·&nbsp; Santa Fe</div>
+  <div class="b-chips">
+    <span class="chip">⚽ FIGURITAS 2026</span>
+    <span class="chip">🏆 ÁLBUM OFICIAL</span>
+    <span class="chip">🌹 EL SOCIALISMO ES EQUIPO</span>
+  </div>
+</div>
+
+<!-- CUERPO TÉCNICO -->
+<div class="sec">
+  <h2>Cuerpo Técnico</h2>
+  <p>Mesa Departamental Castellanos &nbsp;·&nbsp; Electa 7 Jun 2026</p>
+  <div class="sec-line"></div>
+</div>
+<div class="cards" id="mesa-wrap"></div>
+
+<div class="field-line"></div>
+<div class="field-arc"></div>
+<div class="field-line"></div>
+
+<!-- PLANTEL -->
+<div class="sec">
+  <h2>El Plantel</h2>
+  <p>Centros Socialistas &nbsp;·&nbsp; Toca la figurita para ver la comisión completa</p>
+  <div class="sec-line"></div>
+</div>
+<div class="cards" id="plantel-wrap"></div>
+
+<div class="field-line"></div>
+<div class="field-arc"></div>
+<div class="field-line"></div>
+
+<!-- DONDE GOBERNAMOS -->
+<div class="sec">
+  <h2>Donde Gobernamos</h2>
+  <p>Representación PS en el territorio &nbsp;·&nbsp; Departamento Castellanos</p>
+  <div class="sec-line"></div>
+</div>
+<div class="subsec-label">— REPRESENTACIÓN LEGISLATIVA Y EJECUTIVA —</div>
+<div class="cards" id="featured-wrap"></div>
+<div class="subsec-label">— PRESIDENTES COMUNALES —</div>
+<div class="cards" id="comunal-wrap"></div>
+
+<!-- RECLUTAMIENTO -->
+<div style="text-align:center;padding:40px 16px 32px;max-width:700px;margin:0 auto">
+  <div style="background:linear-gradient(135deg,#6a000f,#9a0015);border:2px solid #f0c040;border-radius:16px;padding:32px 24px">
+    <div style="font-size:36px;margin-bottom:10px">⚽</div>
+    <div style="font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:32px;letter-spacing:4px;color:#f0c040;margin-bottom:8px">¡SUMAMOS PLANTEL!</div>
+    <p style="font-size:14px;color:rgba(255,255,255,0.75);margin-bottom:22px;line-height:1.5">Salimos a buscar nuevos jugadores. Si querés ser parte de este proyecto o tu institución quiere sumarse, te queremos escuchar.</p>
+    <a href="sumate.html" style="display:inline-block;background:#f0c040;color:#6a000f;font-weight:900;font-size:14px;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:30px;text-decoration:none;transition:all .2s" onmouseover="this.style.background='#ffe066'" onmouseout="this.style.background='#f0c040'">
+      Quiero sumarme →
+    </a>
+  </div>
+</div>
+
+<footer>⚽ 🌹 ⚽ &nbsp;&nbsp; PARTIDO SOCIALISTA · DEPARTAMENTO CASTELLANOS · SANTA FE · ARGENTINA · ÁLBUM 2026</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="m-title"></h3>
+    <div class="m-sub" id="m-sub"></div>
+    <div id="m-body"></div>
+  </div>
+</div>
+
+<script>
+// ── PS ROSE SVG (gold) ────────────────────────────────────────
+const PS_BADGE_SVG = `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="20" r="19" fill="none"/>
+  <!-- Simplified PS rose+fist in gold -->
+  <g transform="translate(5,2) scale(0.75)">
+    <!-- Fist base -->
+    <rect x="8" y="28" width="24" height="7" rx="2" fill="#8b6208"/>
+    <rect x="10" y="22" width="20" height="8" rx="2" fill="#a07010"/>
+    <!-- Fingers -->
+    <rect x="10" y="14" width="5" height="10" rx="2" fill="#a07010"/>
+    <rect x="16" y="12" width="5" height="12" rx="2" fill="#a07010"/>
+    <rect x="22" y="13" width="5" height="11" rx="2" fill="#a07010"/>
+    <rect x="28" y="15" width="4" height="9" rx="2" fill="#a07010"/>
+    <!-- Stem -->
+    <rect x="18" y="2" width="3" height="14" fill="#6b8c20"/>
+    <!-- Rose petals simplified -->
+    <ellipse cx="19.5" cy="5" rx="5" ry="4" fill="#c8960c"/>
+    <ellipse cx="15" cy="8" rx="3.5" ry="3" fill="#d4a020" transform="rotate(-30,15,8)"/>
+    <ellipse cx="24" cy="8" rx="3.5" ry="3" fill="#d4a020" transform="rotate(30,24,8)"/>
+    <ellipse cx="19.5" cy="3" rx="3" ry="2.5" fill="#f0c040"/>
+  </g>
+</svg>`;
+
+// ── ARGENTINA FLAG SVG ────────────────────────────────────────
+const ARG_FLAG = `<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
+  <rect width="30" height="6.7" fill="#74acdf"/>
+  <rect y="6.7" width="30" height="6.6" fill="#ffffff"/>
+  <rect y="13.3" width="30" height="6.7" fill="#74acdf"/>
+  <circle cx="15" cy="10" r="2.5" fill="#f6b40e"/>
+</svg>`;
+
+// ── SILHOUETTE ────────────────────────────────────────────────
+function sil(){
+  return `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" fill="none" width="100%" height="100%">
+    <ellipse cx="60" cy="38" rx="24" ry="26" fill="rgba(255,255,255,0.22)"/>
+    <path d="M20 85 C26 68 40 62 52 67 L60 64 L68 67 C80 62 94 68 100 85 L105 145 L15 145 Z" fill="rgba(255,255,255,0.15)"/>
+    <path d="M20 85 L5 105 L22 110 L24 88" fill="rgba(255,255,255,0.12)"/>
+    <path d="M100 85 L115 105 L98 110 L96 88" fill="rgba(255,255,255,0.12)"/>
+  </svg>`;
+}
+
+// ── CARD BUILDER ──────────────────────────────────────────────
+function mkCard(p, foil, opts){
+  opts = opts || {};
+  const sz = opts.grande ? 'sz-grande' : '';
+  const noClick = opts.noClick ? 'no-click' : '';
+  const clickAttr = opts.noClick ? '' : `onclick="openModal('${p._id}')"`;
+  const photoHtml = p.photo
+    ? `<img src="${p.photo}" alt="${p.nombre}">`
+    : `<div class="p-sil">${sil()}</div>`;
+
+  // Split name into first/last
+  const parts = p.nombre.split(' ');
+  const last = parts.slice(0,-1).join(' ') || parts[0];
+  const first = parts.length > 1 ? parts[parts.length-1] : '';
+
+  return `<div class="pcard ${foil} ${sz} ${noClick}" ${clickAttr}>
+    <div class="p-num">${p.num||''}</div>
+    <div class="p-badge">${PS_BADGE_SVG}</div>
+    <div class="p-photo-wrap">${photoHtml}</div>
+    <div class="p-jersey">
+      <div class="p-jersey-badge">🌹</div>
+      <div class="p-jersey-stripes"><span></span><span></span><span></span></div>
+    </div>
+    <div class="p-flag">${ARG_FLAG}</div>
+    <div class="p-name-band">
+      <div class="p-firstname">${first}</div>
+      <div class="p-lastname">${last}</div>
+      <div class="p-info">${p.cargo}</div>
+      <div class="p-club">
+        <span class="p-club-name">${p.localidad}</span>
+        <span class="p-panini">PS · 2026</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── DATA ─────────────────────────────────────────────────────
+
+const MESA = [
+  {_id:"ochat",    num:1,  nombre:"Andrea Ochat",       cargo:"Coordinación General", localidad:"Sunchales",   photo:"andrea_ochat.jpg"},
+  {_id:"martinez", num:2,  nombre:"Omar Martinez",       cargo:"Coordinación Adjunta", localidad:"Sunchales",   photo:null},
+  {_id:"peter",    num:3,  nombre:"Luciana Peter",       cargo:"Vocal",                localidad:"Col. Raquel", photo:null}
+];
+
+const PLANTEL = [
+  {
+    _id:"sunchales", num:4,
+    nombre:"Galli Funes Jose A.",  cargo:"Sec. General", localidad:"Sunchales", photo:"jose_galli_funes.jpg",
+    centro:"Centro Socialista Sunchales", lista:"Socialismo en Acción", eleccion:"7 Jun 2026",
+    comision:["Bossio Micaela Beatriz","Werger Marcelo Germán","Romero María Belén","Palacios Pablo Eliseo","Kisielewsky Laura Yasmin","Wasinger Pablo Damián"],
+    cong_tit:["Ochat Andrea Ivana","Galli Funes José Augusto"], cong_sup:["Palacios Pablo Eliseo","Romero María Belén"]
+  },
+  {
+    _id:"frontera", num:5,
+    nombre:"Perez Susana", cargo:"Sec. General", localidad:"Frontera", photo:null,
+    centro:"Centro Socialista Frontera", lista:"Socialismo en Acción", eleccion:"7 Jun 2026",
+    comision:["Pérez Carlos","Vanega Viviana","Peralta Nicolás"],
+    cong_tit:["Pérez Susana","Pérez Carlos"], cong_sup:[]
+  },
+  {
+    _id:"mariajuana", num:6,
+    nombre:"Luna Abelardo D.", cargo:"Sec. General", localidad:"María Juana", photo:null,
+    centro:"Centro Socialista María Juana", lista:null, eleccion:"7 Jun 2026",
+    comision:["Wengger Juliana","Lobos Leonardo Sebastián","Kautz Verónica","Missan Nelson","Dominighini María Cristina","Dalmasso Ceballos Agustín"],
+    cong_tit:["Bazzoni Amadeo"], cong_sup:["Ferrando Rosana"]
+  },
+  {
+    _id:"susana", num:7,
+    nombre:"Tabin Duggo Juan P.", cargo:"Sec. General", localidad:"Susana", photo:null,
+    centro:"Centro Socialista Susana", lista:null, eleccion:"7 Jun 2026",
+    comision:["Navarro Susana","Valsagna Diego","Fuhr Raquel Dominga"],
+    cong_tit:["Tabin Duggo Juan Pablo"], cong_sup:["Navarro Susana"]
+  },
+  {
+    _id:"zenon", num:8,
+    nombre:"Dome Laura Lorena", cargo:"Sec. General", localidad:"Zenón Pereyra", photo:null,
+    centro:"Centro Socialista Zenón Pereyra", lista:null, eleccion:"7 Jun 2026",
+    comision:["Salcedo Claudio Ariel","Gallo Verónica Jesica","Toledo Sergio","Baravalle Mabel del Carmen","Dreiling Hugo Ernesto","Cabrera Noelia"],
+    cong_tit:["Gallo Verónica Jesica"], cong_sup:["Salcedo Claudio Ariel"]
+  },
+  {
+    _id:"raquel", num:9,
+    nombre:"Airasca Alejandro", cargo:"Sec. General", localidad:"Col. Raquel", photo:null,
+    centro:"Centro Socialista Col. Raquel", lista:null, eleccion:"7 Jun 2026",
+    comision:["Peter Luciana Marisabel","Perusia Perez Víctor Hugo","Bazán Noelia","Manganelli Pablo Luis"],
+    cong_tit:["Peter Luciana Marisabel"], cong_sup:["Airasca Alejandro César"]
+  },
+  {
+    _id:"rafaela", num:10,
+    nombre:"Gaspoz Santiago J.", cargo:"Referente PS", localidad:"Rafaela", photo:null,
+    centro:"Centro Socialista Rafaela", lista:null, eleccion:null,
+    comision:[], cong_tit:[], cong_sup:[]
+  },
+  {
+    _id:"ramona", num:11,
+    nombre:"Ardiles Hernan G.", cargo:"Referente PS", localidad:"Ramona", photo:null,
+    centro:"Centro Socialista Ramona", lista:null, eleccion:null,
+    comision:[], cong_tit:[], cong_sup:[]
+  },
+  {
+    _id:"humberto", num:12,
+    nombre:"Antonioli Matias G.", cargo:"Referente PS", localidad:"Humberto Primo", photo:null,
+    centro:"Centro Socialista Humberto Primo", lista:null, eleccion:null,
+    comision:[], cong_tit:[], cong_sup:[]
+  }
+];
+
+const FEATURED_GOB = [
+  {_id:"gisel",   num:10, nombre:"Gisel Mahmud",   cargo:"Diputada Provincial",      localidad:"Santa Fe",    photo:null},
+  {_id:"pinotti", num:1,  nombre:"Pablo Pinotti",   cargo:"Intendente",               localidad:"Sunchales",   photo:null}
+];
+
+const COMUNALES = [
+  {_id:"c_aldao",    num:5,  nombre:"Lorena Eberhardt",    cargo:"Pres. Comunal", localidad:"Colonia Aldao",   photo:null},
+  {_id:"c_zenon",    num:3,  nombre:"Veronica Gallo",      cargo:"Pres. Comunal", localidad:"Zenón Pereyra",   photo:null},
+  {_id:"c_margarita",num:7,  nombre:"Maria S. Muratore",   cargo:"Pres. Comunal", localidad:"Col. Margarita",  photo:null},
+  {_id:"c_eusebia",  num:11, nombre:"Susana Gimenez",      cargo:"Pres. Comunal", localidad:"Eusebia y Car.",  photo:null},
+  {_id:"c_raquel",   num:22, nombre:"Luciana Peter",       cargo:"Pres. Comunal", localidad:"Col. Raquel",     photo:null},
+  {_id:"c_maua",     num:9,  nombre:"Ricardo Garbagnoli",  cargo:"Pres. Comunal", localidad:"Mauá",            photo:null},
+  {_id:"c_iturraspe",num:15, nombre:"Dario Picco",         cargo:"Pres. Comunal", localidad:"Col. Iturraspe",  photo:null}
+];
+
+// ── RENDER ───────────────────────────────────────────────────
+document.getElementById('mesa-wrap').innerHTML =
+  MESA.map(p => mkCard(p,'foil-oro',{noClick:true})).join('');
+
+document.getElementById('plantel-wrap').innerHTML =
+  PLANTEL.map(p => mkCard(p,'foil-rojo',{})).join('');
+
+document.getElementById('featured-wrap').innerHTML =
+  FEATURED_GOB.map(p => mkCard(p,'foil-oro',{grande:true,noClick:true})).join('');
+
+document.getElementById('comunal-wrap').innerHTML =
+  COMUNALES.map(p => mkCard(p,'foil-verde',{noClick:true})).join('');
+
+// ── MODAL ────────────────────────────────────────────────────
+const IDX = {};
+PLANTEL.forEach(p => IDX[p._id] = p);
+
+function openModal(id){
+  const p = IDX[id]; if(!p) return;
+  document.getElementById('m-title').textContent = p.centro;
+  document.getElementById('m-sub').textContent = p.eleccion
+    ? `${p.lista||'—'} · Elecciones ${p.eleccion}`
+    : 'Referente PS · Elecciones por confirmar';
+  let html = `<div class="m-section"><h4>Secretaría General</h4>
+    <div class="m-person"><div class="m-dot sec"></div><div class="m-pname">${p.nombre}</div><div class="m-prole">Sec. General</div></div>
+  </div>`;
+  if(p.comision.length){
+    html += `<div class="m-section"><h4>Comisión Directiva</h4>`;
+    p.comision.forEach(m => html += `<div class="m-person"><div class="m-dot"></div><div class="m-pname">${m}</div></div>`);
+    html += `</div>`;
+  } else {
+    html += `<div class="m-section"><h4>Comisión Directiva</h4><div class="m-pending">Datos por confirmar</div></div>`;
+  }
+  if(p.cong_tit.length){
+    html += `<div class="m-section"><h4>Congresales Provinciales</h4>`;
+    p.cong_tit.forEach(m => html += `<div class="m-person"><div class="m-dot cong"></div><div class="m-pname">${m}</div><div class="m-prole">Titular</div></div>`);
+    p.cong_sup.forEach(m => html += `<div class="m-person"><div class="m-dot" style="background:rgba(240,192,64,0.4)"></div><div class="m-pname">${m}</div><div class="m-prole">Suplente</div></div>`);
+    html += `</div>`;
+  }
+  document.getElementById('m-body').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+</script>
+</body>
+</html>
