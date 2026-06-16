@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Departamento Castellanos</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; font-size: 13px; background: #1a1a2e; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.overlay.hidden { display: none; }
+.modal { background: #16213e; border-radius: 10px; padding: 36px; width: 380px; max-width: 95vw; border-top: 4px solid #e63946; }
+.modal h2 { color: white; font-size: 20px; margin-bottom: 4px; }
+.modal .sub { color: #888; font-size: 12px; margin-bottom: 24px; }
+.modal label { display: block; font-size: 11px; color: #888; margin-bottom: 3px; margin-top: 14px; }
+.modal input { width: 100%; padding: 10px 12px; border-radius: 5px; border: 1px solid #2a3a5a; background: #0d1b2e; color: white; font-size: 14px; }
+.modal input:focus { outline: 2px solid #e63946; border-color: transparent; }
+.modal .err { color: #f44336; font-size: 12px; margin-top: 10px; min-height: 18px; }
+.btn-primary { width: 100%; margin-top: 18px; padding: 12px; background: #e63946; color: white; border: none; border-radius: 5px; font-size: 14px; font-weight: bold; cursor: pointer; }
+.btn-primary:hover { background: #c62828; }
+.btn-primary:disabled { background: #555; cursor: not-allowed; }
+.modal .hint { font-size: 11px; color: #555; margin-top: 14px; text-align: center; }
+header { background: #e63946; padding: 7px 14px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+header h1 { color: white; font-size: 15px; font-weight: bold; }
+header .sub { color: #ffcdd2; font-size: 10px; margin-top: 1px; }
+.leyenda { display: flex; gap: 8px; margin-left: auto; align-items: center; flex-wrap: wrap; }
+.leyenda-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: white; }
+.dot-leg { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.user-badge { background: rgba(0,0,0,0.25); border-radius: 20px; padding: 3px 10px; font-size: 11px; color: white; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.user-badge:hover { background: rgba(0,0,0,0.4); }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; }
+.sync-dot.ok { background: #4caf50; }
+.sync-dot.err { background: #f44336; }
+.sync-dot.loading { background: #ff9800; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+.main { display: flex; flex: 1; overflow: hidden; }
+.left-panel { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+.tabs { display: flex; background: #16213e; border-bottom: 2px solid #e63946; flex-shrink: 0; }
+.tab { padding: 8px 16px; cursor: pointer; color: #aaa; font-size: 12px; font-weight: 600; }
+.tab.active { color: white; background: #e63946; }
+.tab-content { flex: 1; overflow: auto; }
+#view-mapa { padding: 10px; display: flex; justify-content: center; align-items: flex-start; }
+.map-wrapper { position: relative; display: inline-block; }
+.map-wrapper img.map-bg { display: block; width: 555px; height: 719px; }
+.loc-dot-el { position: absolute; transform: translate(-50%,-50%); cursor: pointer; z-index: 2; transition: transform 0.15s; overflow: visible; }
+.loc-dot-el:hover { transform: translate(-50%,-50%) scale(1.4); z-index: 10; }
+.loc-label { position: absolute; font-size: 9px; font-weight: bold; color: #111; text-shadow: 0 0 3px white, 0 0 3px white; white-space: nowrap; pointer-events: none; z-index: 3; transform: translate(-50%,0); }
+.tooltip-map { position: absolute; background: rgba(0,0,0,0.9); color: white; padding: 6px 9px; border-radius: 5px; font-size: 11px; pointer-events: none; z-index: 20; white-space: nowrap; display: none; border-left: 3px solid #e63946; }
+#view-tabla { padding: 8px; }
+.table-controls { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
+.table-controls input, .table-controls select { padding: 5px 8px; border-radius: 4px; border: 1px solid #444; background: #16213e; color: white; font-size: 12px; }
+.table-controls input { flex: 1; min-width: 140px; }
+.btn { padding: 5px 11px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; }
+.btn-red { background: #e63946; color: white; }
+.btn-green { background: #2a9d8f; color: white; }
+.btn-blue { background: #1976d2; color: white; }
+.btn-gray { background: #555; color: white; }
+.btn-orange { background: #fd7e14; color: white; }
+.btn:hover { filter: brightness(1.15); }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: #16213e; color: #ccc; padding: 6px 8px; text-align: left; position: sticky; top: 0; cursor: pointer; white-space: nowrap; border-bottom: 2px solid #e63946; }
+th:hover { background: #1e3a5f; }
+td { padding: 5px 8px; border-bottom: 1px solid #2a2a4a; vertical-align: middle; }
+tr:hover td { background: #1e3a5f; cursor: pointer; }
+tr.sel-row td { background: #2a4a7f; }
+.badge { padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; white-space: nowrap; }
+.b-fuerte { background: #28a745; color: white; }
+.b-debil { background: #fd7e14; color: white; }
+.b-nula { background: #dc3545; color: white; }
+.b-sin_datos { background: #6c757d; color: white; }
+.c-unidos { color: #4caf50; font-weight: bold; }
+.c-mas { color: #f44336; }
+.c-otro { color: #ff9800; }
+.who-tag { font-size: 10px; color: #666; }
+#view-log { padding: 10px; }
+.log-item { background: #0d1b2e; border-radius: 5px; padding: 8px 12px; margin-bottom: 6px; border-left: 3px solid #e63946; }
+.log-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.log-user { font-weight: bold; color: #e63946; font-size: 12px; }
+.log-ts { font-size: 10px; color: #666; }
+.log-loc { font-size: 12px; color: #ddd; }
+#view-admin { padding: 12px; }
+.admin-section { background: #0d1b2e; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+.admin-section h3 { color: #e63946; font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid #2a3a5a; padding-bottom: 6px; }
+.user-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #1a2a40; }
+.user-row:last-child { border-bottom: none; }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: #e63946; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: white; flex-shrink: 0; }
+.user-info { flex: 1; }
+.user-info .uname { font-weight: bold; font-size: 12px; }
+.user-info .urole { font-size: 10px; color: #666; }
+.add-user-form { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a3a5a; }
+.add-user-form input, .add-user-form select { padding: 6px 8px; border-radius: 4px; border: 1px solid #2a3a5a; background: #16213e; color: white; font-size: 11px; }
+.add-user-form .btn { grid-column: 1/-1; }
+.pend-card { background: #16213e; border-radius: 5px; padding: 10px; margin-bottom: 8px; border-left: 3px solid #fd7e14; }
+.pend-card .pend-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.pend-card .pend-loc { font-weight: bold; color: #e63946; font-size: 13px; }
+.pend-card .pend-by { font-size: 10px; color: #666; }
+.pend-card .pend-fields { font-size: 11px; color: #aaa; margin-bottom: 8px; line-height: 1.7; }
+.pend-card .pend-actions { display: flex; gap: 6px; }
+.right-panel { width: 370px; background: #16213e; border-left: 2px solid #e63946; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+.detail-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #555; font-style: italic; font-size: 12px; text-align: center; padding: 20px; line-height: 1.8; }
+#detailContent { display: none; flex-direction: column; height: 100%; }
+.dh { padding: 10px 14px; background: #e63946; color: white; flex-shrink: 0; }
+.dh h2 { font-size: 15px; }
+.dh .dsub { font-size: 10px; color: #ffcdd2; margin-top: 2px; }
+.dbody { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.sec { font-size: 10px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; color: #e63946; padding: 8px 12px 4px; border-bottom: 1px solid #2a3a5a; }
+.pbox { margin: 5px 10px; background: #0d1b2e; border-radius: 5px; padding: 6px 10px; font-size: 11px; }
+.prow { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px solid #1a2a40; gap: 8px; }
+.prow:last-child { border-bottom: none; }
+.plabel { color: #777; flex-shrink: 0; }
+.pval { color: #ddd; font-weight: bold; text-align: right; word-break: break-word; }
+.pval.g { color: #4caf50; } .pval.o { color: #f44336; } .pval.ot { color: #ff9800; }
+.rtable { margin: 5px 10px; background: #0d1b2e; border-radius: 5px; overflow: hidden; font-size: 11px; }
+.rrow { display: grid; grid-template-columns: 1fr 55px 46px; padding: 4px 8px; gap: 4px; border-bottom: 1px solid #1a2a40; }
+.rrow:last-child { border-bottom: none; }
+.rrow.rhead { background: #1a2a4a; font-size: 10px; color: #777; font-weight: bold; }
+.rnombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rvotos { text-align: right; color: #999; }
+.rpct { text-align: right; font-weight: bold; }
+.pct-unidos { color: #4caf50; } .pct-mas { color: #f44336; } .pct-otro { color: #ff9800; }
+.who-edited { margin: 4px 10px; font-size: 10px; color: #555; font-style: italic; }
+.frow { padding: 3px 10px; }
+.frow label { display: block; font-size: 10px; color: #777; margin-bottom: 2px; }
+.frow select, .frow input, .frow textarea { width: 100%; padding: 5px 7px; border-radius: 4px; border: 1px solid #2a3a5a; background: #0d1b2e; color: #ddd; font-size: 11px; font-family: Arial, sans-serif; }
+.frow textarea { resize: vertical; min-height: 48px; }
+.dactions { padding: 7px 10px; display: flex; gap: 8px; flex-shrink: 0; border-top: 1px solid #2a3a5a; }
+.dactions .btn { flex: 1; padding: 7px; }
+.saving-indicator { font-size: 10px; color: #888; text-align: center; padding: 2px 0; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="overlay" id="ovLogin">
+  <div class="modal">
+    <h2>🌹 Partido Socialista</h2>
+    <div class="sub">Departamento Castellanos · Santa Fe</div>
+    <label>Usuario</label>
+    <input type="text" id="loginUser" placeholder="tu_usuario" autocomplete="username">
+    <label>Contrasena</label>
+    <input type="password" id="loginPass" placeholder="..." autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="err" id="loginErr"></div>
+    <button class="btn-primary" id="loginBtn" onclick="doLogin()">Ingresar</button>
+    <p class="hint">admin / admin123</p>
+  </div>
+</div>
+
+<header>
+  <div>
+    <h1>🌹 PS — Departamento Castellanos</h1>
+    <div class="sub">Analisis territorial · 46 localidades · Santa Fe</div>
+  </div>
+  <div class="leyenda">
+    <div class="leyenda-item"><div class="dot-leg" style="background:#28a745"></div> Fuerte</div>
+    <div class="leyenda-item"><div class="dot-leg" style="background:#fd7e14"></div> Debil</div>
+    <div class="leyenda-item"><div class="dot-leg" style="background:#dc3545"></div> Sin pres.</div>
+    <div class="leyenda-item"><div class="dot-leg" style="background:#6c757d"></div> Sin datos</div>
+    <div class="user-badge" onclick="showUserMenu()" id="userBadge">
+      <div class="sync-dot ok" id="syncDot"></div>
+      <span id="userLabel">—</span>
+    </div>
+  </div>
+</header>
+<div style="background:#16213e;border-bottom:1px solid #2a3a5a;padding:4px 14px;display:flex;align-items:center;gap:16px;font-size:10px;color:#aaa;flex-shrink:0">
+  <span style="color:#e63946;font-weight:bold;text-transform:uppercase;letter-spacing:.5px">🏛 Mesa Dep. Castellanos</span>
+  <span>Coord. General: <strong style="color:#e0e0e0">Andrea Ochat</strong> (Sunchales)</span>
+  <span>Coord. Adjunta: <strong style="color:#e0e0e0">Omar Martinez</strong> (Sunchales)</span>
+  <span>Vocal: <strong style="color:#e0e0e0">Luciana Peter</strong> (Col. Raquel)</span>
+  <span style="margin-left:auto;color:#555">Electa 7/6/2026</span>
+</div>
+
+<div class="main">
+  <div class="left-panel">
+    <div class="tabs" id="tabsBar">
+      <div class="tab active" onclick="showTab('mapa')">🗺 Mapa</div>
+      <div class="tab" onclick="showTab('tabla')">📋 Tabla</div>
+    </div>
+    <div class="tab-content">
+      <div id="view-mapa">
+        <div class="map-wrapper" id="mapWrapper">
+          <img class="map-bg" src="https://www.senadosantafe.gob.ar/sites/default/files/imagen/mapa-completo/castellanos_0.png" alt="Mapa" onerror="this.style.cssText='width:555px;height:719px;background:#1e3a5f;display:block'">
+          <div class="tooltip-map" id="tooltip"></div>
+        </div>
+      </div>
+      <div id="view-tabla" style="display:none">
+        <div class="table-controls">
+          <input type="text" id="searchInput" placeholder="🔍 Buscar..." oninput="renderTable()">
+          <select id="filterPres" onchange="renderTable()">
+            <option value="">Todas</option>
+            <option value="fuerte">Fuerte</option>
+            <option value="debil">Debil</option>
+            <option value="nula">Sin presencia</option>
+            <option value="sin_datos">Sin datos</option>
+          </select>
+          <button class="btn btn-blue" onclick="syncFromServer(true)">🔄 Actualizar</button>
+          <button class="btn btn-green" onclick="exportCSV()">⬇ CSV</button>
+        </div>
+        <div style="overflow-x:auto;max-height:calc(100vh - 130px);overflow-y:auto">
+          <table>
+            <thead><tr>
+              <th onclick="sortBy('nombre')">Localidad</th>
+              <th onclick="sortBy('presencia')">Presencia</th>
+              <th onclick="sortBy('partido')">Partido</th>
+              <th onclick="sortBy('electores')">Electores</th>
+              <th>PS 2025</th>
+              <th onclick="sortBy('centro')">Centro</th>
+              <th onclick="sortBy('afiliados')">Afil.</th>
+              <th>Editado por</th>
+            </tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="view-log" style="display:none">
+        <div style="padding:8px;display:flex;gap:8px;align-items:center">
+          <strong style="color:#e63946;font-size:13px">📋 Historial de cambios</strong>
+          <button class="btn btn-blue" onclick="loadLog()" style="margin-left:auto">🔄 Actualizar</button>
+        </div>
+        <div id="logContainer" style="padding:0 10px 10px"></div>
+      </div>
+      <div id="view-admin" style="display:none">
+        <div class="admin-section">
+          <h3>📊 Resumen</h3>
+          <div id="adminStats" style="font-size:12px;color:#aaa;line-height:1.8"></div>
+        </div>
+        <div class="admin-section" id="pendientesSection">
+          <h3>📥 Cambios pendientes de aprobacion <span id="pendientesBadge" style="background:#e63946;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;display:none"></span></h3>
+          <div id="pendientesList" style="font-size:12px;color:#aaa">Cargando...</div>
+        </div>
+        <div class="admin-section">
+          <h3>👥 Usuarios</h3>
+          <div id="usersList"></div>
+          <div class="add-user-form">
+            <input type="text" id="nu_user" placeholder="usuario">
+            <input type="password" id="nu_pass" placeholder="contrasena">
+            <input type="text" id="nu_nombre" placeholder="Nombre completo">
+            <select id="nu_role"><option value="user">Usuario</option><option value="admin">Admin</option></select>
+            <button class="btn btn-green" onclick="addUser()">➕ Agregar usuario</button>
+          </div>
+          <div class="err" id="adminErr" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="detail-empty" id="detailEmpty">← Hace clic en una<br>localidad del mapa o tabla</div>
+    <div id="detailContent">
+      <div class="dh">
+        <h2 id="dNombre">—</h2>
+        <div class="dsub" id="dSub">—</div>
+      </div>
+      <div class="dbody">
+        <div class="sec">📊 Situacion politico-electoral 2025</div>
+        <div class="pbox" id="panoBox"></div>
+        <div class="rtable" id="resTable" style="display:none"></div>
+        <div class="who-edited" id="whoEdited"></div>
+        <div class="sec" style="margin-top:4px">📞 Contactos PS</div>
+        <div class="frow">
+          <label>Presencia PS</label>
+          <select id="f_pres">
+            <option value="fuerte">🟢 Fuerte</option>
+            <option value="debil">🟠 Debil</option>
+            <option value="nula">🔴 Sin presencia</option>
+            <option value="sin_datos">⚫ Sin datos</option>
+          </select>
+        </div>
+        <div class="frow"><label>Referente/a principal</label><input type="text" id="f_ref" placeholder="Nombre y apellido..."></div>
+        <div class="frow"><label>Telefono / WhatsApp</label><input type="text" id="f_tel" placeholder="+54 3492 ..."></div>
+        <div class="frow"><label>Como ubicarlo/a</label><input type="text" id="f_dir" placeholder="Trabajo, barrio, cuando llamar..."></div>
+        <div class="frow">
+          <label>Centro Socialista</label>
+          <select id="f_centro">
+            <option value="">— no confirmado —</option>
+            <option value="si">✅ Tiene Centro activo</option>
+            <option value="no">❌ No tiene Centro</option>
+          </select>
+        </div>
+        <div class="frow"><label>N° Afiliados PS</label><input type="number" id="f_afil" placeholder="0" min="0"></div>
+        <div class="frow">
+          <label>Prioridad de visita</label>
+          <select id="f_prio">
+            <option value="">— sin definir —</option>
+            <option value="alta">🔴 Alta — ir pronto</option>
+            <option value="media">🟡 Media</option>
+            <option value="baja">🟢 Baja</option>
+          </select>
+        </div>
+        <div class="sec" style="margin-top:4px">🗒️ Notas de visita</div>
+        <div class="frow"><label>Para hablar / proponer</label><textarea id="f_ec" placeholder="Temas a llevar, como arrancar la charla..."></textarea></div>
+        <div class="frow"><label>Grupo PS / militancia</label><textarea id="f_eg" placeholder="Quienes estan, como esta el grupo..."></textarea></div>
+        <div class="frow"><label>Observaciones</label><textarea id="f_eo" placeholder="Otras notas utiles..."></textarea></div>
+      </div>
+      <div class="saving-indicator" id="savingInd"></div>
+      <div class="dactions">
+        <button class="btn btn-red" onclick="saveDetail()" id="btnGuardar">💾 Guardar</button>
+        <button class="btn btn-gray" onclick="clearSel()">✕ Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ SUPABASE ══════════════════════════════════════════════════
+const SUPA_URL = "https://ikaadszatnbmzjrjvmkv.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrYWFkc3phdG5ibXpqcmp2bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mjc1ODMsImV4cCI6MjA5NzEwMzU4M30.QS4ClCaryH56pGAVc4ICS_eHC1LZmvQFrR4KNri3GSs";
+
+// ══ DATOS ELECTORALES ═════════════════════════════════════════
+const BASE = [
+  {id:"rafaela", n:"Rafaela", x:356,y:340, G:true, px:"Viotti Luis \'Leo\' (UNIDOS, int.2023)", pp:"Más para SFE", sc:"Concejales 2025: Soltermam (MAS,1), Dellasanta (LLA,2), Scavino Brusa (UNIDOS,3)", el:83002, vg:41194, vg1:14651, p2:"LLA",v2:11808, p3:"UNIDOS",v3:9506, pres:"debil", psref:"Gaspoz Santiago J.", centroPS:true},
+  {id:"sunchales", n:"Sunchales", x:315,y:172, G:true, px:"Pinotti Pablo (Ahora Sunchales, int.2023)", pp:"Ahora Sunchales", sc:"PS apoya a Pinotti como Intendente (Ahora Sunchales). Concejales PS: Delmastro (2025), Astor y Torriri (2023). Centro Socialista: Sec. Gral. Galli Funes Jose Augusto (electo jun.2026). Congresales prov.: Ochat Andrea y Galli Funes Jose Augusto", el:19552, vg:9343, vg1:2910, p2:"LLA",v2:2592, p3:"Más para SFE",v3:1529, pres:"fuerte", psref:"Galli Funes Jose Augusto", centroPS:true},
+  {id:"frontera", n:"Frontera", x:65,y:523, G:true, px:"Milanesio Fabio (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista: Sec. Gral. Perez Susana (electa jun.2026). Congresales prov.: Perez Susana y Perez Carlos", el:7243, vg:2558, vg1:1571, p2:"Más para SFE",v2:951, p3:null,v3:null, pres:"debil", psref:"Perez Susana", centroPS:true},
+  {id:"san_vicente", n:"San Vicente", x:322,y:663, G:true, px:"Aira Gonzalo (UNIDOS, int.2025)", pp:"UNIDOS", sc:"Concejal PS: Marchese Juan Carlos (UNIDOS, 3°)", el:5427, vg:3357, vg1:1711, p2:"Somos Vida y Lib.",v2:1076, p3:"Más para SFE",v3:454, pres:"debil", psref:"Marchese Juan Carlos", centroPS:false},
+  {id:"humberto", n:"Humberto Primo", x:442,y:112, G:true, px:"Gilabert Mauro (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista activo", el:4677, vg:1903, vg1:1500, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:"Antonioli Matias G.", centroPS:true},
+  {id:"maria_juana", n:"Maria Juana", x:242,y:659, G:true, px:"Maciel Zulma (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista: Sec. Gral. Luna Abelardo Damian (electo jun.2026). Congresal prov. titular: Bazzoni Amadeo", el:4157, vg:2833, vg1:1306, p2:"Más para SFE",v2:1208, p3:"MJuana Crece y Aprende",v3:291, pres:"debil", psref:"Luna Abelardo D.", centroPS:true},
+  {id:"col_aldao", n:"Colonia Aldao", x:208,y:202, px:"Eberhardt Lorena (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Eberhardt Lorena", el:1692, vg:1012, vg1:538, p2:"Más para SFE",v2:448, p3:null,v3:null, pres:"fuerte", psref:"Eberhardt Lorena", centroPS:false},
+  {id:"angelica", n:"Angelica", x:350,y:556, px:"Andres Marcos (Más para SFE)", pp:"Más para SFE", sc:null, el:1201, vg:932, vg1:634, p2:"UNIDOS",v2:293, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"ataliva", n:"Ataliva", x:393,y:212, px:"Alvarez Jose Manuel (UNIDOS)", pp:"UNIDOS", sc:null, el:1777, vg:868, vg1:641, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"aurelia", n:"Aurelia", x:400,y:430, px:"Morel Roberto (Esfuerzo Vecinal)", pp:"Esfuerzo Vecinal", sc:null, el:138, vg:79, vg1:67, p2:null,v2:null, p3:null,v3:null, pres:"sin_datos", psref:null, centroPS:false},
+  {id:"bauer_sigel", n:"Bauer y Sigel", x:93,y:379, px:"Serrani Franco (UNIDOS)", pp:"UNIDOS", sc:null, el:247, vg:146, vg1:117, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"bella_italia", n:"Bella Italia", x:424,y:367, px:"Perotti Hector (Más para SFE)", pp:"Más para SFE", sc:null, el:1499, vg:849, vg1:733, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"col_bicha", n:"Col. Bicha", x:153,y:115, px:"Alochis Miguel (UNIDOS)", pp:"UNIDOS", sc:null, el:179, vg:79, vg1:72, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"col_bigand", n:"Col. Bigand", x:228,y:232, px:"Oggero Adrian (Más para SFE)", pp:"Más para SFE", sc:null, el:51, vg:40, vg1:38, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"castellanos_c", n:"Castellanos", x:215,y:314, px:"Audino Diego (UNIDOS)", pp:"UNIDOS", sc:null, el:305, vg:168, vg1:138, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"col_cello", n:"Colonia Cello", x:158,y:472, px:"Heck Maria del Carmen (UNIDOS)", pp:"UNIDOS", sc:null, el:174, vg:104, vg1:87, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"col_iturraspe", n:"Col. Iturraspe", x:298,y:499, px:"Picco Dario (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Picco Dario", el:48, vg:31, vg1:24, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Picco Dario", centroPS:false},
+  {id:"col_margarita", n:"Col. Margarita", x:261,y:679, px:"Muratore Maria Soledad (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Muratore Maria Soledad", el:313, vg:249, vg1:166, p2:"Más para SFE",v2:82, p3:null,v3:null, pres:"fuerte", psref:"Muratore Maria Soledad", centroPS:false},
+  {id:"maua", n:"Maua", x:497,y:48, px:"Garbagnoli Ricardo (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Garbagnoli Ricardo", el:53, vg:23, vg1:23, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Garbagnoli Ricardo", centroPS:false},
+  {id:"col_raquel", n:"Colonia Raquel", x:355,y:72, px:"Peter Luciana (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Peter Luciana (Vocal Mesa Dep.). Centro Socialista: Sec. Gral. Airasca Alejandro Cesar (electo jun.2026). Congresal prov. titular: Peter Luciana Marisabel", el:305, vg:140, vg1:111, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Airasca Alejandro", centroPS:true},
+  {id:"coronel_fraga", n:"Coronel Fraga", x:108,y:313, px:"Palacio Marisabel (UNIDOS)", pp:"UNIDOS", sc:null, el:283, vg:236, vg1:166, p2:"Más para SFE",v2:69, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"plaza_cluc", n:"Plaza Clucellas", x:232,y:481, px:"Bono Gabriel (UNIDOS)", pp:"UNIDOS", sc:null, el:1290, vg:602, vg1:403, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"egusquiza", n:"Egusquiza", x:280,y:246, px:"Celis Maria Florencia (UNIDOS)", pp:"UNIDOS", sc:null, el:376, vg:223, vg1:196, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"esmeralda", n:"Esmeralda", x:88,y:623, px:"Berra Luis Alberto (UNIDOS)", pp:"UNIDOS", sc:null, el:514, vg:322, vg1:257, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"est_cluc", n:"Est. Clucellas", x:232,y:535, px:"Peretti Eduardo (UNIDOS)", pp:"UNIDOS", sc:null, el:778, vg:516, vg1:433, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"eusebia", n:"Eusebia y Carolina", x:143,y:141, px:"Gimenez Susana (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Gimenez Susana", el:718, vg:319, vg1:274, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Gimenez Susana", centroPS:false},
+  {id:"eustolia", n:"Eustolia", x:190,y:600, px:"Beltramo Juan Marcelo (Más para SFE)", pp:"Más para SFE", sc:null, el:141, vg:121, vg1:77, p2:"UNIDOS",v2:42, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"fidela", n:"Fidela", x:181,y:233, px:"Ovena Jorge Antonio (UNIDOS)", pp:"UNIDOS", sc:null, el:88, vg:53, vg1:44, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"galisteo", n:"Galisteo", x:455,y:210, px:"Canavese Javier (UNIDOS)", pp:"UNIDOS", sc:null, el:159, vg:132, vg1:111, p2:"Más para SFE",v2:19, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"garibaldi", n:"Garibaldi", x:162,y:650, px:"Gamboa Maribel (Más para SFE)", pp:"Más para SFE", sc:"PS: Spilj Andres (minoría, UNIDOS)", el:168, vg:138, vg1:80, p2:"UNIDOS",v2:58, p3:null,v3:null, pres:"debil", psref:"Spilj Andres", centroPS:false},
+  {id:"hugentobler", n:"Hugentobler", x:205,y:152, px:"Milanesio Luciano (Más para SFE)", pp:"Más para SFE", sc:null, el:46, vg:33, vg1:32, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"josefina", n:"Josefina", x:72,y:448, px:"Sicardi Jorgelina (UNIDOS)", pp:"UNIDOS", sc:null, el:1659, vg:445, vg1:345, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"lehmann", n:"Lehmann", x:380,y:267, px:"Bett Marcelo (UNIDOS)", pp:"UNIDOS", sc:null, el:2649, vg:1213, vg1:922, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"pte_roca", n:"Presidente Roca", x:278,y:326, px:"Montenegro Jessica (Somos Vida y Lib.)", pp:"Somos Vida y Lib.", sc:null, el:746, vg:528, vg1:282, p2:"UNIDOS",v2:235, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"pueblo_marini", n:"Pueblo Marini", x:133,y:203, px:"Ferrer Amalia (Más para SFE)", pp:"Más para SFE", sc:null, el:104, vg:60, vg1:55, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"ramona", n:"Ramona", x:110,y:253, px:"Barbero Jose Alberto (Union Vecinal Ramona)", pp:"Union Vecinal Ramona", sc:"Centro Socialista activo", el:1575, vg:1224, vg1:835, p2:"UNIDOS",v2:335, p3:null,v3:null, pres:"debil", psref:"Ardiles Hernan G.", centroPS:true},
+  {id:"saguier", n:"Saguier", x:247,y:406, px:"Ramos Sergio (UNIDOS)", pp:"UNIDOS", sc:null, el:645, vg:310, vg1:247, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"san_antonio", n:"San Antonio", x:212,y:355, px:"Previotto Mauro (UNIDOS)", pp:"UNIDOS", sc:null, el:298, vg:146, vg1:111, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"sta_clara", n:"Sta. Clara de Saguier", x:165,y:414, px:"Tivano Sergio (Más para SFE)", pp:"Más para SFE", sc:null, el:1801, vg:1124, vg1:617, p2:"UNIDOS",v2:470, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"susana", n:"Susana", x:345,y:424, px:"Perino Jorge (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista: Sec. Gral. Tabin Duggo Juan Pablo (electo jun.2026). Congresal prov. titular: Tabin Duggo Juan Pablo", el:1303, vg:824, vg1:493, p2:"Más para SFE",v2:308, p3:null,v3:null, pres:"debil", psref:"Tabin Juan Pablo", centroPS:true},
+  {id:"tacural", n:"Tacural", x:298,y:73, px:"Sola Adrian (Más para SFE)", pp:"Más para SFE", sc:null, el:1339, vg:678, vg1:483, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"tacurales", n:"Tacurales", x:212,y:65, px:"Chiappero Damian (UNIDOS)", pp:"UNIDOS", sc:null, el:162, vg:68, vg1:66, p2:null,v2:null, p3:null,v3:null, pres:"sin_datos", psref:null, centroPS:false},
+  {id:"vila", n:"Vila", x:163,y:311, px:"Borgatello Ma. Leticia (UNIDOS)", pp:"UNIDOS", sc:null, el:1292, vg:1053, vg1:418, p2:"Más para SFE",v2:403, p3:"Vila de Frente",v3:223, pres:"debil", psref:null, centroPS:false},
+  {id:"villa_san_jose", n:"Villa San Jose", x:285,y:424, px:"Forni Julio Cesar (UNIDOS)", pp:"UNIDOS", sc:null, el:346, vg:207, vg1:162, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"virginia", n:"Virginia", x:455,y:25, px:"Fraire Pedro (UNIDOS)", pp:"UNIDOS", sc:null, el:168, vg:106, vg1:94, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"zenon_pereyra", n:"Zenon Pereyra", x:120,y:566, px:"Gallo Veronica (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Gallo Veronica. Centro Socialista: Sec. Gral. Dome Laura Lorena (electa jun.2026). Congresal prov.: Gallo Veronica Jesica", el:1460, vg:670, vg1:431, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Dome Laura Lorena", centroPS:true},
+];
+
+
+const LS_DATA = "ps_castellanos_v5";
+const LS_SESS = "ps_castellanos_sess";
+const COLORS  = {fuerte:"#28a745", debil:"#fd7e14", nula:"#dc3545", sin_datos:"#6c757d"};
+const LBLS    = {fuerte:"Fuerte", debil:"Debil", nula:"Sin presencia", sin_datos:"Sin datos"};
+const pcls = p => { if(!p)return""; const l=p.toLowerCase(); return l.includes("unidos")?"unidos":(l.includes("mas para")||l.includes("más para"))?"mas":"otro"; };
+const pct  = (v,t) => (!v||!t)?"—":(v/t*100).toFixed(1)+"%";
+const fmt  = n => n!=null ? Number(n).toLocaleString("es-AR") : "—";
+
+let sess = JSON.parse(localStorage.getItem(LS_SESS)||"null");
+let D    = JSON.parse(localStorage.getItem(LS_DATA)||"{}");
+let selId = null, sortF = "nombre", sortA = true;
+
+// ══ SUPABASE FETCH ════════════════════════════════════════════
+const supa = (path, opts = {}) => {
+  const headers = {
+    "apikey": SUPA_KEY,
+    "Authorization": "Bearer " + SUPA_KEY,
+    "Content-Type": "application/json"
+  };
+  if (opts.prefer) headers["Prefer"] = opts.prefer;
+  return fetch(SUPA_URL + "/rest/v1/" + path, {
+    method: opts.method || "GET",
+    headers: headers,
+    body: opts.body || undefined
+  }).then(async r => {
+    if (!r.ok) return null;
+    const text = await r.text();
+    return text ? JSON.parse(text) : [];
+  }).catch(() => null);
+};
+
+// ══ INIT ══════════════════════════════════════════════════════
+window.onload = () => {
+  // Inicializar D con defaults del BASE
+  BASE.forEach(b => {
+    if (!D[b.id]) {
+      D[b.id] = {
+        presencia: b.pres,
+        centro: b.centroPS ? "si" : "",
+        dir: "", afil: "",
+        ref: b.psref || "",
+        tel: "", prio: "", ec: "", eg: "", eo: "",
+        updated_by: "", updated_at: ""
+      };
+    } else {
+      // Si ya existe pero sin ref, pre-cargar desde psref
+      if (!D[b.id].ref && b.psref) D[b.id].ref = b.psref;
+      if (!D[b.id].centro && b.centroPS) D[b.id].centro = "si";
+    }
+  });
+  if (!sess) { document.getElementById("ovLogin").classList.remove("hidden"); return; }
+  startApp();
+};
+
+// ══ LOGIN ═════════════════════════════════════════════════════
+async function doLogin() {
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  if (!user || !pass) { document.getElementById("loginErr").textContent = "Completa usuario y contrasena"; return; }
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "Verificando...";
+  document.getElementById("loginErr").textContent = "";
+  const rows = await supa("usuarios?username=eq." + encodeURIComponent(user) + "&password=eq." + encodeURIComponent(pass) + "&select=*");
+  btn.disabled = false; btn.textContent = "Ingresar";
+  if (rows && rows.length > 0) {
+    sess = {user: rows[0].username, role: rows[0].role, nombre: rows[0].nombre || rows[0].username};
+    localStorage.setItem(LS_SESS, JSON.stringify(sess));
+    document.getElementById("ovLogin").classList.add("hidden");
+    startApp();
+  } else {
+    document.getElementById("loginErr").textContent = rows === null ? "Sin conexion con el servidor" : "Usuario o contrasena incorrectos";
+  }
+}
+
+function showUserMenu() {
+  if (confirm("Sesion: " + (sess ? sess.nombre||sess.user : "?") + "\nCerrar sesion?")) {
+    localStorage.removeItem(LS_SESS);
+    location.reload();
+  }
+}
+
+// ══ ARRANCAR ══════════════════════════════════════════════════
+function startApp() {
+  document.getElementById("userLabel").textContent = sess.nombre || sess.user;
+  if (sess.role === "admin") {
+    const tb = document.getElementById("tabsBar");
+    const t1 = document.createElement("div"); t1.className = "tab"; t1.textContent = "📋 Historial"; t1.onclick = () => showTab("log"); tb.appendChild(t1);
+    const t2 = document.createElement("div"); t2.className = "tab"; t2.textContent = "⚙️ Admin"; t2.onclick = () => showTab("admin"); tb.appendChild(t2);
+  } else {
+    const btn = document.getElementById("btnGuardar");
+    if (btn) { btn.textContent = "📤 Enviar para revision"; btn.style.background = "#1a6b9a"; }
+  }
+  showTab("mapa");
+  syncFromServer(false);
+}
+
+// ══ SYNC ══════════════════════════════════════════════════════
+async function syncFromServer(showFeedback) {
+  setSyncState("loading");
+  const rows = await supa("datos?select=*");
+  if (rows && Array.isArray(rows)) {
+    rows.forEach(r => {
+      // Fusionar: datos del server, manteniendo psref/centroPS si no hay ref guardado
+      const b = BASE.find(x => x.id === r.id);
+      if (b) {
+        if (!r.ref && b.psref) r.ref = b.psref;
+        if (!r.centro && b.centroPS) r.centro = "si";
+      }
+      D[r.id] = r;
+    });
+    localStorage.setItem(LS_DATA, JSON.stringify(D));
+    setSyncState("ok");
+    renderMap(); renderTable();
+    if (showFeedback) showSavingInd("✅ Datos actualizados");
+  } else {
+    setSyncState("err");
+    if (showFeedback) showSavingInd("⚠️ Sin conexion — usando datos locales");
+  }
+}
+function setSyncState(s) { document.getElementById("syncDot").className = "sync-dot " + s; }
+
+// ══ MAPA ══════════════════════════════════════════════════════
+function renderMap() {
+  const w = document.getElementById("mapWrapper");
+  w.querySelectorAll(".loc-dot-el,.loc-label").forEach(e=>e.remove());
+  BASE.forEach(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    const color = COLORS[pres]||COLORS.sin_datos;
+    const r = b.G ? 9 : 6;
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns,"svg");
+    const sz = (r+4)*2;
+    svg.setAttribute("width",sz); svg.setAttribute("height",sz);
+    svg.style.cssText = "position:absolute;left:"+((b.x/555*100).toFixed(2))+"%;top:"+((b.y/719*100).toFixed(2))+"%;transform:translate(-50%,-50%);cursor:pointer;z-index:"+(selId===b.id?10:2)+";overflow:visible;";
+    svg.className = "loc-dot-el";
+    const c = document.createElementNS(ns,"circle");
+    c.setAttribute("cx",r+4); c.setAttribute("cy",r+4); c.setAttribute("r",r);
+    c.setAttribute("fill",color);
+    c.setAttribute("stroke",selId===b.id?"white":"rgba(0,0,0,0.5)");
+    c.setAttribute("stroke-width",selId===b.id?"2.5":"1.5");
+    svg.appendChild(c);
+    svg.addEventListener("click",()=>selectLoc(b.id));
+    svg.addEventListener("mouseenter",e=>showTip(e,b));
+    svg.addEventListener("mouseleave",hideTip);
+    w.appendChild(svg);
+    if (b.G || selId===b.id) {
+      const lbl = document.createElement("div");
+      lbl.className = "loc-label";
+      lbl.style.cssText = "left:"+((b.x/555*100).toFixed(2))+"%;top:calc("+((b.y/719*100).toFixed(2))+"% + "+(r+5)+"px);";
+      lbl.textContent = b.n;
+      w.appendChild(lbl);
+    }
+  });
+}
+
+function showTip(e,b) {
+  const d = D[b.id]||{};
+  const pres = d.presencia||b.pres||"sin_datos";
+  let h = "<strong>"+b.n+"</strong> — "+(LBLS[pres]||"");
+  if(b.pp) h += "<br><span style='font-size:9px;color:#888'>Gobierno:</span> <strong>"+(b.px||"?")+"</strong> <em>("+b.pp+")</em>";
+  if(b.el) h += "<br>"+fmt(b.el)+" electores"+(b.vg1&&b.vg?" · PS: "+pct(b.vg1,b.vg):"");
+  const ref = d.ref||b.psref;
+  if(ref) h += "<br>🌹 "+ref;
+  if(d.updated_by) h += "<br>✏️ "+d.updated_by+(d.updated_at?" · "+d.updated_at:"");
+  const tip = document.getElementById("tooltip");
+  tip.innerHTML = h; tip.style.display = "block";
+  const wr = document.getElementById("mapWrapper").getBoundingClientRect();
+  let tx = e.clientX-wr.left+12, ty = e.clientY-wr.top+12;
+  if(tx+210>555) tx-=220; if(ty+90>719) ty-=100;
+  tip.style.left=tx+"px"; tip.style.top=ty+"px";
+}
+function hideTip() { document.getElementById("tooltip").style.display="none"; }
+
+// ══ TABLA ═════════════════════════════════════════════════════
+function renderTable() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const fp = document.getElementById("filterPres").value;
+  const ord = {fuerte:0,debil:1,nula:2,sin_datos:3};
+  let list = BASE.filter(b => {
+    const pres = (D[b.id]||{}).presencia||b.pres||"sin_datos";
+    if(fp && pres!==fp) return false;
+    if(q && !b.n.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  list.sort((a,z) => {
+    const da=D[a.id]||{}, dz=D[z.id]||{};
+    const pa=da.presencia||a.pres||"sin_datos", pz=dz.presencia||z.pres||"sin_datos";
+    let va,vz;
+    if(sortF==="nombre"){va=a.n;vz=z.n;}
+    else if(sortF==="presencia"){va=ord[pa]??9;vz=ord[pz]??9;}
+    else if(sortF==="partido"){va=a.pp||"";vz=z.pp||"";}
+    else if(sortF==="electores"){va=-(a.el||0);vz=-(z.el||0);}
+    else if(sortF==="centro"){va=da.centro||"";vz=dz.centro||"";}
+    else if(sortF==="afiliados"){va=-(parseInt(da.afil)||0);vz=-(parseInt(dz.afil)||0);}
+    else{va=a.n;vz=z.n;}
+    return (va<vz?-1:va>vz?1:0)*(sortA?1:-1);
+  });
+  const tb = document.getElementById("tableBody");
+  tb.innerHTML = "";
+  list.forEach(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    const psPct = b.vg1&&b.vg ? pct(b.vg1,b.vg) : "—";
+    const cl = pcls(b.pp);
+    const centro = d.centro||b.centroPS?"✅":"";
+    const tr = document.createElement("tr");
+    if(selId===b.id) tr.classList.add("sel-row");
+    tr.innerHTML = "<td><strong>"+b.n+"</strong></td><td><span class='badge b-"+pres+"'>"+LBLS[pres]+"</span></td><td><span class='c-"+cl+"'>"+(b.pp||"—")+"</span></td><td>"+fmt(b.el)+"</td><td style='color:#e63946'>"+psPct+"</td><td>"+(d.centro==="si"||b.centroPS?"✅":d.centro==="no"?"❌":"")+"</td><td>"+(d.afil||"—")+"</td><td><span class='who-tag'>"+(d.updated_by||"")+"</span></td>";
+    tr.addEventListener("click",()=>selectLoc(b.id));
+    tb.appendChild(tr);
+  });
+}
+function sortBy(f){if(sortF===f)sortA=!sortA;else{sortF=f;sortA=true;}renderTable();}
+
+// ══ DETALLE ═══════════════════════════════════════════════════
+function selectLoc(id){ selId=id; openDetail(id); renderMap(); renderTable(); }
+
+function openDetail(id) {
+  const b=BASE.find(x=>x.id===id), d=D[id]||{};
+  document.getElementById("detailEmpty").style.display="none";
+  document.getElementById("detailContent").style.display="flex";
+  document.getElementById("dNombre").textContent=b.n;
+  const sub=[];
+  if(b.el) sub.push(fmt(b.el)+" electores");
+  sub.push(b.G?"Municipio":"Comision Comunal");
+  document.getElementById("dSub").textContent=sub.join(" · ");
+  // Panorama politico
+  const rw=(l,v)=>"<div class='prow'><span class='plabel'>"+l+"</span>"+v+"</div>";
+  let ph="";
+  if(b.px){
+    const labelEj=b.G?"Intendente/a":"Pte. Comunal";
+    ph+=rw(labelEj,"<span class='pval'>"+b.px+"</span>");
+  }
+  if(b.pp){
+    const cl=pcls(b.pp);
+    const cls=cl==="unidos"?"g":cl==="mas"?"o":"ot";
+    ph+=rw("Partido gobernante","<span class='pval "+cls+"'>"+b.pp+"</span>");
+  }
+  if(b.sc) ph+=rw("🌹 Situacion PS","<span class='pval' style='color:#e63946'>"+b.sc+"</span>");
+  if(b.el) ph+=rw("Electores 2025","<span class='pval'>"+fmt(b.el)+"</span>");
+  if(b.vg) ph+=rw("Votos validos","<span class='pval'>"+fmt(b.vg)+" ("+pct(b.vg,b.el)+" particip.)</span>");
+  document.getElementById("panoBox").innerHTML=ph||"<span style='color:#555'>Sin datos electorales</span>";
+  // Tabla de resultados 2025
+  const rt=document.getElementById("resTable");
+  if(b.vg&&b.pp&&b.vg1){
+    const cl1=pcls(b.pp),cl2=pcls(b.p2||""),cl3=pcls(b.p3||"");
+    const cs=(cl)=>cl==="unidos"?"unidos":cl==="mas"?"mas":"otro";
+    let rh="<div class='rrow rhead'><span>Partido (elecciones 2025)</span><span style='text-align:right'>Votos</span><span style='text-align:right'>%</span></div>";
+    rh+="<div class='rrow'><span class='rnombre pct-"+cs(cl1)+"'>"+b.pp+"</span><span class='rvotos'>"+fmt(b.vg1)+"</span><span class='rpct pct-"+cs(cl1)+"'>"+pct(b.vg1,b.vg)+"</span></div>";
+    if(b.p2&&b.v2) rh+="<div class='rrow'><span class='rnombre pct-"+cs(cl2)+"'>"+b.p2+"</span><span class='rvotos'>"+fmt(b.v2)+"</span><span class='rpct pct-"+cs(cl2)+"'>"+pct(b.v2,b.vg)+"</span></div>";
+    if(b.p3&&b.v3) rh+="<div class='rrow'><span class='rnombre pct-"+cs(cl3)+"'>"+b.p3+"</span><span class='rvotos'>"+fmt(b.v3)+"</span><span class='rpct pct-"+cs(cl3)+"'>"+pct(b.v3,b.vg)+"</span></div>";
+    rt.innerHTML=rh; rt.style.display="block";
+  } else rt.style.display="none";
+  document.getElementById("whoEdited").textContent=d.updated_by?"Ultimo cambio: "+d.updated_by+(d.updated_at?" el "+d.updated_at:""):"";
+  // Rellenar form — priorizar datos guardados, luego psref del BASE
+  document.getElementById("f_pres").value=d.presencia||b.pres||"sin_datos";
+  document.getElementById("f_ref").value=d.ref||b.psref||"";
+  document.getElementById("f_tel").value=d.tel||"";
+  document.getElementById("f_dir").value=d.dir||"";
+  document.getElementById("f_centro").value=d.centro||(b.centroPS?"si":"");
+  document.getElementById("f_afil").value=d.afil||"";
+  document.getElementById("f_prio").value=d.prio||"";
+  document.getElementById("f_ec").value=d.ec||"";
+  document.getElementById("f_eg").value=d.eg||"";
+  document.getElementById("f_eo").value=d.eo||"";
+  document.getElementById("savingInd").textContent="";
+}
+
+async function saveDetail() {
+  if(!selId) return;
+  const now = new Date().toLocaleDateString("es-AR");
+  const campos = {
+    id: selId,
+    presencia: document.getElementById("f_pres").value,
+    centro: document.getElementById("f_centro").value,
+    dir: document.getElementById("f_dir").value,
+    afil: document.getElementById("f_afil").value || null,
+    ref: document.getElementById("f_ref").value,
+    tel: document.getElementById("f_tel").value,
+    prio: document.getElementById("f_prio").value,
+    ec: document.getElementById("f_ec").value,
+    eg: document.getElementById("f_eg").value,
+    eo: document.getElementById("f_eo").value,
+  };
+
+  if (sess.role === "admin") {
+    const nd = {...campos, updated_by: sess.user, updated_at: now};
+    D[selId] = nd;
+    localStorage.setItem(LS_DATA, JSON.stringify(D));
+    renderMap(); renderTable();
+    showSavingInd("Guardando...");
+    const res = await supa("datos", {
+      method: "POST",
+      prefer: "resolution=merge-duplicates,return=representation",
+      body: JSON.stringify(nd)
+    });
+    if (res !== null) {
+      showSavingInd("✅ Guardado · " + now);
+      document.getElementById("whoEdited").textContent = "Ultimo cambio: "+sess.user+" el "+now;
+      const b = BASE.find(x=>x.id===selId);
+      supa("log", { method:"POST", prefer:"return=minimal", body: JSON.stringify({
+        ts: new Date().toLocaleString("es-AR"), username: sess.user,
+        localidad_id: selId, localidad_nombre: b?b.n:selId,
+        cambios: {presencia:nd.presencia,centro:nd.centro,afil:nd.afil}
+      })});
+    } else {
+      showSavingInd("⚠️ Solo guardado local (sin conexion)");
+    }
+  } else {
+    const nd = {...campos, submitted_by: sess.user, submitted_at: now, estado: "pendiente"};
+    showSavingInd("Enviando para revision...");
+    const res = await supa("datos_pendientes", {
+      method: "POST",
+      prefer: "return=minimal",
+      body: JSON.stringify(nd)
+    });
+    if (res !== null) {
+      showSavingInd("📤 Enviado · el admin debe aprobar antes de publicarse");
+    } else {
+      showSavingInd("⚠️ Error al enviar. Revisa tu conexion.");
+    }
+  }
+}
+
+function showSavingInd(msg) {
+  const el=document.getElementById("savingInd");
+  if(el){el.textContent=msg;setTimeout(()=>{if(el.textContent===msg)el.textContent="";},4500);}
+}
+
+function clearSel(){selId=null;document.getElementById("detailEmpty").style.display="flex";document.getElementById("detailContent").style.display="none";renderMap();renderTable();}
+
+// ══ TABS ══════════════════════════════════════════════════════
+function showTab(t) {
+  ["mapa","tabla","log","admin"].forEach(id=>{
+    const el=document.getElementById("view-"+id);
+    if(el) el.style.display=id===t?(id==="mapa"?"flex":"block"):"none";
+  });
+  document.querySelectorAll(".tab").forEach(el=>{
+    el.classList.toggle("active",el.textContent.includes(t==="mapa"?"Mapa":t==="tabla"?"Tabla":t==="log"?"Historial":"Admin"));
+  });
+  if(t==="tabla") renderTable();
+  if(t==="log")   loadLog();
+  if(t==="admin") loadAdmin();
+}
+
+// ══ LOG ═══════════════════════════════════════════════════════
+async function loadLog() {
+  const cont=document.getElementById("logContainer");
+  cont.innerHTML="<p style='color:#666;font-size:12px;padding:8px'>Cargando...</p>";
+  const rows = await supa("log?order=id.desc&limit=200&select=*");
+  if(rows && rows.length>0){
+    cont.innerHTML=rows.map(r=>{
+      const b=BASE.find(x=>x.id===r.localidad_id)||{n:r.localidad_id};
+      const cambios=r.cambios||{};
+      const pColor=COLORS[cambios.presencia]||"#aaa";
+      const pLabel=LBLS[cambios.presencia]||"";
+      return "<div class='log-item'><div class='log-header'><span class='log-user'>✏️ "+r.username+"</span><span class='log-ts'>"+r.ts+"</span></div><div class='log-loc'>📍 "+b.n+(pLabel?" — <span style='color:"+pColor+"'>"+pLabel+"</span>":"")+"</div></div>";
+    }).join("");
+  } else {
+    cont.innerHTML="<p style='color:#555;font-size:12px;padding:10px'>No hay cambios registrados aun.</p>";
+  }
+}
+
+// ══ ADMIN ═════════════════════════════════════════════════════
+async function loadAdmin() {
+  const fuerte=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres; return p==="fuerte";}).length;
+  const debil=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres; return p==="debil";}).length;
+  const nula=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres; return p==="nula";}).length;
+  const cargados=BASE.filter(b=>(D[b.id]||{}).updated_by).length;
+  const centros=BASE.filter(b=>{const d=D[b.id]||{}; return d.centro==="si"||b.centroPS;}).length;
+  document.getElementById("adminStats").innerHTML=
+    "📍 "+BASE.length+" localidades · "+cargados+" con datos cargados<br>🟢 "+fuerte+" Fuerte · 🟠 "+debil+" Debil · 🔴 "+nula+" Sin presencia<br>🌹 "+centros+" Centros Socialistas activos";
+  loadPendientes();
+  const users = await supa("usuarios?select=username,role,nombre&order=username");
+  if(users) document.getElementById("usersList").innerHTML=users.map(u=>"<div class='user-row'><div class='user-avatar'>"+(u.nombre||u.username).charAt(0).toUpperCase()+"</div><div class='user-info'><div class='uname'>"+(u.nombre||u.username)+"</div><div class='urole'>"+u.username+" · "+(u.role==="admin"?"⭐ Admin":"Usuario")+"</div></div>"+(u.username!==sess.user?"<button class='btn btn-gray' style='padding:3px 8px;font-size:10px' onclick=\"delUser('"+u.username+"')\">✕</button>":"")+"</div>").join("");
+}
+
+async function loadPendientes() {
+  const cont = document.getElementById("pendientesList");
+  const badge = document.getElementById("pendientesBadge");
+  if(!cont) return;
+  const rows = await supa("datos_pendientes?estado=eq.pendiente&order=pid.desc&select=*");
+  if(!rows || rows.length === 0) {
+    cont.innerHTML = "<p style='color:#555;font-size:12px'>No hay cambios pendientes.</p>";
+    if(badge) badge.style.display="none";
+    return;
+  }
+  if(badge){ badge.textContent=rows.length; badge.style.display="inline"; }
+  cont.innerHTML = rows.map(r => {
+    const b = BASE.find(x=>x.id===r.id)||{n:r.id};
+    const campos = [];
+    if(r.ref) campos.push("👤 "+r.ref);
+    if(r.tel) campos.push("📱 "+r.tel);
+    if(r.presencia) campos.push("Presencia: "+(LBLS[r.presencia]||r.presencia));
+    if(r.centro) campos.push("Centro: "+r.centro);
+    if(r.afil) campos.push("Afil: "+r.afil);
+    if(r.dir) campos.push("📍 "+r.dir);
+    if(r.ec) campos.push("💬 "+r.ec.substring(0,60)+(r.ec.length>60?"...":""));
+    return "<div class='pend-card'>" +
+      "<div class='pend-head'><span class='pend-loc'>📍 "+b.n+"</span><span class='pend-by'>por "+r.submitted_by+" · "+r.submitted_at+"</span></div>" +
+      "<div class='pend-fields'>"+campos.join("<br>")+"</div>" +
+      "<div class='pend-actions'>" +
+      "<button class='btn btn-green' onclick='approveChange("+r.pid+")'>✅ Aprobar</button>" +
+      "<button class='btn btn-gray' onclick='rejectChange("+r.pid+")'>✕ Rechazar</button>" +
+      "</div></div>";
+  }).join("");
+}
+
+async function approveChange(pid) {
+  const rows = await supa("datos_pendientes?pid=eq."+pid+"&select=*");
+  if(!rows || rows.length===0) { alert("No se encontro el cambio."); return; }
+  const r = rows[0];
+  const now = new Date().toLocaleDateString("es-AR");
+  const nd = {
+    id: r.id, presencia: r.presencia, centro: r.centro, dir: r.dir,
+    afil: r.afil, ref: r.ref, tel: r.tel, prio: r.prio,
+    ec: r.ec, eg: r.eg, eo: r.eo,
+    updated_by: r.submitted_by, updated_at: r.submitted_at
+  };
+  // Guardar en datos (tabla principal)
+  const ok = await supa("datos", {
+    method: "POST",
+    prefer: "resolution=merge-duplicates,return=minimal",
+    body: JSON.stringify(nd)
+  });
+  if(ok === null) { alert("Error al guardar en datos."); return; }
+  // Marcar como aprobado
+  await supa("datos_pendientes?pid=eq."+pid, {
+    method: "PATCH",
+    prefer: "return=minimal",
+    body: JSON.stringify({estado:"aprobado", reviewed_by:sess.user, reviewed_at:now})
+  });
+  // Actualizar cache local
+  D[r.id] = {...nd};
+  localStorage.setItem(LS_DATA, JSON.stringify(D));
+  renderMap(); renderTable();
+  loadPendientes();
+  showSavingInd("✅ Cambio aprobado y publicado");
+}
+
+async function rejectChange(pid) {
+  const now = new Date().toLocaleDateString("es-AR");
+  await supa("datos_pendientes?pid=eq."+pid, {
+    method: "PATCH",
+    prefer: "return=minimal",
+    body: JSON.stringify({estado:"rechazado", reviewed_by:sess.user, reviewed_at:now})
+  });
+  loadPendientes();
+}
+
+async function addUser() {
+  const user = document.getElementById("nu_user").value.trim();
+  const pass = document.getElementById("nu_pass").value;
+  const nombre = document.getElementById("nu_nombre").value.trim();
+  const role = document.getElementById("nu_role").value;
+  const err = document.getElementById("adminErr");
+  if(!user||!pass) { err.textContent="Usuario y contrasena requeridos"; return; }
+  err.textContent="";
+  const res = await supa("usuarios", {
+    method: "POST",
+    prefer: "return=minimal",
+    body: JSON.stringify({username:user, password:pass, nombre:nombre||user, role:role})
+  });
+  if(res !== null) {
+    ["nu_user","nu_pass","nu_nombre"].forEach(id=>document.getElementById(id).value="");
+    loadAdmin();
+  } else {
+    err.textContent="Error al crear usuario (puede que ya exista)";
+  }
+}
+
+async function delUser(username) {
+  if(!confirm("Eliminar usuario '"+username+"'?")) return;
+  await supa("usuarios?username=eq."+encodeURIComponent(username), {method:"DELETE", prefer:"return=minimal"});
+  loadAdmin();
+}
+
+function exportCSV() {
+  const head = ["Localidad","Tipo","Electores","Partido gobernante","Resultado PS%","Presencia","Centro","Referente","Telefono","Afiliados","Prioridad","Actualizado por"];
+  const rows = BASE.map(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    const psPct = b.vg1&&b.vg ? (b.vg1/b.vg*100).toFixed(1)+"%" : "";
+    const centro = d.centro||(b.centroPS?"si":"");
+    return [
+      b.n, b.G?"Municipio":"Com.Comunal", b.el||"",
+      b.pp||"", psPct, LBLS[pres]||pres,
+      centro, d.ref||b.psref||"", d.tel||"",
+      d.afil||"", d.prio||"", d.updated_by||""
+    ].map(v=>'"'+(String(v).replace(/"/g,'""'))+'"').join(",");
+  });
+  const csv = [head.join(","),...rows].join("\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8,﻿"+encodeURIComponent(csv);
+  a.download = "castellanos_ps_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+</script>
+</body>
+</html>
