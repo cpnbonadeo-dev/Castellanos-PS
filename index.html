@@ -55,6 +55,7 @@ header .sub { color: #ffcdd2; font-size: 10px; margin-top: 1px; }
 .btn-green { background: #2a9d8f; color: white; }
 .btn-blue { background: #1976d2; color: white; }
 .btn-gray { background: #555; color: white; }
+.btn-orange { background: #fd7e14; color: white; }
 .btn:hover { filter: brightness(1.15); }
 table { width: 100%; border-collapse: collapse; font-size: 11px; }
 th { background: #16213e; color: #ccc; padding: 6px 8px; text-align: left; position: sticky; top: 0; cursor: pointer; white-space: nowrap; border-bottom: 2px solid #e63946; }
@@ -89,6 +90,12 @@ tr.sel-row td { background: #2a4a7f; }
 .add-user-form { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a3a5a; }
 .add-user-form input, .add-user-form select { padding: 6px 8px; border-radius: 4px; border: 1px solid #2a3a5a; background: #16213e; color: white; font-size: 11px; }
 .add-user-form .btn { grid-column: 1/-1; }
+.pend-card { background: #16213e; border-radius: 5px; padding: 10px; margin-bottom: 8px; border-left: 3px solid #fd7e14; }
+.pend-card .pend-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.pend-card .pend-loc { font-weight: bold; color: #e63946; font-size: 13px; }
+.pend-card .pend-by { font-size: 10px; color: #666; }
+.pend-card .pend-fields { font-size: 11px; color: #aaa; margin-bottom: 8px; line-height: 1.7; }
+.pend-card .pend-actions { display: flex; gap: 6px; }
 .right-panel { width: 370px; background: #16213e; border-left: 2px solid #e63946; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
 .detail-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #555; font-style: italic; font-size: 12px; text-align: center; padding: 20px; line-height: 1.8; }
 #detailContent { display: none; flex-direction: column; height: 100%; }
@@ -154,6 +161,13 @@ tr.sel-row td { background: #2a4a7f; }
     </div>
   </div>
 </header>
+<div style="background:#16213e;border-bottom:1px solid #2a3a5a;padding:4px 14px;display:flex;align-items:center;gap:16px;font-size:10px;color:#aaa;flex-shrink:0">
+  <span style="color:#e63946;font-weight:bold;text-transform:uppercase;letter-spacing:.5px">🏛 Mesa Dep. Castellanos</span>
+  <span>Coord. General: <strong style="color:#e0e0e0">Andrea Ochat</strong> (Sunchales)</span>
+  <span>Coord. Adjunta: <strong style="color:#e0e0e0">Omar Martinez</strong> (Sunchales)</span>
+  <span>Vocal: <strong style="color:#e0e0e0">Luciana Peter</strong> (Col. Raquel)</span>
+  <span style="margin-left:auto;color:#555">Electa 7/6/2026</span>
+</div>
 
 <div class="main">
   <div class="left-panel">
@@ -188,7 +202,7 @@ tr.sel-row td { background: #2a4a7f; }
               <th onclick="sortBy('presencia')">Presencia</th>
               <th onclick="sortBy('partido')">Partido</th>
               <th onclick="sortBy('electores')">Electores</th>
-              <th>Resultado</th>
+              <th>PS 2025</th>
               <th onclick="sortBy('centro')">Centro</th>
               <th onclick="sortBy('afiliados')">Afil.</th>
               <th>Editado por</th>
@@ -237,11 +251,11 @@ tr.sel-row td { background: #2a4a7f; }
         <div class="dsub" id="dSub">—</div>
       </div>
       <div class="dbody">
-        <div class="sec">📊 Panorama politico (2023)</div>
+        <div class="sec">📊 Situacion politico-electoral 2025</div>
         <div class="pbox" id="panoBox"></div>
         <div class="rtable" id="resTable" style="display:none"></div>
         <div class="who-edited" id="whoEdited"></div>
-        <div class="sec" style="margin-top:4px">🌹 Datos PS</div>
+        <div class="sec" style="margin-top:4px">📞 Contactos PS</div>
         <div class="frow">
           <label>Presencia PS</label>
           <select id="f_pres">
@@ -251,31 +265,31 @@ tr.sel-row td { background: #2a4a7f; }
             <option value="sin_datos">⚫ Sin datos</option>
           </select>
         </div>
+        <div class="frow"><label>Referente/a principal</label><input type="text" id="f_ref" placeholder="Nombre y apellido..."></div>
+        <div class="frow"><label>Telefono / WhatsApp</label><input type="text" id="f_tel" placeholder="+54 3492 ..."></div>
+        <div class="frow"><label>Como ubicarlo/a</label><input type="text" id="f_dir" placeholder="Trabajo, barrio, cuando llamar..."></div>
         <div class="frow">
           <label>Centro Socialista</label>
           <select id="f_centro">
             <option value="">— no confirmado —</option>
-            <option value="si">✅ Si tiene Centro</option>
+            <option value="si">✅ Tiene Centro activo</option>
             <option value="no">❌ No tiene Centro</option>
           </select>
         </div>
-        <div class="frow"><label>Direccion Centro</label><input type="text" id="f_dir" placeholder="Direccion..."></div>
         <div class="frow"><label>N° Afiliados PS</label><input type="number" id="f_afil" placeholder="0" min="0"></div>
-        <div class="frow"><label>Referente/a</label><input type="text" id="f_ref" placeholder="Nombre y apellido..."></div>
-        <div class="frow"><label>Telefono</label><input type="text" id="f_tel" placeholder="+54 3492 ..."></div>
         <div class="frow">
-          <label>Prioridad</label>
+          <label>Prioridad de visita</label>
           <select id="f_prio">
             <option value="">— sin definir —</option>
-            <option value="alta">🔴 Alta</option>
+            <option value="alta">🔴 Alta — ir pronto</option>
             <option value="media">🟡 Media</option>
             <option value="baja">🟢 Baja</option>
           </select>
         </div>
-        <div class="sec" style="margin-top:4px">🎯 Estrategia</div>
-        <div class="frow"><label>Crecimiento electoral</label><textarea id="f_ec" placeholder="Como crecer electoralmente?"></textarea></div>
-        <div class="frow"><label>Formacion de grupo politico</label><textarea id="f_eg" placeholder="Como armar o fortalecer el grupo PS?"></textarea></div>
-        <div class="frow"><label>Observaciones generales</label><textarea id="f_eo" placeholder="Otras notas..."></textarea></div>
+        <div class="sec" style="margin-top:4px">🗒️ Notas de visita</div>
+        <div class="frow"><label>Para hablar / proponer</label><textarea id="f_ec" placeholder="Temas a llevar, como arrancar la charla..."></textarea></div>
+        <div class="frow"><label>Grupo PS / militancia</label><textarea id="f_eg" placeholder="Quienes estan, como esta el grupo..."></textarea></div>
+        <div class="frow"><label>Observaciones</label><textarea id="f_eo" placeholder="Otras notas utiles..."></textarea></div>
       </div>
       <div class="saving-indicator" id="savingInd"></div>
       <div class="dactions">
@@ -287,59 +301,60 @@ tr.sel-row td { background: #2a4a7f; }
 </div>
 
 <script>
-// ══ SUPABASE — REEMPLAZAR CON TUS DATOS ══════════════════════
+// ══ SUPABASE ══════════════════════════════════════════════════
 const SUPA_URL = "https://ikaadszatnbmzjrjvmkv.supabase.co";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrYWFkc3phdG5ibXpqcmp2bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mjc1ODMsImV4cCI6MjA5NzEwMzU4M30.QS4ClCaryH56pGAVc4ICS_eHC1LZmvQFrR4KNri3GSs";
 
 // ══ DATOS ELECTORALES ═════════════════════════════════════════
 const BASE = [
-  {id:"rafaela",       n:"Rafaela",              x:356,y:340,G:true, px:"Soltermam Valeria",         pp:"Mas para SFE",        sc:"Concejal UNIDOS: Scavino Brusa Juan M.", el:83002,vv:null, vg:14651,p2:"Mas para SFE",   v2:11808,p3:"LLA",               pres:"nula"},
-  {id:"sunchales",     n:"Sunchales",            x:315,y:172,G:true, px:"Delmastro Jose Santiago (PS)",pp:"Ahora Sunchales (PS)",sc:"PS: Intendente Delmastro + 3 concejales", el:19552,vv:null, vg:2910, p2:"Ahora Sunchales", v2:2592, p3:"LLA",               pres:"fuerte"},
-  {id:"frontera",      n:"Frontera",             x:65, y:523,G:true, px:"Milanesio Fabio",           pp:"UNIDOS",              sc:null,                                     el:7243, vv:null, vg:1571, p2:"UNIDOS",          v2:951,  p3:"Mas para SFE",     pres:"debil"},
-  {id:"san_vicente",   n:"San Vicente",          x:322,y:663,G:true, px:"Aira Gonzalo (UCR-UNIDOS)", pp:"UNIDOS",              sc:"Concejal PS: Marchese Juan Carlos",      el:5427, vv:null, vg:1711, p2:"UNIDOS",          v2:1076, p3:"Somos Vida y Lib.",pres:"debil"},
-  {id:"humberto",      n:"Humberto Primo",       x:442,y:112,G:true, px:"Gilabert Mauro Alejandro",  pp:"UNIDOS",              sc:null,                                     el:4677, vv:null, vg:1500, p2:"UNIDOS",          v2:403,  p3:"BLANCOS",          pres:"debil"},
-  {id:"maria_juana",   n:"Maria Juana",          x:242,y:659,G:true, px:"Maciel Zulma Norma",        pp:"UNIDOS",              sc:null,                                     el:4157, vv:null, vg:1306, p2:"UNIDOS",          v2:1208, p3:"Mas para SFE",     pres:"debil"},
-  {id:"col_aldao",     n:"Colonia Aldao",        x:208,y:202,        px:"Eberhardt Lorena",          pp:"UNIDOS",              sc:"Socialista",                             el:1692, vv:1012, vg:538,  p2:"UNIDOS",          v2:448,  p3:"Mas para SFE",     pres:"fuerte"},
-  {id:"angelica",      n:"Angelica",             x:350,y:556,        px:"ANDRES Marcos",             pp:"Mas para SFE",        sc:null,                                     el:1201, vv:932,  vg:634,  p2:"Mas para SFE",   v2:293,  p3:"UNIDOS",            pres:"nula"},
-  {id:"ataliva",       n:"Ataliva",              x:393,y:212,        px:"ALVAREZ Jose Manuel",       pp:"UNIDOS",              sc:"Lista unica",                            el:1777, vv:868,  vg:641,  p2:"UNIDOS",          v2:227,  p3:"BLANCOS",          pres:"debil"},
-  {id:"aurelia",       n:"Aurelia",              x:400,y:430,        px:"MOREL Roberto Adrian",      pp:"Esfuerzo Vecinal",    sc:null,                                     el:138,  vv:67,   vg:67,   p2:"Esf. x Aurelia",  v2:12,   p3:"BLANCOS",          pres:"sin_datos"},
-  {id:"bauer_sigel",   n:"Bauer y Sigel",        x:93, y:379,        px:"SERRANI Franco",            pp:"UNIDOS",              sc:"Lista unica",                            el:247,  vv:146,  vg:117,  p2:"UNIDOS",          v2:29,   p3:"BLANCOS",          pres:"debil"},
-  {id:"bella_italia",  n:"Bella Italia",         x:424,y:367,        px:"PEROTTI Hector",            pp:"Mas para SFE",        sc:null,                                     el:1499, vv:849,  vg:733,  p2:"UNIDOS",          v2:116,  p3:"BLANCOS",          pres:"nula"},
-  {id:"col_bicha",     n:"Col. Bicha",           x:153,y:115,        px:"ALOCHIS Miguel Edgardo",    pp:"UNIDOS",              sc:"Lista unica",                            el:179,  vv:79,   vg:72,   p2:"UNIDOS",          v2:7,    p3:"BLANCOS",          pres:"debil"},
-  {id:"col_bigand",    n:"Col. Bigand",          x:228,y:232,        px:"OGGERO Adrian",             pp:"Mas para SFE",        sc:null,                                     el:51,   vv:40,   vg:38,   p2:"Mas para SFE",   v2:2,    p3:"BLANCOS",           pres:"nula"},
-  {id:"castellanos_c", n:"Castellanos",          x:215,y:314,        px:"AUDINO Diego",              pp:"UNIDOS",              sc:"Lista unica",                            el:305,  vv:168,  vg:138,  p2:"UNIDOS",          v2:30,   p3:"BLANCOS",          pres:"debil"},
-  {id:"col_cello",     n:"Colonia Cello",        x:158,y:472,        px:"HECK Maria del Carmen",     pp:"UNIDOS",              sc:null,                                     el:174,  vv:104,  vg:87,   p2:"UNIDOS",          v2:17,   p3:"BLANCOS",          pres:"debil"},
-  {id:"col_iturraspe", n:"Col. Iturraspe",       x:298,y:499,        px:"PICCO Dario",               pp:"UNIDOS",              sc:"ps? (confirmar)",                        el:48,   vv:31,   vg:24,   p2:"UNIDOS",          v2:7,    p3:"BLANCOS",          pres:"debil"},
-  {id:"col_margarita", n:"Col. Margarita",       x:261,y:679,        px:"MURATORE Maria Soledad",    pp:"UNIDOS",              sc:"PS",                                     el:313,  vv:249,  vg:166,  p2:"UNIDOS",          v2:82,   p3:"Mas para SFE",     pres:"fuerte"},
-  {id:"maua",          n:"Maua",                 x:497,y:48,         px:"Garbagnoli Ricardo",        pp:"UNIDOS",              sc:"Lista unica",                            el:53,   vv:23,   vg:23,   p2:null,              v2:null, p3:null,               pres:"debil"},
-  {id:"col_raquel",    n:"Colonia Raquel",       x:355,y:72,         px:"Peter Luciana",             pp:"UNIDOS",              sc:null,                                     el:305,  vv:140,  vg:111,  p2:"UNIDOS",          v2:29,   p3:"BLANCOS",          pres:"debil"},
-  {id:"coronel_fraga", n:"Coronel Fraga",        x:108,y:313,        px:"Palacio Marisabel Ines",    pp:"UNIDOS",              sc:null,                                     el:283,  vv:235,  vg:166,  p2:"UNIDOS",          v2:69,   p3:"Mas para SFE",     pres:"debil"},
-  {id:"plaza_cluc",    n:"Plaza Clucellas",      x:232,y:481,        px:"BONO Gabriel",              pp:"UNIDOS",              sc:null,                                     el:1290, vv:602,  vg:403,  p2:"UNIDOS",          v2:199,  p3:"BLANCOS",          pres:"debil"},
-  {id:"egusquiza",     n:"Egusquiza",            x:280,y:246,        px:"Celis Ma. Florencia",       pp:"UNIDOS",              sc:null,                                     el:376,  vv:223,  vg:196,  p2:"UNIDOS",          v2:27,   p3:"BLANCOS",          pres:"debil"},
-  {id:"esmeralda",     n:"Esmeralda",            x:88, y:623,        px:"Berra Luis Alberto",        pp:"UNIDOS",              sc:"Lista unica",                            el:514,  vv:322,  vg:257,  p2:"UNIDOS",          v2:65,   p3:"BLANCOS",          pres:"debil"},
-  {id:"est_cluc",      n:"Est. Clucellas",       x:232,y:535,        px:"Peretti Eduardo",           pp:"UNIDOS",              sc:null,                                     el:778,  vv:516,  vg:433,  p2:"UNIDOS",          v2:83,   p3:"BLANCOS",          pres:"debil"},
-  {id:"eusebia",       n:"Eusebia y Carolina",   x:143,y:141,        px:"Gimnez Susana",             pp:"UNIDOS",              sc:null,                                     el:718,  vv:319,  vg:274,  p2:"UNIDOS",          v2:45,   p3:"BLANCOS",          pres:"debil"},
-  {id:"eustolia",      n:"Eustolia",             x:190,y:600,        px:"Beltramo Juan Marcelo",     pp:"Mas para SFE",        sc:null,                                     el:141,  vv:119,  vg:77,   p2:"Mas para SFE",   v2:42,   p3:"UNIDOS",            pres:"nula"},
-  {id:"fidela",        n:"Fidela",               x:181,y:233,        px:"Ovena Jorge Antonio",       pp:"UNIDOS",              sc:"Lista unica",                            el:88,   vv:53,   vg:44,   p2:"UNIDOS",          v2:9,    p3:"BLANCOS",          pres:"debil"},
-  {id:"galisteo",      n:"Galisteo",             x:455,y:210,        px:"CANAVESE Javier",           pp:"UNIDOS",              sc:null,                                     el:159,  vv:130,  vg:111,  p2:"UNIDOS",          v2:19,   p3:"Mas para SFE",     pres:"debil"},
-  {id:"garibaldi",     n:"Garibaldi",            x:162,y:650,        px:"Gamboa Maribel Natalia",    pp:"Mas para SFE",        sc:null,                                     el:168,  vv:138,  vg:80,   p2:"Mas para SFE",   v2:58,   p3:"UNIDOS",            pres:"nula"},
-  {id:"hugentobler",   n:"Hugentobler",          x:205,y:152,        px:"MILANESIO Luciano Rene",    pp:"Mas para SFE",        sc:null,                                     el:46,   vv:33,   vg:32,   p2:"Mas para SFE",   v2:1,    p3:"BLANCOS",           pres:"nula"},
-  {id:"josefina",      n:"Josefina",             x:72, y:448,        px:"Sicardi Jorgelina Andrea",  pp:"UNIDOS",              sc:null,                                     el:1659, vv:445,  vg:345,  p2:"UNIDOS",          v2:100,  p3:"BLANCOS",          pres:"debil"},
-  {id:"lehmann",       n:"Lehmann",              x:380,y:267,        px:"Bett Marcelo Antonio",      pp:"UNIDOS",              sc:null,                                     el:2649, vv:1213, vg:922,  p2:"UNIDOS",          v2:291,  p3:"BLANCOS",          pres:"debil"},
-  {id:"pte_roca",      n:"Presidente Roca",      x:278,y:326,        px:"Montenegro Jessica Soledad",pp:"Somos Vida y Lib.",   sc:null,                                     el:746,  vv:517,  vg:282,  p2:"Somos Vida y Lib.",v2:235,  p3:"UNIDOS",           pres:"nula"},
-  {id:"pueblo_marini", n:"Pueblo Marini",        x:133,y:203,        px:"Ferrer Amalia Romina",      pp:"Mas para SFE",        sc:null,                                     el:104,  vv:60,   vg:55,   p2:"Mas para SFE",   v2:5,    p3:"BLANCOS",           pres:"nula"},
-  {id:"ramona",        n:"Ramona",               x:110,y:253,        px:"Barbero Jose Alberto",      pp:"Union Vecinal Ramona",sc:null,                                     el:1575, vv:1170, vg:835,  p2:"Union Vec. Ramona",v2:335,  p3:"UNIDOS",           pres:"sin_datos"},
-  {id:"saguier",       n:"Saguier",              x:247,y:406,        px:"Ramos Sergio Daniel",       pp:"UNIDOS",              sc:null,                                     el:645,  vv:310,  vg:247,  p2:"UNIDOS",          v2:63,   p3:"BLANCOS",          pres:"debil"},
-  {id:"san_antonio",   n:"San Antonio",          x:212,y:355,        px:"Previotto Mauro Damian",    pp:"UNIDOS",              sc:null,                                     el:298,  vv:146,  vg:111,  p2:"UNIDOS",          v2:35,   p3:"BLANCOS",          pres:"debil"},
-  {id:"sta_clara",     n:"Sta. Clara de Saguier",x:165,y:414,        px:"Tivano Sergio Jose",        pp:"Mas para SFE",        sc:null,                                     el:1801, vv:1087, vg:617,  p2:"Mas para SFE",   v2:470,  p3:"UNIDOS",            pres:"nula"},
-  {id:"susana",        n:"Susana",               x:345,y:424,        px:"Perino Jorge",              pp:"UNIDOS",              sc:null,                                     el:1303, vv:801,  vg:493,  p2:"UNIDOS",          v2:308,  p3:"Mas para SFE",     pres:"debil"},
-  {id:"tacural",       n:"Tacural",              x:298,y:73,         px:"Sola Adrian Jose",          pp:"Mas para SFE",        sc:null,                                     el:1339, vv:678,  vg:483,  p2:"Mas para SFE",   v2:195,  p3:"BLANCOS",           pres:"nula"},
-  {id:"tacurales",     n:"Tacurales",            x:212,y:65,         px:null,                        pp:null,                  sc:null,                                     el:null, vv:null, vg:null, p2:null,              v2:null, p3:null,               pres:"sin_datos"},
-  {id:"vila",          n:"Vila",                 x:163,y:311,        px:"Borgatello Ma. Leticia",    pp:"UNIDOS",              sc:null,                                     el:1292, vv:821,  vg:418,  p2:"UNIDOS",          v2:403,  p3:"Mas para SFE",     pres:"debil"},
-  {id:"villa_san_jose",n:"Villa San Jose",       x:285,y:424,        px:"Forni Julio Cesar",         pp:"UNIDOS",              sc:null,                                     el:346,  vv:207,  vg:162,  p2:"UNIDOS",          v2:45,   p3:"BLANCOS",          pres:"debil"},
-  {id:"virginia",      n:"Virginia",             x:455,y:25,         px:null,                        pp:"UNIDOS",              sc:null,                                     el:168,  vv:null, vg:null, p2:"UNIDOS",          v2:12,   p3:"BLANCOS",          pres:"debil"},
-  {id:"zenon_pereyra", n:"Zenon Pereyra",        x:120,y:566,        px:"GALLO Veronica",            pp:"UNIDOS",              sc:null,                                     el:1460, vv:670,  vg:431,  p2:"UNIDOS",          v2:239,  p3:"BLANCOS",          pres:"debil"},
+  {id:"rafaela", n:"Rafaela", x:356,y:340, G:true, px:"Viotti Luis \'Leo\' (UNIDOS, int.2023)", pp:"Más para SFE", sc:"Concejales 2025: Soltermam (MAS,1), Dellasanta (LLA,2), Scavino Brusa (UNIDOS,3)", el:83002, vg:41194, vg1:14651, p2:"LLA",v2:11808, p3:"UNIDOS",v3:9506, pres:"debil", psref:"Gaspoz Santiago J.", centroPS:true},
+  {id:"sunchales", n:"Sunchales", x:315,y:172, G:true, px:"Pinotti Pablo (Ahora Sunchales, int.2023)", pp:"Ahora Sunchales", sc:"PS apoya a Pinotti como Intendente (Ahora Sunchales). Concejales PS: Delmastro (2025), Astor y Torriri (2023). Centro Socialista: Sec. Gral. Galli Funes Jose Augusto (electo jun.2026). Congresales prov.: Ochat Andrea y Galli Funes Jose Augusto", el:19552, vg:9343, vg1:2910, p2:"LLA",v2:2592, p3:"Más para SFE",v3:1529, pres:"fuerte", psref:"Galli Funes Jose Augusto", centroPS:true},
+  {id:"frontera", n:"Frontera", x:65,y:523, G:true, px:"Milanesio Fabio (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista: Sec. Gral. Perez Susana (electa jun.2026). Congresales prov.: Perez Susana y Perez Carlos", el:7243, vg:2558, vg1:1571, p2:"Más para SFE",v2:951, p3:null,v3:null, pres:"debil", psref:"Perez Susana", centroPS:true},
+  {id:"san_vicente", n:"San Vicente", x:322,y:663, G:true, px:"Aira Gonzalo (UNIDOS, int.2025)", pp:"UNIDOS", sc:"Concejal PS: Marchese Juan Carlos (UNIDOS, 3°)", el:5427, vg:3357, vg1:1711, p2:"Somos Vida y Lib.",v2:1076, p3:"Más para SFE",v3:454, pres:"debil", psref:"Marchese Juan Carlos", centroPS:false},
+  {id:"humberto", n:"Humberto Primo", x:442,y:112, G:true, px:"Gilabert Mauro (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista activo", el:4677, vg:1903, vg1:1500, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:"Antonioli Matias G.", centroPS:true},
+  {id:"maria_juana", n:"Maria Juana", x:242,y:659, G:true, px:"Maciel Zulma (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista: Sec. Gral. Luna Abelardo Damian (electo jun.2026). Congresal prov. titular: Bazzoni Amadeo", el:4157, vg:2833, vg1:1306, p2:"Más para SFE",v2:1208, p3:"MJuana Crece y Aprende",v3:291, pres:"debil", psref:"Luna Abelardo D.", centroPS:true},
+  {id:"col_aldao", n:"Colonia Aldao", x:208,y:202, px:"Eberhardt Lorena (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Eberhardt Lorena", el:1692, vg:1012, vg1:538, p2:"Más para SFE",v2:448, p3:null,v3:null, pres:"fuerte", psref:"Eberhardt Lorena", centroPS:false},
+  {id:"angelica", n:"Angelica", x:350,y:556, px:"Andres Marcos (Más para SFE)", pp:"Más para SFE", sc:null, el:1201, vg:932, vg1:634, p2:"UNIDOS",v2:293, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"ataliva", n:"Ataliva", x:393,y:212, px:"Alvarez Jose Manuel (UNIDOS)", pp:"UNIDOS", sc:null, el:1777, vg:868, vg1:641, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"aurelia", n:"Aurelia", x:400,y:430, px:"Morel Roberto (Esfuerzo Vecinal)", pp:"Esfuerzo Vecinal", sc:null, el:138, vg:79, vg1:67, p2:null,v2:null, p3:null,v3:null, pres:"sin_datos", psref:null, centroPS:false},
+  {id:"bauer_sigel", n:"Bauer y Sigel", x:93,y:379, px:"Serrani Franco (UNIDOS)", pp:"UNIDOS", sc:null, el:247, vg:146, vg1:117, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"bella_italia", n:"Bella Italia", x:424,y:367, px:"Perotti Hector (Más para SFE)", pp:"Más para SFE", sc:null, el:1499, vg:849, vg1:733, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"col_bicha", n:"Col. Bicha", x:153,y:115, px:"Alochis Miguel (UNIDOS)", pp:"UNIDOS", sc:null, el:179, vg:79, vg1:72, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"col_bigand", n:"Col. Bigand", x:228,y:232, px:"Oggero Adrian (Más para SFE)", pp:"Más para SFE", sc:null, el:51, vg:40, vg1:38, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"castellanos_c", n:"Castellanos", x:215,y:314, px:"Audino Diego (UNIDOS)", pp:"UNIDOS", sc:null, el:305, vg:168, vg1:138, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"col_cello", n:"Colonia Cello", x:158,y:472, px:"Heck Maria del Carmen (UNIDOS)", pp:"UNIDOS", sc:null, el:174, vg:104, vg1:87, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"col_iturraspe", n:"Col. Iturraspe", x:298,y:499, px:"Picco Dario (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Picco Dario", el:48, vg:31, vg1:24, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Picco Dario", centroPS:false},
+  {id:"col_margarita", n:"Col. Margarita", x:261,y:679, px:"Muratore Maria Soledad (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Muratore Maria Soledad", el:313, vg:249, vg1:166, p2:"Más para SFE",v2:82, p3:null,v3:null, pres:"fuerte", psref:"Muratore Maria Soledad", centroPS:false},
+  {id:"maua", n:"Maua", x:497,y:48, px:"Garbagnoli Ricardo (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Garbagnoli Ricardo", el:53, vg:23, vg1:23, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Garbagnoli Ricardo", centroPS:false},
+  {id:"col_raquel", n:"Colonia Raquel", x:355,y:72, px:"Peter Luciana (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Peter Luciana (Vocal Mesa Dep.). Centro Socialista: Sec. Gral. Airasca Alejandro Cesar (electo jun.2026). Congresal prov. titular: Peter Luciana Marisabel", el:305, vg:140, vg1:111, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Airasca Alejandro", centroPS:true},
+  {id:"coronel_fraga", n:"Coronel Fraga", x:108,y:313, px:"Palacio Marisabel (UNIDOS)", pp:"UNIDOS", sc:null, el:283, vg:236, vg1:166, p2:"Más para SFE",v2:69, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"plaza_cluc", n:"Plaza Clucellas", x:232,y:481, px:"Bono Gabriel (UNIDOS)", pp:"UNIDOS", sc:null, el:1290, vg:602, vg1:403, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"egusquiza", n:"Egusquiza", x:280,y:246, px:"Celis Maria Florencia (UNIDOS)", pp:"UNIDOS", sc:null, el:376, vg:223, vg1:196, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"esmeralda", n:"Esmeralda", x:88,y:623, px:"Berra Luis Alberto (UNIDOS)", pp:"UNIDOS", sc:null, el:514, vg:322, vg1:257, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"est_cluc", n:"Est. Clucellas", x:232,y:535, px:"Peretti Eduardo (UNIDOS)", pp:"UNIDOS", sc:null, el:778, vg:516, vg1:433, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"eusebia", n:"Eusebia y Carolina", x:143,y:141, px:"Gimenez Susana (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Gimenez Susana", el:718, vg:319, vg1:274, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Gimenez Susana", centroPS:false},
+  {id:"eustolia", n:"Eustolia", x:190,y:600, px:"Beltramo Juan Marcelo (Más para SFE)", pp:"Más para SFE", sc:null, el:141, vg:121, vg1:77, p2:"UNIDOS",v2:42, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"fidela", n:"Fidela", x:181,y:233, px:"Ovena Jorge Antonio (UNIDOS)", pp:"UNIDOS", sc:null, el:88, vg:53, vg1:44, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"galisteo", n:"Galisteo", x:455,y:210, px:"Canavese Javier (UNIDOS)", pp:"UNIDOS", sc:null, el:159, vg:132, vg1:111, p2:"Más para SFE",v2:19, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"garibaldi", n:"Garibaldi", x:162,y:650, px:"Gamboa Maribel (Más para SFE)", pp:"Más para SFE", sc:"PS: Spilj Andres (minoría, UNIDOS)", el:168, vg:138, vg1:80, p2:"UNIDOS",v2:58, p3:null,v3:null, pres:"debil", psref:"Spilj Andres", centroPS:false},
+  {id:"hugentobler", n:"Hugentobler", x:205,y:152, px:"Milanesio Luciano (Más para SFE)", pp:"Más para SFE", sc:null, el:46, vg:33, vg1:32, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"josefina", n:"Josefina", x:72,y:448, px:"Sicardi Jorgelina (UNIDOS)", pp:"UNIDOS", sc:null, el:1659, vg:445, vg1:345, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"lehmann", n:"Lehmann", x:380,y:267, px:"Bett Marcelo (UNIDOS)", pp:"UNIDOS", sc:null, el:2649, vg:1213, vg1:922, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"pte_roca", n:"Presidente Roca", x:278,y:326, px:"Montenegro Jessica (Somos Vida y Lib.)", pp:"Somos Vida y Lib.", sc:null, el:746, vg:528, vg1:282, p2:"UNIDOS",v2:235, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"pueblo_marini", n:"Pueblo Marini", x:133,y:203, px:"Ferrer Amalia (Más para SFE)", pp:"Más para SFE", sc:null, el:104, vg:60, vg1:55, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"ramona", n:"Ramona", x:110,y:253, px:"Barbero Jose Alberto (Union Vecinal Ramona)", pp:"Union Vecinal Ramona", sc:"Centro Socialista activo", el:1575, vg:1224, vg1:835, p2:"UNIDOS",v2:335, p3:null,v3:null, pres:"debil", psref:"Ardiles Hernan G.", centroPS:true},
+  {id:"saguier", n:"Saguier", x:247,y:406, px:"Ramos Sergio (UNIDOS)", pp:"UNIDOS", sc:null, el:645, vg:310, vg1:247, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"san_antonio", n:"San Antonio", x:212,y:355, px:"Previotto Mauro (UNIDOS)", pp:"UNIDOS", sc:null, el:298, vg:146, vg1:111, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"sta_clara", n:"Sta. Clara de Saguier", x:165,y:414, px:"Tivano Sergio (Más para SFE)", pp:"Más para SFE", sc:null, el:1801, vg:1124, vg1:617, p2:"UNIDOS",v2:470, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"susana", n:"Susana", x:345,y:424, px:"Perino Jorge (UNIDOS)", pp:"UNIDOS", sc:"Centro Socialista: Sec. Gral. Tabin Duggo Juan Pablo (electo jun.2026). Congresal prov. titular: Tabin Duggo Juan Pablo", el:1303, vg:824, vg1:493, p2:"Más para SFE",v2:308, p3:null,v3:null, pres:"debil", psref:"Tabin Juan Pablo", centroPS:true},
+  {id:"tacural", n:"Tacural", x:298,y:73, px:"Sola Adrian (Más para SFE)", pp:"Más para SFE", sc:null, el:1339, vg:678, vg1:483, p2:null,v2:null, p3:null,v3:null, pres:"nula", psref:null, centroPS:false},
+  {id:"tacurales", n:"Tacurales", x:212,y:65, px:"Chiappero Damian (UNIDOS)", pp:"UNIDOS", sc:null, el:162, vg:68, vg1:66, p2:null,v2:null, p3:null,v3:null, pres:"sin_datos", psref:null, centroPS:false},
+  {id:"vila", n:"Vila", x:163,y:311, px:"Borgatello Ma. Leticia (UNIDOS)", pp:"UNIDOS", sc:null, el:1292, vg:1053, vg1:418, p2:"Más para SFE",v2:403, p3:"Vila de Frente",v3:223, pres:"debil", psref:null, centroPS:false},
+  {id:"villa_san_jose", n:"Villa San Jose", x:285,y:424, px:"Forni Julio Cesar (UNIDOS)", pp:"UNIDOS", sc:null, el:346, vg:207, vg1:162, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"virginia", n:"Virginia", x:455,y:25, px:"Fraire Pedro (UNIDOS)", pp:"UNIDOS", sc:null, el:168, vg:106, vg1:94, p2:null,v2:null, p3:null,v3:null, pres:"debil", psref:null, centroPS:false},
+  {id:"zenon_pereyra", n:"Zenon Pereyra", x:120,y:566, px:"Gallo Veronica (UNIDOS)", pp:"UNIDOS", sc:"PS: Pres. Comunal Gallo Veronica. Centro Socialista: Sec. Gral. Dome Laura Lorena (electa jun.2026). Congresal prov.: Gallo Veronica Jesica", el:1460, vg:670, vg1:431, p2:null,v2:null, p3:null,v3:null, pres:"fuerte", psref:"Dome Laura Lorena", centroPS:true},
 ];
+
 
 const LS_DATA = "ps_castellanos_v5";
 const LS_SESS = "ps_castellanos_sess";
@@ -353,7 +368,7 @@ let sess = JSON.parse(localStorage.getItem(LS_SESS)||"null");
 let D    = JSON.parse(localStorage.getItem(LS_DATA)||"{}");
 let selId = null, sortF = "nombre", sortA = true;
 
-// ══ SUPABASE ═════════════════════════════════════════════════
+// ══ SUPABASE FETCH ════════════════════════════════════════════
 const supa = (path, opts = {}) => {
   const headers = {
     "apikey": SUPA_KEY,
@@ -372,14 +387,30 @@ const supa = (path, opts = {}) => {
   }).catch(() => null);
 };
 
-// ══ INIT ═════════════════════════════════════════════════════
+// ══ INIT ══════════════════════════════════════════════════════
 window.onload = () => {
-  BASE.forEach(b => { if(!D[b.id]) D[b.id] = {presencia:b.pres,centro:"",dir:"",afil:"",ref:"",tel:"",prio:"",ec:"",eg:"",eo:"",updated_by:"",updated_at:""}; });
+  // Inicializar D con defaults del BASE
+  BASE.forEach(b => {
+    if (!D[b.id]) {
+      D[b.id] = {
+        presencia: b.pres,
+        centro: b.centroPS ? "si" : "",
+        dir: "", afil: "",
+        ref: b.psref || "",
+        tel: "", prio: "", ec: "", eg: "", eo: "",
+        updated_by: "", updated_at: ""
+      };
+    } else {
+      // Si ya existe pero sin ref, pre-cargar desde psref
+      if (!D[b.id].ref && b.psref) D[b.id].ref = b.psref;
+      if (!D[b.id].centro && b.centroPS) D[b.id].centro = "si";
+    }
+  });
   if (!sess) { document.getElementById("ovLogin").classList.remove("hidden"); return; }
   startApp();
 };
 
-// ══ LOGIN ════════════════════════════════════════════════════
+// ══ LOGIN ═════════════════════════════════════════════════════
 async function doLogin() {
   const user = document.getElementById("loginUser").value.trim();
   const pass = document.getElementById("loginPass").value;
@@ -406,7 +437,7 @@ function showUserMenu() {
   }
 }
 
-// ══ ARRANCAR ═════════════════════════════════════════════════
+// ══ ARRANCAR ══════════════════════════════════════════════════
 function startApp() {
   document.getElementById("userLabel").textContent = sess.nombre || sess.user;
   if (sess.role === "admin") {
@@ -421,12 +452,20 @@ function startApp() {
   syncFromServer(false);
 }
 
-// ══ SYNC ════════════════════════════════════════════════════
+// ══ SYNC ══════════════════════════════════════════════════════
 async function syncFromServer(showFeedback) {
   setSyncState("loading");
   const rows = await supa("datos?select=*");
   if (rows && Array.isArray(rows)) {
-    rows.forEach(r => { D[r.id] = r; });
+    rows.forEach(r => {
+      // Fusionar: datos del server, manteniendo psref/centroPS si no hay ref guardado
+      const b = BASE.find(x => x.id === r.id);
+      if (b) {
+        if (!r.ref && b.psref) r.ref = b.psref;
+        if (!r.centro && b.centroPS) r.centro = "si";
+      }
+      D[r.id] = r;
+    });
     localStorage.setItem(LS_DATA, JSON.stringify(D));
     setSyncState("ok");
     renderMap(); renderTable();
@@ -438,7 +477,7 @@ async function syncFromServer(showFeedback) {
 }
 function setSyncState(s) { document.getElementById("syncDot").className = "sync-dot " + s; }
 
-// ══ MAPA ════════════════════════════════════════════════════
+// ══ MAPA ══════════════════════════════════════════════════════
 function renderMap() {
   const w = document.getElementById("mapWrapper");
   w.querySelectorAll(".loc-dot-el,.loc-label").forEach(e=>e.remove());
@@ -477,9 +516,10 @@ function showTip(e,b) {
   const d = D[b.id]||{};
   const pres = d.presencia||b.pres||"sin_datos";
   let h = "<strong>"+b.n+"</strong> — "+(LBLS[pres]||"");
-  if(b.pp) h += "<br>"+( b.px||"?")+" <em>("+b.pp+")</em>";
-  const tot=b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
-  if(b.el) h += "<br>"+fmt(b.el)+" electores"+(tot&&b.vg?" · "+pct(b.vg,tot)+" 1°":"");
+  if(b.pp) h += "<br><span style='font-size:9px;color:#888'>Gobierno:</span> <strong>"+(b.px||"?")+"</strong> <em>("+b.pp+")</em>";
+  if(b.el) h += "<br>"+fmt(b.el)+" electores"+(b.vg1&&b.vg?" · PS: "+pct(b.vg1,b.vg):"");
+  const ref = d.ref||b.psref;
+  if(ref) h += "<br>🌹 "+ref;
   if(d.updated_by) h += "<br>✏️ "+d.updated_by+(d.updated_at?" · "+d.updated_at:"");
   const tip = document.getElementById("tooltip");
   tip.innerHTML = h; tip.style.display = "block";
@@ -490,7 +530,7 @@ function showTip(e,b) {
 }
 function hideTip() { document.getElementById("tooltip").style.display="none"; }
 
-// ══ TABLA ════════════════════════════════════════════════════
+// ══ TABLA ═════════════════════════════════════════════════════
 function renderTable() {
   const q = document.getElementById("searchInput").value.toLowerCase();
   const fp = document.getElementById("filterPres").value;
@@ -519,19 +559,19 @@ function renderTable() {
   list.forEach(b => {
     const d = D[b.id]||{};
     const pres = d.presencia||b.pres||"sin_datos";
-    const tot = b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
-    const p1pct = b.vg&&tot?(b.vg/tot*100).toFixed(0)+"%":"—";
+    const psPct = b.vg1&&b.vg ? pct(b.vg1,b.vg) : "—";
     const cl = pcls(b.pp);
+    const centro = d.centro||b.centroPS?"✅":"";
     const tr = document.createElement("tr");
     if(selId===b.id) tr.classList.add("sel-row");
-    tr.innerHTML = "<td><strong>"+b.n+"</strong></td><td><span class='badge b-"+pres+"'>"+LBLS[pres]+"</span></td><td><span class='c-"+cl+"'>"+(b.pp||"—")+"</span></td><td>"+fmt(b.el)+"</td><td>"+p1pct+"</td><td>"+(d.centro==="si"?"✅":d.centro==="no"?"❌":"")+"</td><td>"+(d.afil||"—")+"</td><td><span class='who-tag'>"+(d.updated_by||"")+"</span></td>";
+    tr.innerHTML = "<td><strong>"+b.n+"</strong></td><td><span class='badge b-"+pres+"'>"+LBLS[pres]+"</span></td><td><span class='c-"+cl+"'>"+(b.pp||"—")+"</span></td><td>"+fmt(b.el)+"</td><td style='color:#e63946'>"+psPct+"</td><td>"+(d.centro==="si"||b.centroPS?"✅":d.centro==="no"?"❌":"")+"</td><td>"+(d.afil||"—")+"</td><td><span class='who-tag'>"+(d.updated_by||"")+"</span></td>";
     tr.addEventListener("click",()=>selectLoc(b.id));
     tb.appendChild(tr);
   });
 }
 function sortBy(f){if(sortF===f)sortA=!sortA;else{sortF=f;sortA=true;}renderTable();}
 
-// ══ DETALLE ══════════════════════════════════════════════════
+// ══ DETALLE ═══════════════════════════════════════════════════
 function selectLoc(id){ selId=id; openDetail(id); renderMap(); renderTable(); }
 
 function openDetail(id) {
@@ -541,34 +581,43 @@ function openDetail(id) {
   document.getElementById("dNombre").textContent=b.n;
   const sub=[];
   if(b.el) sub.push(fmt(b.el)+" electores");
-  if(b.G) sub.push("Municipio");
-  if(b.sc) sub.push(b.sc);
-  document.getElementById("dSub").textContent=sub.join(" · ")||"Sin datos electorales";
+  sub.push(b.G?"Municipio":"Comision Comunal");
+  document.getElementById("dSub").textContent=sub.join(" · ");
+  // Panorama politico
   const rw=(l,v)=>"<div class='prow'><span class='plabel'>"+l+"</span>"+v+"</div>";
   let ph="";
-  if(b.px) ph+=rw("Intendente/a","<span class='pval'>"+b.px+"</span>");
-  if(b.pp){const cl=pcls(b.pp);ph+=rw("Partido","<span class='pval "+(cl==="unidos"?"g":cl==="mas"?"o":"ot")+"'>"+b.pp+"</span>");}
-  if(b.sc) ph+=rw("Sector PS","<span class='pval g'>"+b.sc+"</span>");
-  if(b.el) ph+=rw("Electores","<span class='pval'>"+fmt(b.el)+"</span>");
-  if(b.vv) ph+=rw("Votos validos","<span class='pval'>"+fmt(b.vv)+" ("+pct(b.vv,b.el)+" particip.)</span>");
+  if(b.px){
+    const labelEj=b.G?"Intendente/a":"Pte. Comunal";
+    ph+=rw(labelEj,"<span class='pval'>"+b.px+"</span>");
+  }
+  if(b.pp){
+    const cl=pcls(b.pp);
+    const cls=cl==="unidos"?"g":cl==="mas"?"o":"ot";
+    ph+=rw("Partido gobernante","<span class='pval "+cls+"'>"+b.pp+"</span>");
+  }
+  if(b.sc) ph+=rw("🌹 Situacion PS","<span class='pval' style='color:#e63946'>"+b.sc+"</span>");
+  if(b.el) ph+=rw("Electores 2025","<span class='pval'>"+fmt(b.el)+"</span>");
+  if(b.vg) ph+=rw("Votos validos","<span class='pval'>"+fmt(b.vg)+" ("+pct(b.vg,b.el)+" particip.)</span>");
   document.getElementById("panoBox").innerHTML=ph||"<span style='color:#555'>Sin datos electorales</span>";
+  // Tabla de resultados 2025
   const rt=document.getElementById("resTable");
-  const tot=b.vv||(b.vg&&b.v2?b.vg+b.v2:null);
-  if(b.vg&&b.pp){
+  if(b.vg&&b.pp&&b.vg1){
     const cl1=pcls(b.pp),cl2=pcls(b.p2||""),cl3=pcls(b.p3||"");
-    let rh="<div class='rrow rhead'><span>Partido</span><span style='text-align:right'>Votos</span><span style='text-align:right'>%</span></div>";
-    rh+="<div class='rrow'><span class='rnombre pct-"+cl1+"'>"+b.pp+"</span><span class='rvotos'>"+fmt(b.vg)+"</span><span class='rpct pct-"+cl1+"'>"+pct(b.vg,tot)+"</span></div>";
-    if(b.p2&&b.v2) rh+="<div class='rrow'><span class='rnombre pct-"+cl2+"'>"+b.p2+"</span><span class='rvotos'>"+fmt(b.v2)+"</span><span class='rpct pct-"+cl2+"'>"+pct(b.v2,tot)+"</span></div>";
-    if(b.p3&&b.p3!=="BLANCOS") rh+="<div class='rrow'><span class='rnombre pct-"+cl3+"'>"+b.p3+"</span><span class='rvotos'>—</span><span class='rpct pct-"+cl3+"'>3°</span></div>";
+    const cs=(cl)=>cl==="unidos"?"unidos":cl==="mas"?"mas":"otro";
+    let rh="<div class='rrow rhead'><span>Partido (elecciones 2025)</span><span style='text-align:right'>Votos</span><span style='text-align:right'>%</span></div>";
+    rh+="<div class='rrow'><span class='rnombre pct-"+cs(cl1)+"'>"+b.pp+"</span><span class='rvotos'>"+fmt(b.vg1)+"</span><span class='rpct pct-"+cs(cl1)+"'>"+pct(b.vg1,b.vg)+"</span></div>";
+    if(b.p2&&b.v2) rh+="<div class='rrow'><span class='rnombre pct-"+cs(cl2)+"'>"+b.p2+"</span><span class='rvotos'>"+fmt(b.v2)+"</span><span class='rpct pct-"+cs(cl2)+"'>"+pct(b.v2,b.vg)+"</span></div>";
+    if(b.p3&&b.v3) rh+="<div class='rrow'><span class='rnombre pct-"+cs(cl3)+"'>"+b.p3+"</span><span class='rvotos'>"+fmt(b.v3)+"</span><span class='rpct pct-"+cs(cl3)+"'>"+pct(b.v3,b.vg)+"</span></div>";
     rt.innerHTML=rh; rt.style.display="block";
   } else rt.style.display="none";
   document.getElementById("whoEdited").textContent=d.updated_by?"Ultimo cambio: "+d.updated_by+(d.updated_at?" el "+d.updated_at:""):"";
-  document.getElementById("f_pres").value=d.presencia||"sin_datos";
-  document.getElementById("f_centro").value=d.centro||"";
-  document.getElementById("f_dir").value=d.dir||"";
-  document.getElementById("f_afil").value=d.afil||"";
-  document.getElementById("f_ref").value=d.ref||"";
+  // Rellenar form — priorizar datos guardados, luego psref del BASE
+  document.getElementById("f_pres").value=d.presencia||b.pres||"sin_datos";
+  document.getElementById("f_ref").value=d.ref||b.psref||"";
   document.getElementById("f_tel").value=d.tel||"";
+  document.getElementById("f_dir").value=d.dir||"";
+  document.getElementById("f_centro").value=d.centro||(b.centroPS?"si":"");
+  document.getElementById("f_afil").value=d.afil||"";
   document.getElementById("f_prio").value=d.prio||"";
   document.getElementById("f_ec").value=d.ec||"";
   document.getElementById("f_eg").value=d.eg||"";
@@ -584,7 +633,7 @@ async function saveDetail() {
     presencia: document.getElementById("f_pres").value,
     centro: document.getElementById("f_centro").value,
     dir: document.getElementById("f_dir").value,
-    afil: document.getElementById("f_afil").value,
+    afil: document.getElementById("f_afil").value || null,
     ref: document.getElementById("f_ref").value,
     tel: document.getElementById("f_tel").value,
     prio: document.getElementById("f_prio").value,
@@ -594,7 +643,6 @@ async function saveDetail() {
   };
 
   if (sess.role === "admin") {
-    // Admin: guarda directo en datos (visible de inmediato)
     const nd = {...campos, updated_by: sess.user, updated_at: now};
     D[selId] = nd;
     localStorage.setItem(LS_DATA, JSON.stringify(D));
@@ -618,7 +666,6 @@ async function saveDetail() {
       showSavingInd("⚠️ Solo guardado local (sin conexion)");
     }
   } else {
-    // Usuario comun: va a datos_pendientes, esperando aprobacion del admin
     const nd = {...campos, submitted_by: sess.user, submitted_at: now, estado: "pendiente"};
     showSavingInd("Enviando para revision...");
     const res = await supa("datos_pendientes", {
@@ -636,12 +683,12 @@ async function saveDetail() {
 
 function showSavingInd(msg) {
   const el=document.getElementById("savingInd");
-  if(el){el.textContent=msg;setTimeout(()=>{if(el.textContent===msg)el.textContent="";},4000);}
+  if(el){el.textContent=msg;setTimeout(()=>{if(el.textContent===msg)el.textContent="";},4500);}
 }
 
 function clearSel(){selId=null;document.getElementById("detailEmpty").style.display="flex";document.getElementById("detailContent").style.display="none";renderMap();renderTable();}
 
-// ══ TABS ════════════════════════════════════════════════════
+// ══ TABS ══════════════════════════════════════════════════════
 function showTab(t) {
   ["mapa","tabla","log","admin"].forEach(id=>{
     const el=document.getElementById("view-"+id);
@@ -655,7 +702,7 @@ function showTab(t) {
   if(t==="admin") loadAdmin();
 }
 
-// ══ LOG ═════════════════════════════════════════════════════
+// ══ LOG ═══════════════════════════════════════════════════════
 async function loadLog() {
   const cont=document.getElementById("logContainer");
   cont.innerHTML="<p style='color:#666;font-size:12px;padding:8px'>Cargando...</p>";
@@ -673,14 +720,15 @@ async function loadLog() {
   }
 }
 
-// ══ ADMIN ═══════════════════════════════════════════════════
+// ══ ADMIN ═════════════════════════════════════════════════════
 async function loadAdmin() {
   const fuerte=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres; return p==="fuerte";}).length;
   const debil=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres; return p==="debil";}).length;
   const nula=BASE.filter(b=>{const p=(D[b.id]||{}).presencia||b.pres; return p==="nula";}).length;
   const cargados=BASE.filter(b=>(D[b.id]||{}).updated_by).length;
+  const centros=BASE.filter(b=>{const d=D[b.id]||{}; return d.centro==="si"||b.centroPS;}).length;
   document.getElementById("adminStats").innerHTML=
-    "📍 "+BASE.length+" localidades · "+cargados+" con datos cargados<br>🟢 "+fuerte+" Fuerte · 🟠 "+debil+" Debil · 🔴 "+nula+" Sin presencia";
+    "📍 "+BASE.length+" localidades · "+cargados+" con datos cargados<br>🟢 "+fuerte+" Fuerte · 🟠 "+debil+" Debil · 🔴 "+nula+" Sin presencia<br>🌹 "+centros+" Centros Socialistas activos";
   loadPendientes();
   const users = await supa("usuarios?select=username,role,nombre&order=username");
   if(users) document.getElementById("usersList").innerHTML=users.map(u=>"<div class='user-row'><div class='user-avatar'>"+(u.nombre||u.username).charAt(0).toUpperCase()+"</div><div class='user-info'><div class='uname'>"+(u.nombre||u.username)+"</div><div class='urole'>"+u.username+" · "+(u.role==="admin"?"⭐ Admin":"Usuario")+"</div></div>"+(u.username!==sess.user?"<button class='btn btn-gray' style='padding:3px 8px;font-size:10px' onclick=\"delUser('"+u.username+"')\">✕</button>":"")+"</div>").join("");
@@ -699,98 +747,111 @@ async function loadPendientes() {
   if(badge){ badge.textContent=rows.length; badge.style.display="inline"; }
   cont.innerHTML = rows.map(r => {
     const b = BASE.find(x=>x.id===r.id)||{n:r.id};
-    const pLabel = LBLS[r.presencia]||r.presencia||"—";
-    const pColor = COLORS[r.presencia]||"#aaa";
-    const lineas = [
-      "Presencia: <span style='color:"+pColor+"'>"+pLabel+"</span>",
-      r.centro ? "Centro: "+(r.centro==="si"?"✅ Si":"❌ No") : null,
-      r.afil ? "Afiliados: "+r.afil : null,
-      r.ref ? "Referente: "+r.ref : null,
-      r.tel ? "Tel: "+r.tel : null,
-      r.prio ? "Prioridad: "+r.prio : null,
-      r.ec ? "Estrategia: "+r.ec.substring(0,80)+(r.ec.length>80?"...":"") : null,
-    ].filter(Boolean).join(" · ");
-    return "<div style='background:#0a1628;border:1px solid #2a3a5a;border-radius:6px;padding:10px;margin-bottom:8px'>"
-      +"<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px'>"
-      +"<strong style='color:#e8e8e8;font-size:13px'>📍 "+b.n+"</strong>"
-      +"<span style='color:#666;font-size:10px'>"+r.submitted_by+" · "+r.submitted_at+"</span>"
-      +"</div>"
-      +"<div style='color:#aaa;font-size:11px;line-height:1.8;margin-bottom:8px'>"+lineas+"</div>"
-      +"<div style='display:flex;gap:6px'>"
-      +"<button class='btn btn-green' style='padding:3px 10px;font-size:11px' onclick='approveChange("+r.pid+")'>✅ Aprobar y publicar</button>"
-      +"<button class='btn btn-gray' style='padding:3px 10px;font-size:11px' onclick='rejectChange("+r.pid+")'>✕ Rechazar</button>"
-      +"</div></div>";
+    const campos = [];
+    if(r.ref) campos.push("👤 "+r.ref);
+    if(r.tel) campos.push("📱 "+r.tel);
+    if(r.presencia) campos.push("Presencia: "+(LBLS[r.presencia]||r.presencia));
+    if(r.centro) campos.push("Centro: "+r.centro);
+    if(r.afil) campos.push("Afil: "+r.afil);
+    if(r.dir) campos.push("📍 "+r.dir);
+    if(r.ec) campos.push("💬 "+r.ec.substring(0,60)+(r.ec.length>60?"...":""));
+    return "<div class='pend-card'>" +
+      "<div class='pend-head'><span class='pend-loc'>📍 "+b.n+"</span><span class='pend-by'>por "+r.submitted_by+" · "+r.submitted_at+"</span></div>" +
+      "<div class='pend-fields'>"+campos.join("<br>")+"</div>" +
+      "<div class='pend-actions'>" +
+      "<button class='btn btn-green' onclick='approveChange("+r.pid+")'>✅ Aprobar</button>" +
+      "<button class='btn btn-gray' onclick='rejectChange("+r.pid+")'>✕ Rechazar</button>" +
+      "</div></div>";
   }).join("");
 }
 
 async function approveChange(pid) {
   const rows = await supa("datos_pendientes?pid=eq."+pid+"&select=*");
-  if(!rows || rows.length===0) return;
+  if(!rows || rows.length===0) { alert("No se encontro el cambio."); return; }
   const r = rows[0];
   const now = new Date().toLocaleDateString("es-AR");
   const nd = {
-    id:r.id, presencia:r.presencia, centro:r.centro, dir:r.dir,
-    afil:r.afil, ref:r.ref, tel:r.tel, prio:r.prio,
-    ec:r.ec, eg:r.eg, eo:r.eo,
+    id: r.id, presencia: r.presencia, centro: r.centro, dir: r.dir,
+    afil: r.afil, ref: r.ref, tel: r.tel, prio: r.prio,
+    ec: r.ec, eg: r.eg, eo: r.eo,
     updated_by: r.submitted_by, updated_at: r.submitted_at
   };
-  const res = await supa("datos", {
-    method:"POST",
-    prefer:"resolution=merge-duplicates,return=representation",
-    body:JSON.stringify(nd)
+  // Guardar en datos (tabla principal)
+  const ok = await supa("datos", {
+    method: "POST",
+    prefer: "resolution=merge-duplicates,return=minimal",
+    body: JSON.stringify(nd)
   });
-  if(res !== null) {
-    await supa("datos_pendientes?pid=eq."+pid, {
-      method:"PATCH", prefer:"return=minimal",
-      body:JSON.stringify({estado:"aprobado", reviewed_by:sess.user, reviewed_at:now})
-    });
-    D[r.id] = nd;
-    localStorage.setItem(LS_DATA, JSON.stringify(D));
-    renderMap(); renderTable();
-    const b = BASE.find(x=>x.id===r.id);
-    supa("log", { method:"POST", prefer:"return=minimal", body: JSON.stringify({
-      ts:new Date().toLocaleString("es-AR"), username:sess.user,
-      localidad_id:r.id, localidad_nombre:b?b.n:r.id,
-      cambios:{presencia:r.presencia, centro:r.centro, afil:r.afil, aprobado_de:r.submitted_by}
-    })});
-    loadPendientes();
-  }
+  if(ok === null) { alert("Error al guardar en datos."); return; }
+  // Marcar como aprobado
+  await supa("datos_pendientes?pid=eq."+pid, {
+    method: "PATCH",
+    prefer: "return=minimal",
+    body: JSON.stringify({estado:"aprobado", reviewed_by:sess.user, reviewed_at:now})
+  });
+  // Actualizar cache local
+  D[r.id] = {...nd};
+  localStorage.setItem(LS_DATA, JSON.stringify(D));
+  renderMap(); renderTable();
+  loadPendientes();
+  showSavingInd("✅ Cambio aprobado y publicado");
 }
 
 async function rejectChange(pid) {
-  if(!confirm("Rechazar este cambio?")) return;
   const now = new Date().toLocaleDateString("es-AR");
   await supa("datos_pendientes?pid=eq."+pid, {
-    method:"PATCH", prefer:"return=minimal",
-    body:JSON.stringify({estado:"rechazado", reviewed_by:sess.user, reviewed_at:now})
+    method: "PATCH",
+    prefer: "return=minimal",
+    body: JSON.stringify({estado:"rechazado", reviewed_by:sess.user, reviewed_at:now})
   });
   loadPendientes();
 }
 
 async function addUser() {
-  const nu=document.getElementById("nu_user").value.trim();
-  const np=document.getElementById("nu_pass").value;
-  const nn=document.getElementById("nu_nombre").value.trim();
-  const nr=document.getElementById("nu_role").value;
-  if(!nu||!np){document.getElementById("adminErr").textContent="Completa usuario y contrasena";return;}
-  const res=await supa("usuarios",{method:"POST",prefer:"resolution=ignore-duplicates,return=minimal",body:JSON.stringify({username:nu,password:np,role:nr,nombre:nn||nu})});
-  if(res!==null){document.getElementById("adminErr").textContent="✅ Usuario creado";["nu_user","nu_pass","nu_nombre"].forEach(id=>document.getElementById(id).value="");loadAdmin();}
-  else document.getElementById("adminErr").textContent="Error al crear usuario";
+  const user = document.getElementById("nu_user").value.trim();
+  const pass = document.getElementById("nu_pass").value;
+  const nombre = document.getElementById("nu_nombre").value.trim();
+  const role = document.getElementById("nu_role").value;
+  const err = document.getElementById("adminErr");
+  if(!user||!pass) { err.textContent="Usuario y contrasena requeridos"; return; }
+  err.textContent="";
+  const res = await supa("usuarios", {
+    method: "POST",
+    prefer: "return=minimal",
+    body: JSON.stringify({username:user, password:pass, nombre:nombre||user, role:role})
+  });
+  if(res !== null) {
+    ["nu_user","nu_pass","nu_nombre"].forEach(id=>document.getElementById(id).value="");
+    loadAdmin();
+  } else {
+    err.textContent="Error al crear usuario (puede que ya exista)";
+  }
 }
 
-async function delUser(u) {
-  if(!confirm("Eliminar usuario '"+u+"'?")) return;
-  await supa("usuarios?username=eq."+encodeURIComponent(u),{method:"DELETE",prefer:"return=minimal"});
+async function delUser(username) {
+  if(!confirm("Eliminar usuario '"+username+"'?")) return;
+  await supa("usuarios?username=eq."+encodeURIComponent(username), {method:"DELETE", prefer:"return=minimal"});
   loadAdmin();
 }
 
-// ══ CSV ══════════════════════════════════════════════════════
 function exportCSV() {
-  const H=["Localidad","Electores","Partido","Presidente/a","Sector PS","Presencia PS","Centro","Afiliados","Referente","Telefono","Prioridad","Estrategia electoral","Estrategia grupo","Observaciones","Editado por","Fecha"];
-  const rows=BASE.map(b=>{const d=D[b.id]||{};return[b.n,b.el||"",b.pp||"",b.px||"",b.sc||"",LBLS[d.presencia||b.pres||"sin_datos"]||"",d.centro||"",d.afil||"",d.ref||"",d.tel||"",d.prio||"",(d.ec||"").replace(/\n/g," "),(d.eg||"").replace(/\n/g," "),(d.eo||"").replace(/\n/g," "),d.updated_by||"",d.updated_at||""].map(v=>"\""+String(v).replace(/"/g,'""')+"\"").join(",");});
-  const a=document.createElement("a");
-  a.href="data:text/csv;charset=utf-8,%EF%BB%BF"+encodeURIComponent([H.join(","),...rows].join("\n"));
-  a.download="castellanos_ps_"+new Date().toISOString().slice(0,10)+".csv";
+  const head = ["Localidad","Tipo","Electores","Partido gobernante","Resultado PS%","Presencia","Centro","Referente","Telefono","Afiliados","Prioridad","Actualizado por"];
+  const rows = BASE.map(b => {
+    const d = D[b.id]||{};
+    const pres = d.presencia||b.pres||"sin_datos";
+    const psPct = b.vg1&&b.vg ? (b.vg1/b.vg*100).toFixed(1)+"%" : "";
+    const centro = d.centro||(b.centroPS?"si":"");
+    return [
+      b.n, b.G?"Municipio":"Com.Comunal", b.el||"",
+      b.pp||"", psPct, LBLS[pres]||pres,
+      centro, d.ref||b.psref||"", d.tel||"",
+      d.afil||"", d.prio||"", d.updated_by||""
+    ].map(v=>'"'+(String(v).replace(/"/g,'""'))+'"').join(",");
+  });
+  const csv = [head.join(","),...rows].join("\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8,﻿"+encodeURIComponent(csv);
+  a.download = "castellanos_ps_"+new Date().toISOString().slice(0,10)+".csv";
   a.click();
 }
 </script>
