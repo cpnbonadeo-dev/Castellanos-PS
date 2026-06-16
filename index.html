@@ -131,6 +131,17 @@ body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;backgrou
 .modal::-webkit-scrollbar-thumb{background:rgba(240,192,64,.3);border-radius:2px}
 
 footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,.15);letter-spacing:3px;text-transform:uppercase;border-top:1px solid rgba(255,255,255,.05);margin-top:20px}
+
+/* CONGRESALES — cargo más visible */
+.foil-azul .p-info {
+  font-size: 9px;
+  color: #1a3a7a;
+  font-weight: 800;
+  background: rgba(90,154,208,.15);
+  border-radius: 4px;
+  padding: 2px 5px;
+  letter-spacing: .4px;
+}
 </style>
 </head>
 <body>
@@ -186,7 +197,11 @@ footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,
 <div class="subsec-label">— PRESIDENTES COMUNALES —</div>
 <div class="cards" id="comunal-wrap"></div>
 
-<div class="subsec-label">— CONGRESALES TITULARES PROVINCIALES —</div>
+<div class="sec" style="padding-top:32px">
+  <h2 style="font-size:40px;letter-spacing:6px">CONGRESALES</h2>
+  <p style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:4px">TITULARES PROVINCIALES · PS CASTELLANOS · 2026</p>
+  <div class="sec-line" style="width:80px;height:3px"></div>
+</div>
 <div class="cards" id="cong-wrap"></div>
 
 <!-- SUMATE -->
@@ -294,9 +309,11 @@ function mkCard(p, foil, opts){
 
 // ══ DATOS ════════════════════════════════════════
 const MESA = [
-  {_id:"ochat",    num:1, nombre:"Andrea Ochat",  cargo:"Coordinación General", localidad:"Sunchales",   photo:FOTO.ochat, realJersey:true},
-  {_id:"martinez", num:2, nombre:"Omar Martinez",  cargo:"Coordinación Adjunta", localidad:"Sunchales",   photo:null},
-  {_id:"peter",    num:3, nombre:"Luciana Peter",  cargo:"Vocal",                localidad:"Col. Raquel", photo:null}
+  {_id:"ochat",    num:1, nombre:"Andrea Ochat",     cargo:"Coordinación General",  localidad:"Sunchales",   photo:FOTO.ochat, realJersey:true},
+  {_id:"martinez", num:2, nombre:"Omar Martinez",     cargo:"Coordinación Adjunta",  localidad:"Sunchales",   photo:null},
+  {_id:"peter",    num:3, nombre:"Luciana Peter",     cargo:"Vocal",                 localidad:"Col. Raquel", photo:null},
+  {_id:"gamero",   num:4, nombre:"Eugenia Gamero",    cargo:"Junta Provincial PS",   localidad:"Castellanos", photo:null},
+  {_id:"marti_jc", num:5, nombre:"Juan Cruz Marti",   cargo:"Juventud PS",           localidad:"Castellanos", photo:null}
 ];
 const PLANTEL = [
   {_id:"sunchales",num:4,nombre:"Galli Funes Jose A.",cargo:"Sec. General",localidad:"Sunchales",photo:FOTO.jose,
@@ -345,14 +362,14 @@ const COMUNALES = [
 
 // ══ RENDER ═══════════════════════════════════════
 const CONGRESALES = [
-  {_id:"cong_ochat",  num:1, nombre:"Ochat Andrea Ivana",   cargo:"Congresala Titular", localidad:"Sunchales",    photo:FOTO.ochat, realJersey:true},
-  {_id:"cong_galli",  num:2, nombre:"Galli Funes Jose A.",  cargo:"Congresale Titular", localidad:"Sunchales",    photo:FOTO.jose},
-  {_id:"cong_perezS", num:3, nombre:"Perez Susana",         cargo:"Congresala Titular", localidad:"Frontera",     photo:null},
-  {_id:"cong_perezC", num:4, nombre:"Perez Carlos",         cargo:"Congresale Titular", localidad:"Frontera",     photo:null},
-  {_id:"cong_bazzoni",num:5, nombre:"Bazzoni Amadeo",       cargo:"Congresale Titular", localidad:"Maria Juana",  photo:null},
-  {_id:"cong_tabin",  num:6, nombre:"Tabin Duggo Juan P.",  cargo:"Congresale Titular", localidad:"Susana",       photo:null},
-  {_id:"cong_gallo",  num:7, nombre:"Gallo Veronica J.",    cargo:"Congresala Titular", localidad:"Zenon Pereyra",photo:null},
-  {_id:"cong_peter",  num:8, nombre:"Peter Luciana M.",     cargo:"Congresala Titular", localidad:"Col.Raquel",   photo:null},
+  {_id:"cong_ochat",  num:1, nombre:"Ochat Andrea Ivana",   cargo:"CONGRESAL", localidad:"Sunchales",    photo:FOTO.ochat, realJersey:true},
+  {_id:"cong_galli",  num:2, nombre:"Galli Funes Jose A.",  cargo:"CONGRESAL", localidad:"Sunchales",    photo:FOTO.jose},
+  {_id:"cong_perezS", num:3, nombre:"Perez Susana",         cargo:"CONGRESAL", localidad:"Frontera",     photo:null},
+  {_id:"cong_perezC", num:4, nombre:"Perez Carlos",         cargo:"CONGRESAL", localidad:"Frontera",     photo:null},
+  {_id:"cong_bazzoni",num:5, nombre:"Bazzoni Amadeo",       cargo:"CONGRESAL", localidad:"Maria Juana",  photo:null},
+  {_id:"cong_tabin",  num:6, nombre:"Tabin Duggo Juan P.",  cargo:"CONGRESAL", localidad:"Susana",       photo:null},
+  {_id:"cong_gallo",  num:7, nombre:"Gallo Veronica J.",    cargo:"CONGRESAL", localidad:"Zenon Pereyra",photo:null},
+  {_id:"cong_peter",  num:8, nombre:"Peter Luciana M.",     cargo:"CONGRESAL", localidad:"Col.Raquel",   photo:null},
 ];
 
 document.getElementById('mesa-wrap').innerHTML    = MESA.map(p=>mkCard(p,'foil-oro',{noClick:true})).join('');
