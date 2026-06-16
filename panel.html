@@ -153,6 +153,36 @@ tr.sel-row td { background: #2a4a7f; }
 .tc-empty{color:#555;font-size:13px;text-align:center;padding:40px 0}
 .tc-reload-btn{background:#16213e;border:1px solid #2a3a50;color:#88aacc;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer}
 .tc-reload-btn:hover{border-color:#e63946;color:#e63946}
+
+/* ── ANÁLISIS POLÍTICO ── */
+.an-wrap{padding:14px;overflow-y:auto;height:100%;color:#ccc}
+.an-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.an-kpi{background:#0d1b2e;border:1px solid #1e2a3a;border-radius:10px;padding:14px 12px;text-align:center}
+.an-kpi-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:32px;color:#e63946;line-height:1}
+.an-kpi-lbl{font-size:10px;color:#6a8aaa;text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
+.an-kpi-sub{font-size:9px;color:#3a5a7a;margin-top:2px}
+.an-sec{font-size:11px;font-weight:800;color:#e63946;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid #1e2a3a}
+.an-insight{background:#0d1b2e;border-left:3px solid #e63946;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:10px;font-size:12px;line-height:1.6}
+.an-insight strong{color:#fff}
+.an-insight .an-tag{display:inline-block;background:#e63946;color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:10px;letter-spacing:.5px;margin-right:6px;text-transform:uppercase}
+.an-insight .an-tag-gold{background:#c9a227}
+.an-insight .an-tag-blue{background:#1a6b9a}
+.pres-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11px}
+.pres-bar-row .lbl{width:80px;color:#aaa;flex-shrink:0}
+.pres-bar-row .bar{height:18px;border-radius:4px;min-width:2px;transition:width .3s;display:flex;align-items:center;padding:0 6px}
+.pres-bar-row .bar-val{font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
+.an-table{width:100%;border-collapse:collapse;font-size:11px}
+.an-table th{background:#0d1523;color:#6a8aaa;text-align:left;padding:6px 8px;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;cursor:pointer}
+.an-table th:hover{color:#aaa}
+.an-table td{padding:6px 8px;border-bottom:1px solid #0d1b2e}
+.an-table tr:hover td{background:#0d1b2e}
+.an-pres-f{color:#22c55e;font-weight:700}
+.an-pres-d{color:#f59e0b;font-weight:700}
+.an-pres-n{color:#ef4444;font-weight:700}
+.an-pres-s{color:#555}
+.an-gov-ps{color:#e63946;font-weight:700}
+.an-priority-1{background:rgba(230,57,70,.07)}
+.an-priority-2{background:rgba(245,158,11,.04)}
 </style>
 </head>
 <body>
@@ -203,6 +233,7 @@ tr.sel-row td { background: #2a4a7f; }
       <div class="tab" onclick="showTab('tabla')">📋 Tabla</div>
       <div class="tab" onclick="showTab('terreno')">🗺️ Terreno</div>
       <div class="tab" onclick="showTab('contactos')">📬 Contactos</div>
+      <div class="tab" onclick="showTab('analisis')">📊 Análisis</div>
     </div>
     <div class="tab-content">
       <div id="view-mapa">
@@ -316,6 +347,13 @@ tr.sel-row td { background: #2a4a7f; }
             </div>
           </div>
           <div id="c-list"><div class="tc-empty">Cargando...</div></div>
+        </div>
+      </div>
+
+      <!-- ANÁLISIS POLÍTICO -->
+      <div id="view-analisis" style="display:none">
+        <div class="an-wrap" id="anWrap">
+          <div style="color:#555;font-size:12px;padding:20px 0">Cargando análisis...</div>
         </div>
       </div>
 </div>
@@ -528,7 +566,9 @@ function startApp() {
     if (btn) { btn.textContent = "📤 Enviar para revision"; btn.style.background = "#1a6b9a"; }
   }
   showTab("mapa");
-  syncFromServer(false);
+  renderMap();        // Render inmediato con datos BASE (no depende de Supabase)
+  renderTable();
+  syncFromServer(false);  // Enriquece con datos del servidor en background
 }
 
 // ══ SYNC ══════════════════════════════════════════════════════
@@ -769,11 +809,11 @@ function clearSel(){selId=null;document.getElementById("detailEmpty").style.disp
 
 // ══ TABS ══════════════════════════════════════════════════════
 function showTab(t) {
-  ["mapa","tabla","log","admin","terreno","contactos"].forEach(id=>{
+  ["mapa","tabla","log","admin","terreno","contactos","analisis"].forEach(id=>{
     const el=document.getElementById("view-"+id);
     if(el) el.style.display=id===t?(id==="mapa"?"flex":"block"):"none";
   });
-  const LABELS={"mapa":"Mapa","tabla":"Tabla","log":"Historial","admin":"Admin","terreno":"Terreno","contactos":"Contactos"};
+  const LABELS={"mapa":"Mapa","tabla":"Tabla","log":"Historial","admin":"Admin","terreno":"Terreno","contactos":"Contactos","analisis":"Análisis"};
   document.querySelectorAll(".tab").forEach(el=>{
     el.classList.toggle("active",el.textContent.trim().includes(LABELS[t]||t));
   });
@@ -782,6 +822,7 @@ function showTab(t) {
   if(t==="admin")    loadAdmin();
   if(t==="terreno")  loadTerreno();
   if(t==="contactos") loadContactos();
+  if(t==="analisis")  buildAnalisis();
 }
 
 // ══ LOG ═══════════════════════════════════════════════════════
@@ -1181,6 +1222,171 @@ function renderContactos(){
       (r.mensaje ? '<div class="tc-card-notas">' + r.mensaje + '</div>' : '') +
     '</div>';
   }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ANÁLISIS POLÍTICO — DEPARTAMENTO CASTELLANOS
+// ══════════════════════════════════════════════════════════════════════════════
+let _anBuilt = false;
+function buildAnalisis() {
+  if(_anBuilt){ return; } _anBuilt = true;
+  const wrap = document.getElementById("anWrap");
+  if(!wrap) return;
+
+  // === Calcular métricas desde BASE ===
+  const total_el   = BASE.reduce((s,b)=>s+b.el,0);
+  const total_vg   = BASE.reduce((s,b)=>s+b.vg,0);
+  const part_pct   = total_vg>0 ? (total_vg/total_el*100).toFixed(1) : "—";
+
+  // PS governa donde pp=PS o sc menciona PS: Intendente / PS: Pres.
+  const psGov = BASE.filter(b=> b.pp==="PS" || (b.sc&&(b.sc.toLowerCase().includes("ps: pres")||b.sc.toLowerCase().includes("intendente ps"))));
+  const centros = BASE.filter(b=>b.centroPS||false);
+
+  const by_pres = {fuerte:[], debil:[], nula:[], sin_datos:[]};
+  BASE.forEach(b=>{ if(by_pres[b.pres]) by_pres[b.pres].push(b); });
+  const el_f = by_pres.fuerte.reduce((s,b)=>s+b.el,0);
+  const el_d = by_pres.debil.reduce((s,b)=>s+b.el,0);
+  const el_n = by_pres.nula.reduce((s,b)=>s+b.el,0);
+
+  // Rafaela alone
+  const raf = BASE.find(b=>b.id==="rafaela");
+  const rafPct = raf ? (raf.el/total_el*100).toFixed(1) : 0;
+
+  // PS votes (only where pp=PS)
+  const ps_votes_dir = BASE.filter(b=>b.pp==="PS").reduce((s,b)=>s+b.vg1,0);
+  const ps_vote_pct  = total_vg>0 ? (ps_votes_dir/total_vg*100).toFixed(1) : "—";
+
+  // Priority localities = debil/nula/sin_datos, not ps_gov, sorted by el
+  const govIds = new Set(psGov.map(b=>b.id));
+  const priority = BASE
+    .filter(b=>!govIds.has(b.id) && b.pres!=="fuerte")
+    .sort((a,b)=>b.el-a.el);
+
+  const fmt = n => n>=1000 ? (n/1000).toFixed(1)+"k" : n;
+  const fmtN = n => n.toLocaleString("es-AR");
+
+  // PRES label/class
+  const presLbl = {fuerte:"Fuerte", debil:"Débil", nula:"Sin presencia", sin_datos:"Sin datos"};
+  const presCls = {fuerte:"an-pres-f", debil:"an-pres-d", nula:"an-pres-n", sin_datos:"an-pres-s"};
+
+  // === BUILD HTML ===
+  wrap.innerHTML = `
+  <!-- KPIs -->
+  <div class="an-kpi-row">
+    <div class="an-kpi">
+      <div class="an-kpi-val">${fmtN(total_el)}</div>
+      <div class="an-kpi-lbl">Electores Dpto.</div>
+      <div class="an-kpi-sub">Castellanos · 2025</div>
+    </div>
+    <div class="an-kpi">
+      <div class="an-kpi-val">${psGov.length}</div>
+      <div class="an-kpi-lbl">Ejecutivos PS</div>
+      <div class="an-kpi-sub">de ${BASE.length} localidades</div>
+    </div>
+    <div class="an-kpi">
+      <div class="an-kpi-val">${by_pres.fuerte.length + by_pres.debil.length}</div>
+      <div class="an-kpi-lbl">Con presencia PS</div>
+      <div class="an-kpi-sub">${(( (el_f+el_d)/total_el)*100).toFixed(0)}% del electorado</div>
+    </div>
+    <div class="an-kpi">
+      <div class="an-kpi-val">${part_pct}%</div>
+      <div class="an-kpi-lbl">Participación</div>
+      <div class="an-kpi-sub">promedio 2025</div>
+    </div>
+  </div>
+
+  <!-- Distribución electorado -->
+  <div class="an-sec">Distribución del electorado por presencia PS</div>
+  <div style="margin-bottom:14px">
+    ${[
+      {lbl:"Fuerte", el:el_f, col:"#22c55e"},
+      {lbl:"Débil",  el:el_d, col:"#f59e0b"},
+      {lbl:"Sin PS", el:el_n, col:"#ef4444"},
+    ].map(row=>{
+      const pct = (row.el/total_el*100).toFixed(1);
+      const w   = Math.round(row.el/total_el*100);
+      return `<div class="pres-bar-row">
+        <div class="lbl">${row.lbl}</div>
+        <div class="bar" style="width:${w}%;background:${row.col}22;border:1px solid ${row.col}55">
+          <span class="bar-val" style="color:${row.col}">${pct}% · ${fmtN(row.el)} elect.</span>
+        </div>
+      </div>`;
+    }).join("")}
+  </div>
+
+  <!-- Insights estratégicos -->
+  <div class="an-sec">Lecturas estratégicas</div>
+
+  <div class="an-insight">
+    <span class="an-tag">Rafaela</span>
+    <strong>${rafPct}% del electorado departamental</strong> vive en Rafaela, donde el PS tiene presencia débil.
+    Ingresar con fuerza en Rafaela es condición necesaria para ganar el departamento.
+  </div>
+
+  <div class="an-insight">
+    <span class="an-tag an-tag-gold">Retención</span>
+    El PS gobierna <strong>${psGov.length} de ${BASE.length} localidades</strong>.
+    En Sunchales, el intendente Pinotti fue elegido con el PS como primera fuerza —
+    el único municipio del departamento donde eso ocurrió en 2025.
+  </div>
+
+  <div class="an-insight">
+    <span class="an-tag an-tag-blue">Potencial</span>
+    Hay <strong>${by_pres.debil.length} localidades con presencia débil</strong> y ${fmtN(el_d)} electores.
+    Son territorios donde el PS tiene referentes pero no conduce el ejecutivo —
+    la prioridad de construcción territorial para 2027.
+  </div>
+
+  <div class="an-insight">
+    <span class="an-tag">Centros</span>
+    El PS cuenta con <strong>${centros.length} Centros Socialistas activos</strong> distribuidos en el departamento.
+    Son la infraestructura organizativa base — donde ya existe un centro, hay que consolidarlo; donde no, hay que crearlo.
+  </div>
+
+  <!-- Tabla de prioridades -->
+  <div class="an-sec" style="margin-top:18px">Localidades prioritarias — dónde crecer</div>
+  <div style="font-size:10px;color:#3a5a7a;margin-bottom:8px">
+    Localidades donde PS no conduce el ejecutivo, ordenadas por cantidad de electores
+  </div>
+  <div style="overflow-x:auto">
+  <table class="an-table" id="anTable">
+    <thead>
+      <tr>
+        <th onclick="sortAnTable(0)">Localidad ↕</th>
+        <th onclick="sortAnTable(1)" style="text-align:right">Electores ↕</th>
+        <th onclick="sortAnTable(2)">Presencia PS ↕</th>
+        <th>Gobierno actual</th>
+        <th>Referente PS</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${priority.map((b,i)=>`<tr class="${i<3?"an-priority-1":i<8?"an-priority-2":""}">
+        <td><strong style="color:#ddd">${b.n}</strong></td>
+        <td style="text-align:right;color:#aaa">${fmtN(b.el)}</td>
+        <td><span class="${presCls[b.pres]||"an-pres-s"}">${presLbl[b.pres]||"—"}</span></td>
+        <td style="color:#6a8aaa;font-size:10px">${b.px?b.px.split("(")[1]?.replace(")","").trim()||b.pp:b.pp}</td>
+        <td style="color:#5a8a6a;font-size:10px">${b.psref||"—"}</td>
+      </tr>`).join("")}
+    </tbody>
+  </table>
+  </div>
+  `;
+}
+
+function sortAnTable(col) {
+  const tb = document.querySelector("#anTable tbody");
+  if(!tb) return;
+  const rows = [...tb.rows];
+  const dir  = tb.dataset.sortDir === "asc" ? -1 : 1;
+  tb.dataset.sortDir = dir === 1 ? "asc" : "desc";
+  rows.sort((a,b)=>{
+    const va = a.cells[col]?.innerText.trim().replace(/\./g,"").replace(",",".") || "";
+    const vb = b.cells[col]?.innerText.trim().replace(/\./g,"").replace(",",".") || "";
+    const na = parseFloat(va), nb = parseFloat(vb);
+    if(!isNaN(na) && !isNaN(nb)) return (na-nb)*dir;
+    return va.localeCompare(vb,"es")*dir;
+  });
+  rows.forEach(r=>tb.appendChild(r));
 }
 </script>
 
