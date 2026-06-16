@@ -209,6 +209,10 @@ tr.sel-row td { background: #2a4a7f; }
           <h3>📊 Resumen</h3>
           <div id="adminStats" style="font-size:12px;color:#aaa;line-height:1.8"></div>
         </div>
+        <div class="admin-section" id="pendientesSection">
+          <h3>📥 Cambios pendientes de aprobacion <span id="pendientesBadge" style="background:#e63946;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;display:none"></span></h3>
+          <div id="pendientesList" style="font-size:12px;color:#aaa">Cargando...</div>
+        </div>
         <div class="admin-section">
           <h3>👥 Usuarios</h3>
           <div id="usersList"></div>
@@ -275,7 +279,7 @@ tr.sel-row td { background: #2a4a7f; }
       </div>
       <div class="saving-indicator" id="savingInd"></div>
       <div class="dactions">
-        <button class="btn btn-red" onclick="saveDetail()">💾 Guardar</button>
+        <button class="btn btn-red" onclick="saveDetail()" id="btnGuardar">💾 Guardar</button>
         <button class="btn btn-gray" onclick="clearSel()">✕ Cerrar</button>
       </div>
     </div>
@@ -290,7 +294,7 @@ const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 // ══ DATOS ELECTORALES ═════════════════════════════════════════
 const BASE = [
   {id:"rafaela",       n:"Rafaela",              x:356,y:340,G:true, px:"Soltermam Valeria",         pp:"Mas para SFE",        sc:"Concejal UNIDOS: Scavino Brusa Juan M.", el:83002,vv:null, vg:14651,p2:"Mas para SFE",   v2:11808,p3:"LLA",               pres:"nula"},
-  {id:"sunchales",     n:"Sunchales",            x:315,y:172,G:true, px:"Delmastro Jose Santiago",   pp:"Ahora Sunchales",     sc:"Concejal UNIDOS: Cattaneo Fernando",     el:19552,vv:null, vg:2910, p2:"Ahora Sunchales", v2:2592, p3:"LLA",               pres:"debil"},
+  {id:"sunchales",     n:"Sunchales",            x:315,y:172,G:true, px:"Delmastro Jose Santiago (PS)",pp:"Ahora Sunchales (PS)",sc:"PS: Intendente Delmastro + 3 concejales", el:19552,vv:null, vg:2910, p2:"Ahora Sunchales", v2:2592, p3:"LLA",               pres:"fuerte"},
   {id:"frontera",      n:"Frontera",             x:65, y:523,G:true, px:"Milanesio Fabio",           pp:"UNIDOS",              sc:null,                                     el:7243, vv:null, vg:1571, p2:"UNIDOS",          v2:951,  p3:"Mas para SFE",     pres:"debil"},
   {id:"san_vicente",   n:"San Vicente",          x:322,y:663,G:true, px:"Aira Gonzalo (UCR-UNIDOS)", pp:"UNIDOS",              sc:"Concejal PS: Marchese Juan Carlos",      el:5427, vv:null, vg:1711, p2:"UNIDOS",          v2:1076, p3:"Somos Vida y Lib.",pres:"debil"},
   {id:"humberto",      n:"Humberto Primo",       x:442,y:112,G:true, px:"Gilabert Mauro Alejandro",  pp:"UNIDOS",              sc:null,                                     el:4677, vv:null, vg:1500, p2:"UNIDOS",          v2:403,  p3:"BLANCOS",          pres:"debil"},
@@ -361,7 +365,11 @@ const supa = (path, opts = {}) => {
     method: opts.method || "GET",
     headers: headers,
     body: opts.body || undefined
-  }).then(r => r.ok ? r.json() : null).catch(() => null);
+  }).then(async r => {
+    if (!r.ok) return null;
+    const text = await r.text();
+    return text ? JSON.parse(text) : [];
+  }).catch(() => null);
 };
 
 // ══ INIT ═════════════════════════════════════════════════════
@@ -405,6 +413,9 @@ function startApp() {
     const tb = document.getElementById("tabsBar");
     const t1 = document.createElement("div"); t1.className = "tab"; t1.textContent = "📋 Historial"; t1.onclick = () => showTab("log"); tb.appendChild(t1);
     const t2 = document.createElement("div"); t2.className = "tab"; t2.textContent = "⚙️ Admin"; t2.onclick = () => showTab("admin"); tb.appendChild(t2);
+  } else {
+    const btn = document.getElementById("btnGuardar");
+    if (btn) { btn.textContent = "📤 Enviar para revision"; btn.style.background = "#1a6b9a"; }
   }
   showTab("mapa");
   syncFromServer(false);
@@ -568,7 +579,7 @@ function openDetail(id) {
 async function saveDetail() {
   if(!selId) return;
   const now = new Date().toLocaleDateString("es-AR");
-  const nd = {
+  const campos = {
     id: selId,
     presencia: document.getElementById("f_pres").value,
     centro: document.getElementById("f_centro").value,
@@ -580,29 +591,46 @@ async function saveDetail() {
     ec: document.getElementById("f_ec").value,
     eg: document.getElementById("f_eg").value,
     eo: document.getElementById("f_eo").value,
-    updated_by: sess.user,
-    updated_at: now
   };
-  D[selId] = nd;
-  localStorage.setItem(LS_DATA, JSON.stringify(D));
-  renderMap(); renderTable();
-  showSavingInd("Guardando...");
-  const res = await supa("datos", {
-    method: "POST",
-    prefer: "resolution=merge-duplicates,return=representation",
-    body: JSON.stringify(nd)
-  });
-  if (res) {
-    showSavingInd("✅ Guardado · " + now);
-    document.getElementById("whoEdited").textContent = "Ultimo cambio: "+sess.user+" el "+now;
-    const b = BASE.find(x=>x.id===selId);
-    supa("log", { method:"POST", prefer:"return=minimal", body: JSON.stringify({
-      ts: new Date().toLocaleString("es-AR"), username: sess.user,
-      localidad_id: selId, localidad_nombre: b?b.n:selId,
-      cambios: {presencia:nd.presencia,centro:nd.centro,afil:nd.afil}
-    })});
+
+  if (sess.role === "admin") {
+    // Admin: guarda directo en datos (visible de inmediato)
+    const nd = {...campos, updated_by: sess.user, updated_at: now};
+    D[selId] = nd;
+    localStorage.setItem(LS_DATA, JSON.stringify(D));
+    renderMap(); renderTable();
+    showSavingInd("Guardando...");
+    const res = await supa("datos", {
+      method: "POST",
+      prefer: "resolution=merge-duplicates,return=representation",
+      body: JSON.stringify(nd)
+    });
+    if (res !== null) {
+      showSavingInd("✅ Guardado · " + now);
+      document.getElementById("whoEdited").textContent = "Ultimo cambio: "+sess.user+" el "+now;
+      const b = BASE.find(x=>x.id===selId);
+      supa("log", { method:"POST", prefer:"return=minimal", body: JSON.stringify({
+        ts: new Date().toLocaleString("es-AR"), username: sess.user,
+        localidad_id: selId, localidad_nombre: b?b.n:selId,
+        cambios: {presencia:nd.presencia,centro:nd.centro,afil:nd.afil}
+      })});
+    } else {
+      showSavingInd("⚠️ Solo guardado local (sin conexion)");
+    }
   } else {
-    showSavingInd("⚠️ Solo guardado local (sin conexion)");
+    // Usuario comun: va a datos_pendientes, esperando aprobacion del admin
+    const nd = {...campos, submitted_by: sess.user, submitted_at: now, estado: "pendiente"};
+    showSavingInd("Enviando para revision...");
+    const res = await supa("datos_pendientes", {
+      method: "POST",
+      prefer: "return=minimal",
+      body: JSON.stringify(nd)
+    });
+    if (res !== null) {
+      showSavingInd("📤 Enviado · el admin debe aprobar antes de publicarse");
+    } else {
+      showSavingInd("⚠️ Error al enviar. Revisa tu conexion.");
+    }
   }
 }
 
@@ -653,8 +681,90 @@ async function loadAdmin() {
   const cargados=BASE.filter(b=>(D[b.id]||{}).updated_by).length;
   document.getElementById("adminStats").innerHTML=
     "📍 "+BASE.length+" localidades · "+cargados+" con datos cargados<br>🟢 "+fuerte+" Fuerte · 🟠 "+debil+" Debil · 🔴 "+nula+" Sin presencia";
+  loadPendientes();
   const users = await supa("usuarios?select=username,role,nombre&order=username");
   if(users) document.getElementById("usersList").innerHTML=users.map(u=>"<div class='user-row'><div class='user-avatar'>"+(u.nombre||u.username).charAt(0).toUpperCase()+"</div><div class='user-info'><div class='uname'>"+(u.nombre||u.username)+"</div><div class='urole'>"+u.username+" · "+(u.role==="admin"?"⭐ Admin":"Usuario")+"</div></div>"+(u.username!==sess.user?"<button class='btn btn-gray' style='padding:3px 8px;font-size:10px' onclick=\"delUser('"+u.username+"')\">✕</button>":"")+"</div>").join("");
+}
+
+async function loadPendientes() {
+  const cont = document.getElementById("pendientesList");
+  const badge = document.getElementById("pendientesBadge");
+  if(!cont) return;
+  const rows = await supa("datos_pendientes?estado=eq.pendiente&order=pid.desc&select=*");
+  if(!rows || rows.length === 0) {
+    cont.innerHTML = "<p style='color:#555;font-size:12px'>No hay cambios pendientes.</p>";
+    if(badge) badge.style.display="none";
+    return;
+  }
+  if(badge){ badge.textContent=rows.length; badge.style.display="inline"; }
+  cont.innerHTML = rows.map(r => {
+    const b = BASE.find(x=>x.id===r.id)||{n:r.id};
+    const pLabel = LBLS[r.presencia]||r.presencia||"—";
+    const pColor = COLORS[r.presencia]||"#aaa";
+    const lineas = [
+      "Presencia: <span style='color:"+pColor+"'>"+pLabel+"</span>",
+      r.centro ? "Centro: "+(r.centro==="si"?"✅ Si":"❌ No") : null,
+      r.afil ? "Afiliados: "+r.afil : null,
+      r.ref ? "Referente: "+r.ref : null,
+      r.tel ? "Tel: "+r.tel : null,
+      r.prio ? "Prioridad: "+r.prio : null,
+      r.ec ? "Estrategia: "+r.ec.substring(0,80)+(r.ec.length>80?"...":"") : null,
+    ].filter(Boolean).join(" · ");
+    return "<div style='background:#0a1628;border:1px solid #2a3a5a;border-radius:6px;padding:10px;margin-bottom:8px'>"
+      +"<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px'>"
+      +"<strong style='color:#e8e8e8;font-size:13px'>📍 "+b.n+"</strong>"
+      +"<span style='color:#666;font-size:10px'>"+r.submitted_by+" · "+r.submitted_at+"</span>"
+      +"</div>"
+      +"<div style='color:#aaa;font-size:11px;line-height:1.8;margin-bottom:8px'>"+lineas+"</div>"
+      +"<div style='display:flex;gap:6px'>"
+      +"<button class='btn btn-green' style='padding:3px 10px;font-size:11px' onclick='approveChange("+r.pid+")'>✅ Aprobar y publicar</button>"
+      +"<button class='btn btn-gray' style='padding:3px 10px;font-size:11px' onclick='rejectChange("+r.pid+")'>✕ Rechazar</button>"
+      +"</div></div>";
+  }).join("");
+}
+
+async function approveChange(pid) {
+  const rows = await supa("datos_pendientes?pid=eq."+pid+"&select=*");
+  if(!rows || rows.length===0) return;
+  const r = rows[0];
+  const now = new Date().toLocaleDateString("es-AR");
+  const nd = {
+    id:r.id, presencia:r.presencia, centro:r.centro, dir:r.dir,
+    afil:r.afil, ref:r.ref, tel:r.tel, prio:r.prio,
+    ec:r.ec, eg:r.eg, eo:r.eo,
+    updated_by: r.submitted_by, updated_at: r.submitted_at
+  };
+  const res = await supa("datos", {
+    method:"POST",
+    prefer:"resolution=merge-duplicates,return=representation",
+    body:JSON.stringify(nd)
+  });
+  if(res !== null) {
+    await supa("datos_pendientes?pid=eq."+pid, {
+      method:"PATCH", prefer:"return=minimal",
+      body:JSON.stringify({estado:"aprobado", reviewed_by:sess.user, reviewed_at:now})
+    });
+    D[r.id] = nd;
+    localStorage.setItem(LS_DATA, JSON.stringify(D));
+    renderMap(); renderTable();
+    const b = BASE.find(x=>x.id===r.id);
+    supa("log", { method:"POST", prefer:"return=minimal", body: JSON.stringify({
+      ts:new Date().toLocaleString("es-AR"), username:sess.user,
+      localidad_id:r.id, localidad_nombre:b?b.n:r.id,
+      cambios:{presencia:r.presencia, centro:r.centro, afil:r.afil, aprobado_de:r.submitted_by}
+    })});
+    loadPendientes();
+  }
+}
+
+async function rejectChange(pid) {
+  if(!confirm("Rechazar este cambio?")) return;
+  const now = new Date().toLocaleDateString("es-AR");
+  await supa("datos_pendientes?pid=eq."+pid, {
+    method:"PATCH", prefer:"return=minimal",
+    body:JSON.stringify({estado:"rechazado", reviewed_by:sess.user, reviewed_at:now})
+  });
+  loadPendientes();
 }
 
 async function addUser() {
