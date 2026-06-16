@@ -41,7 +41,7 @@ header .sub { color: #ffcdd2; font-size: 10px; margin-top: 1px; }
 .tab-content { flex: 1; overflow: auto; }
 #view-mapa { padding: 10px; display: flex; justify-content: center; align-items: flex-start; }
 .map-wrapper { position: relative; display: inline-block; }
-.map-wrapper img.map-bg { display: block; width: 555px; height: 719px; }
+#mapBg { display: block; width: 555px; height: 719px; }
 .loc-dot-el { position: absolute; transform: translate(-50%,-50%); cursor: pointer; z-index: 2; transition: transform 0.15s; overflow: visible; }
 .loc-dot-el:hover { transform: translate(-50%,-50%) scale(1.4); z-index: 10; }
 .loc-label { position: absolute; font-size: 9px; font-weight: bold; color: #111; text-shadow: 0 0 3px white, 0 0 3px white; white-space: nowrap; pointer-events: none; z-index: 3; transform: translate(-50%,0); }
@@ -129,6 +129,30 @@ tr.sel-row td { background: #2a4a7f; }
 .dactions { padding: 7px 10px; display: flex; gap: 8px; flex-shrink: 0; border-top: 1px solid #2a3a5a; }
 .dactions .btn { flex: 1; padding: 7px; }
 .saving-indicator { font-size: 10px; color: #888; text-align: center; padding: 2px 0; }
+
+/* TERRENO / CONTACTOS TABS */
+.tc-wrap{padding:12px;overflow-y:auto;height:100%}
+.tc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.tc-title{font-size:13px;font-weight:700;color:#e63946;text-transform:uppercase;letter-spacing:1px}
+.tc-filters{display:flex;gap:6px;flex-wrap:wrap}
+.tc-filters select,.tc-filters input{background:#16213e;border:1px solid #2a3a50;color:#ccc;border-radius:6px;padding:4px 10px;font-size:12px;outline:none}
+.tc-card{background:#0d1b2e;border:1px solid #1e2a3a;border-radius:8px;padding:10px 14px;margin-bottom:8px;cursor:default;transition:border-color .15s}
+.tc-card:hover{border-color:#3a4a60}
+.tc-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.tc-card-name{font-size:13px;font-weight:700;color:#ddd}
+.tc-card-loc{font-size:11px;color:#88aacc;background:#162035;border-radius:10px;padding:2px 8px;white-space:nowrap}
+.tc-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#6a8aaa}
+.tc-card-notas{margin-top:6px;font-size:12px;color:#aaa;line-height:1.5;border-top:1px solid #1a2a3a;padding-top:6px}
+.tc-badge{display:inline-block;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.tc-badge-pv{background:rgba(59,130,246,.2);color:#60a5fa}
+.tc-badge-visit{background:rgba(34,197,94,.2);color:#4ade80}
+.tc-badge-int{background:rgba(251,191,36,.2);color:#fbbf24}
+.tc-badge-sr{background:rgba(100,100,100,.2);color:#888}
+.tc-tipo{color:#9abcdd;font-size:11px}
+.tc-contacto-card .tc-card-name{color:#ddd}
+.tc-empty{color:#555;font-size:13px;text-align:center;padding:40px 0}
+.tc-reload-btn{background:#16213e;border:1px solid #2a3a50;color:#88aacc;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer}
+.tc-reload-btn:hover{border-color:#e63946;color:#e63946}
 </style>
 </head>
 <body>
@@ -177,11 +201,26 @@ tr.sel-row td { background: #2a4a7f; }
     <div class="tabs" id="tabsBar">
       <div class="tab active" onclick="showTab('mapa')">🗺 Mapa</div>
       <div class="tab" onclick="showTab('tabla')">📋 Tabla</div>
+      <div class="tab" onclick="showTab('terreno')">🗺️ Terreno</div>
+      <div class="tab" onclick="showTab('contactos')">📬 Contactos</div>
     </div>
     <div class="tab-content">
       <div id="view-mapa">
         <div class="map-wrapper" id="mapWrapper">
-          <img class="map-bg" src="https://www.senadosantafe.gob.ar/sites/default/files/imagen/mapa-completo/castellanos_0.png" alt="Mapa" onerror="this.style.cssText='width:555px;height:719px;background:#1e3a5f;display:block'">
+          <svg id="mapBg" viewBox="0 0 555 719" xmlns="http://www.w3.org/2000/svg" style="display:block;width:555px;height:719px">
+          <defs>
+            <radialGradient id="bgGradP" cx="50%" cy="50%" r="65%">
+              <stop offset="0%" stop-color="#152215"/>
+              <stop offset="100%" stop-color="#0a140a"/>
+            </radialGradient>
+          </defs>
+          <rect width="555" height="719" fill="#0a140a"/>
+          <path d="M 55,15 L 510,15 L 510,700 L 95,700 L 55,660 Z"
+                fill="url(#bgGradP)" stroke="#1e3a1e" stroke-width="1.5"/>
+          <line x1="345" y1="15" x2="338" y2="700" stroke="#1a2a1a" stroke-width="1" stroke-dasharray="8,10" opacity=".6"/>
+          <line x1="55" y1="342" x2="510" y2="342" stroke="#1a2a1a" stroke-width="1" stroke-dasharray="8,10" opacity=".6"/>
+          <text x="360" y="346" text-anchor="middle" font-size="13" fill="rgba(240,192,64,.35)" pointer-events="none">&#x2736;</text>
+        </svg>
           <div class="tooltip-map" id="tooltip"></div>
         </div>
       </div>
@@ -242,7 +281,44 @@ tr.sel-row td { background: #2a4a7f; }
           </div>
           <div class="err" id="adminErr" style="margin-top:6px"></div>
         </div>
+      
+      <!-- TERRENO VIEW -->
+      <div id="view-terreno" style="display:none">
+        <div class="tc-wrap">
+          <div class="tc-header">
+            <div class="tc-title">Relevamiento de terreno</div>
+            <div class="tc-filters">
+              <input id="t-search" placeholder="Buscar..." oninput="renderTerreno()">
+              <select id="t-loc" onchange="renderTerreno()"><option value="">Todas las localidades</option></select>
+              <select id="t-estado" onchange="renderTerreno()">
+                <option value="">Todos los estados</option>
+                <option value="para_visitar">Para visitar</option>
+                <option value="visitado">Visitado</option>
+                <option value="interesado">Interesado</option>
+                <option value="sin_respuesta">Sin respuesta</option>
+              </select>
+              <button class="tc-reload-btn" onclick="loadTerreno(true)">↺ Recargar</button>
+            </div>
+          </div>
+          <div id="t-list"><div class="tc-empty">Cargando...</div></div>
+        </div>
       </div>
+
+      <!-- CONTACTOS VIEW -->
+      <div id="view-contactos" style="display:none">
+        <div class="tc-wrap">
+          <div class="tc-header">
+            <div class="tc-title">Contactos — quiero sumarme</div>
+            <div class="tc-filters">
+              <input id="c-search" placeholder="Buscar..." oninput="renderContactos()">
+              <select id="c-loc" onchange="renderContactos()"><option value="">Todas las localidades</option></select>
+              <button class="tc-reload-btn" onclick="loadContactos(true)">↺ Recargar</button>
+            </div>
+          </div>
+          <div id="c-list"><div class="tc-empty">Cargando...</div></div>
+        </div>
+      </div>
+</div>
     </div>
   </div>
 
@@ -693,16 +769,19 @@ function clearSel(){selId=null;document.getElementById("detailEmpty").style.disp
 
 // ══ TABS ══════════════════════════════════════════════════════
 function showTab(t) {
-  ["mapa","tabla","log","admin"].forEach(id=>{
+  ["mapa","tabla","log","admin","terreno","contactos"].forEach(id=>{
     const el=document.getElementById("view-"+id);
     if(el) el.style.display=id===t?(id==="mapa"?"flex":"block"):"none";
   });
+  const LABELS={"mapa":"Mapa","tabla":"Tabla","log":"Historial","admin":"Admin","terreno":"Terreno","contactos":"Contactos"};
   document.querySelectorAll(".tab").forEach(el=>{
-    el.classList.toggle("active",el.textContent.includes(t==="mapa"?"Mapa":t==="tabla"?"Tabla":t==="log"?"Historial":"Admin"));
+    el.classList.toggle("active",el.textContent.trim().includes(LABELS[t]||t));
   });
-  if(t==="tabla") renderTable();
-  if(t==="log")   loadLog();
-  if(t==="admin") loadAdmin();
+  if(t==="tabla")    renderTable();
+  if(t==="log")      loadLog();
+  if(t==="admin")    loadAdmin();
+  if(t==="terreno")  loadTerreno();
+  if(t==="contactos") loadContactos();
 }
 
 // ══ LOG ═══════════════════════════════════════════════════════
@@ -980,6 +1059,129 @@ function exportCsvAfil(){
 
 // Init
 filterAfil();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TERRENO — relevamiento de campo
+// ══════════════════════════════════════════════════════════════════════════════
+let _terrenoData = null;
+let _contactosData = null;
+
+async function loadTerreno(force) {
+  if(_terrenoData && !force){ renderTerreno(); return; }
+  document.getElementById("t-list").innerHTML = '<div class="tc-empty">Cargando datos...</div>';
+  try {
+    const data = await supa("contactos?order=created_at.desc&limit=500");
+    if(!data){ throw new Error("sin datos"); }
+    // Separar relevamientos de contactos regulares
+    _terrenoData  = data.filter(r => { try{ return JSON.parse(r.mensaje).__tipo === "relevamiento"; }catch(e){ return false; }});
+    _contactosData = data.filter(r => { try{ JSON.parse(r.mensaje); return false; }catch(e){ return true; }});
+    // Populate localidad filter
+    const locs = [...new Set(_terrenoData.map(r=>r.localidad).filter(Boolean))].sort();
+    const tLocSel = document.getElementById("t-loc");
+    tLocSel.innerHTML = '<option value="">Todas las localidades</option>' + locs.map(l=>'<option value="'+l+'">'+l+'</option>').join('');
+    renderTerreno();
+  } catch(err){
+    document.getElementById("t-list").innerHTML = '<div class="tc-empty">Error al cargar datos de Supabase.</div>';
+  }
+}
+
+function renderTerreno(){
+  if(!_terrenoData){ loadTerreno(); return; }
+  const q = (document.getElementById("t-search")?.value||"").toLowerCase();
+  const loc = document.getElementById("t-loc")?.value || "";
+  const estado = document.getElementById("t-estado")?.value || "";
+
+  const ESTADO_LABELS = {para_visitar:"Para visitar",visitado:"Visitado",interesado:"Interesado",sin_respuesta:"Sin respuesta"};
+  const ESTADO_CLS    = {para_visitar:"tc-badge-pv",visitado:"tc-badge-visit",interesado:"tc-badge-int",sin_respuesta:"tc-badge-sr"};
+
+  const filtered = _terrenoData.filter(r => {
+    let d = {}; try{ d = JSON.parse(r.mensaje); }catch(e){}
+    if(loc && r.localidad !== loc) return false;
+    if(estado && d.estado !== estado) return false;
+    if(q){
+      const hay = [r.nombre, r.localidad, d.obj_nombre, d.obj_tipo, d.notas, d.obj_contacto].join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if(!filtered.length){
+    document.getElementById("t-list").innerHTML = '<div class="tc-empty">No hay resultados.</div>';
+    return;
+  }
+
+  document.getElementById("t-list").innerHTML = filtered.map(r => {
+    let d = {}; try{ d = JSON.parse(r.mensaje); }catch(e){}
+    const estadoLabel = ESTADO_LABELS[d.estado] || d.estado || "—";
+    const estadoCls   = ESTADO_CLS[d.estado] || "tc-badge-sr";
+    const fecha = r.created_at ? new Date(r.created_at).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"2-digit"}) : "";
+    return '<div class="tc-card">' +
+      '<div class="tc-card-head">' +
+        '<div>' +
+          '<div class="tc-card-name">' + (d.obj_nombre || "—") + '</div>' +
+          '<div class="tc-tipo">' + (d.obj_tipo || "—") + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<span class="tc-badge ' + estadoCls + '">' + estadoLabel + '</span>' +
+          '<div class="tc-card-loc" style="margin-top:4px">' + (r.localidad || "—") + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="tc-card-meta">' +
+        (d.obj_contacto ? '<span>📞 ' + d.obj_contacto + '</span>' : '') +
+        '<span>👤 ' + (r.nombre || "—") + '</span>' +
+        (fecha ? '<span>📅 ' + fecha + '</span>' : '') +
+      '</div>' +
+      (d.notas ? '<div class="tc-card-notas">' + d.notas + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+async function loadContactos(force) {
+  if(_contactosData && !force){ renderContactos(); return; }
+  // Load all data via terreno (shares the same fetch)
+  await loadTerreno(force);
+  // Populate localidad filter for contactos
+  const locs = [...new Set((_contactosData||[]).map(r=>r.localidad).filter(Boolean))].sort();
+  const cLocSel = document.getElementById("c-loc");
+  if(cLocSel) cLocSel.innerHTML = '<option value="">Todas las localidades</option>' + locs.map(l=>'<option value="'+l+'">'+l+'</option>').join('');
+  renderContactos();
+}
+
+function renderContactos(){
+  if(!_contactosData){ loadContactos(); return; }
+  const q = (document.getElementById("c-search")?.value||"").toLowerCase();
+  const loc = document.getElementById("c-loc")?.value || "";
+
+  const filtered = _contactosData.filter(r => {
+    if(loc && r.localidad !== loc) return false;
+    if(q){
+      const hay = [r.nombre, r.localidad, r.email, r.telefono, r.mensaje].join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if(!filtered.length){
+    document.getElementById("c-list").innerHTML = '<div class="tc-empty">No hay contactos registrados.</div>';
+    return;
+  }
+
+  document.getElementById("c-list").innerHTML = filtered.map(r => {
+    const fecha = r.created_at ? new Date(r.created_at).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"2-digit"}) : "";
+    return '<div class="tc-card tc-contacto-card">' +
+      '<div class="tc-card-head">' +
+        '<div class="tc-card-name">' + (r.nombre || "—") + '</div>' +
+        '<div class="tc-card-loc">' + (r.localidad || "—") + '</div>' +
+      '</div>' +
+      '<div class="tc-card-meta">' +
+        (r.email ? '<span>✉️ ' + r.email + '</span>' : '') +
+        (r.telefono ? '<span>📞 ' + r.telefono + '</span>' : '') +
+        (fecha ? '<span>📅 ' + fecha + '</span>' : '') +
+      '</div>' +
+      (r.mensaje ? '<div class="tc-card-notas">' + r.mensaje + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
 </script>
 
 </body>
