@@ -49,8 +49,8 @@ body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;backgrou
 .sec h2{font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:28px;letter-spacing:5px;color:#f0c040}
 .sec p{font-size:10px;color:rgba(255,255,255,.32);letter-spacing:4px;text-transform:uppercase;margin-top:2px}
 .sec-line{width:55px;height:3px;background:#f0c040;margin:8px auto 22px;border-radius:2px}
-.subsec-label{text-align:center;font-size:10px;letter-spacing:4px;color:rgba(255,255,255,.25);text-transform:uppercase;margin:16px 0 14px;padding-top:12px}
-.field-line{height:1px;margin:10px auto;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);max-width:700px}
+.subsec-label{text-align:center;font-size:11px;letter-spacing:4px;color:rgba(240,192,64,.85);text-transform:uppercase;margin:22px 0 16px;padding:10px 0;border-top:1px solid rgba(240,192,64,.28);border-bottom:1px solid rgba(240,192,64,.28);font-weight:700}
+.field-line{height:2px;margin:18px auto;background:linear-gradient(90deg,transparent,rgba(240,192,64,.45),transparent);max-width:700px}
 .field-arc{width:90px;height:45px;border:1px solid rgba(255,255,255,.07);border-radius:0 0 90px 90px;margin:0 auto;border-top:none}
 
 /* ── CARDS */
@@ -222,12 +222,6 @@ footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,
 
 <div class="field-line"></div><div class="field-arc"></div><div class="field-line"></div>
 
-<!-- JUNTA Y JUVENTUD -->
-<div class="sec"><h2>Representación PS</h2><p>Junta Provincial &nbsp;·&nbsp; Juventud PS</p><div class="sec-line"></div></div>
-<div class="cards" id="mesa-otros-wrap"></div>
-
-<div class="field-line"></div>
-
 <!-- PLANTEL -->
 <div class="sec"><h2>El Plantel</h2><p>Centros Socialistas &nbsp;·&nbsp; Toca la figurita para ver la comisión completa</p><div class="sec-line"></div></div>
 <div class="cards" id="plantel-wrap"></div>
@@ -247,6 +241,14 @@ footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,
   <div class="sec-line" style="width:80px;height:3px"></div>
 </div>
 <div class="cards" id="cong-wrap"></div>
+
+<div class="field-line"></div>
+
+<!-- JUNTA Y JUVENTUD -->
+<div class="sec"><h2>Representación PS</h2><p>Junta Provincial &nbsp;·&nbsp; Juventud PS</p><div class="sec-line"></div></div>
+<div class="cards" id="mesa-otros-wrap"></div>
+
+<div class="field-line"></div>
 
 <!-- SUMATE -->
 <div style="text-align:center;padding:40px 16px 32px;max-width:700px;margin:0 auto">
@@ -394,14 +396,14 @@ const PLANTEL = [
     centro:"Centro Socialista Humberto Primo",lista:null,eleccion:null,comision:[],cong_tit:[],cong_sup:[]}
 ];
 const FEATURED_GOB = [
-  {_id:"gisel",  num:10,nombre:"Gisel Mahmud", cargo:"Diputada Provincial",localidad:"Santa Fe",  photo:"gisel%20mahmud.png"},
+  {_id:"gisel",  num:10,nombre:"Gisel Mahmud", cargo:"Diputada Provincial",localidad:"Santa Fe",  photo:"gisel%20mamhud.png"},
   {_id:"pinotti",num:1, nombre:"Pablo Pinotti", cargo:"Intendente",         localidad:"Sunchales", photo:"pablo%20pinotti.png"}
 ];
 const COMUNALES = [
   {_id:"c_aldao",    num:5, nombre:"Lorena Eberhardt",  cargo:"Pres. Comunal",localidad:"Colonia Aldao", photo:null},
   {_id:"c_zenon",    num:3, nombre:"Veronica Gallo",    cargo:"Pres. Comunal",localidad:"Zenón Pereyra", photo:null},
-  {_id:"c_margarita",num:7, nombre:"Maria S. Muratore", cargo:"Pres. Comunal",localidad:"Col. Margarita",photo:"muratore.jpeg"},
-  {_id:"c_eusebia",  num:11,nombre:"Susana Gimenez",    cargo:"Pres. Comunal",localidad:"Eusebia y Car.",photo:"gimenez.jpeg"},
+  {_id:"c_margarita",num:7, nombre:"Maria S. Muratore", cargo:"Pres. Comunal",localidad:"Col. Margarita",photo:"maria%20muratore.png"},
+  {_id:"c_eusebia",  num:11,nombre:"Susana Gimenez",    cargo:"Pres. Comunal",localidad:"Eusebia y Car.",photo:"susana%20gimenez.png"},
   {_id:"c_raquel",   num:22,nombre:"Luciana Peter",     cargo:"Pres. Comunal",localidad:"Col. Raquel",   photo:"luciana%20peter.png"},
   {_id:"c_maua",     num:9, nombre:"Ricardo Garbagnoli",cargo:"Pres. Comunal",localidad:"Mauá",          photo:null},
   {_id:"c_iturraspe",num:15,nombre:"Dario Picco",       cargo:"Pres. Comunal",localidad:"Col. Iturraspe",photo:null}
