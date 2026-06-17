@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Castellanos — Cómo estamos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Barlow Condensed', Arial, sans-serif; background: #0e0e1a; color: #e0e0e0; min-height: 100vh; }
+
+/* NAV */
+nav { background: #e63946; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: white; letter-spacing: 2px; }
+.nav-links { display: flex; gap: 12px; }
+.nav-links a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 1px; padding: 5px 12px; border-radius: 4px; transition: background .2s; }
+.nav-links a:hover { background: rgba(0,0,0,.2); color: white; }
+.nav-links a.active { background: rgba(0,0,0,.25); color: white; }
+
+/* HERO */
+.hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); padding: 36px 20px 28px; text-align: center; border-bottom: 3px solid #e63946; }
+.hero-title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: white; letter-spacing: 4px; line-height: 1; }
+.hero-sub { color: #ffcdd2; font-size: 14px; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
+.hero-date { color: #888; font-size: 12px; margin-top: 8px; }
+
+/* SUMMARY CARDS */
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; max-width: 900px; margin: 28px auto 0; padding: 0 20px; }
+.scard { background: #16213e; border-radius: 10px; padding: 18px 16px; text-align: center; border-top: 3px solid #e63946; }
+.scard-val { font-family: 'Bebas Neue', sans-serif; font-size: 44px; color: #e63946; line-height: 1; }
+.scard-val.green { color: #22c55e; }
+.scard-val.yellow { color: #f59e0b; }
+.scard-val.blue { color: #60a5fa; }
+.scard-lbl { font-size: 11px; color: #888; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+.scard-sub { font-size: 11px; color: #555; margin-top: 3px; }
+
+/* SECTION TITLE */
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: #e63946; padding: 28px 20px 12px; max-width: 900px; margin: 0 auto; border-bottom: 1px solid #2a3a5a; }
+
+/* AFILIADOS POR LOC */
+.afil-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; max-width: 900px; margin: 16px auto; padding: 0 20px; }
+.afil-card { background: #16213e; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #22c55e; }
+.afil-loc { font-size: 13px; font-weight: 700; color: #ddd; }
+.afil-n { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: #22c55e; line-height: 1; }
+.afil-sub { font-size: 10px; color: #555; }
+
+/* LOCALIDADES TABLE */
+.table-wrap { max-width: 900px; margin: 16px auto 40px; padding: 0 20px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #16213e; color: #aaa; padding: 10px 12px; text-align: left; font-weight: 700; letter-spacing: .5px; border-bottom: 2px solid #e63946; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
+tbody td { padding: 9px 12px; border-bottom: 1px solid #1e2a40; vertical-align: middle; }
+tbody tr:hover td { background: #1a2a40; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.b-fuerte { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+.b-debil { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+.b-nula { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+.b-sin_datos { background: rgba(100,100,100,.15); color: #777; border: 1px solid rgba(100,100,100,.3); }
+.pp-ps { color: #e63946; font-weight: 700; }
+.pp-otros { color: #888; }
+.loc-name { font-weight: 700; color: #ddd; }
+.afil-num { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #22c55e; }
+.afil-num.zero { color: #444; }
+.centro-si { color: #22c55e; font-size: 14px; }
+.centro-no { color: #444; font-size: 14px; }
+
+/* SEARCH */
+.table-controls { max-width: 900px; margin: 20px auto 10px; padding: 0 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.table-controls input, .table-controls select { padding: 8px 12px; border-radius: 6px; border: 1px solid #2a3a5a; background: #16213e; color: #ccc; font-size: 13px; font-family: 'Barlow Condensed', sans-serif; }
+.table-controls input { flex: 1; min-width: 180px; }
+.count-info { font-size: 12px; color: #555; padding: 0 20px; max-width: 900px; margin: 0 auto 8px; }
+
+/* FOOTER */
+footer { text-align: center; padding: 20px; font-size: 11px; color: #444; border-top: 1px solid #1a2a40; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">PS CASTELLANOS</div>
+  <div class="nav-links">
+    <a href="index.html">👥 El equipo</a>
+    <a href="sumate.html">🌹 Sumate</a>
+    <a href="estado.html" class="active">📊 Cómo estamos</a>
+    <a href="panel.html">🔐 Panel</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-title">CÓMO ESTAMOS</div>
+  <div class="hero-sub">Partido Socialista · Departamento Castellanos · Santa Fe</div>
+  <div class="hero-date">Datos: elecciones 2025 · Padrón afiliados vigente</div>
+</div>
+
+<!-- Summary cards -->
+<div class="summary" id="summaryCards"></div>
+
+<!-- Afiliados por localidad -->
+<div class="section-title">AFILIADOS POR LOCALIDAD</div>
+<div class="afil-grid" id="afilGrid"></div>
+
+<!-- Localidades table -->
+<div class="section-title">TODAS LAS LOCALIDADES</div>
+<div class="table-controls">
+  <input type="text" id="searchInput" placeholder="🔍 Buscar localidad..." oninput="renderTable()">
+  <select id="filterPres" onchange="renderTable()">
+    <option value="">Todas las presencias</option>
+    <option value="fuerte">🟢 Fuerte</option>
+    <option value="debil">🟠 Débil</option>
+    <option value="nula">🔴 Sin presencia</option>
+    <option value="sin_datos">⚫ Sin datos</option>
+  </select>
+</div>
+<div class="count-info" id="countInfo"></div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Localidad</th>
+        <th>Tipo</th>
+        <th>Partido 2025</th>
+        <th>Presencia PS</th>
+        <th>Centro PS</th>
+        <th>Afiliados</th>
+        <th>Congresales prov.</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<footer>PS Departamento Castellanos · Mesa Departamental electa jun.2026 · Datos de uso interno</footer>
+
+<script>
+// ══ DATOS ELECTORALES (BASE) ══════════════════════════════
+const BASE = [
+  {id:"rafaela",       n:"Rafaela",          G:true,  px:"Viotti Luis 'Leo' (UNIDOS, int.2023)", pp:"Más para SFE", el:83002, pres:"debil",    centroPS:true,  congresal:""},
+  {id:"sunchales",     n:"Sunchales",         G:true,  px:"Pinotti Pablo (PS, int.2023)",          pp:"PS",           el:19552, pres:"fuerte",   centroPS:true,  congresal:"Ochat Andrea · Galli Funes José A."},
+  {id:"frontera",      n:"Frontera",          G:true,  px:"Milanesio Fabio (UNIDOS)",              pp:"UNIDOS",       el:7243,  pres:"debil",    centroPS:true,  congresal:"Pérez Susana · Pérez Carlos"},
+  {id:"san_vicente",   n:"San Vicente",       G:true,  px:"Aira Gonzalo (UNIDOS, int.2025)",       pp:"UNIDOS",       el:5427,  pres:"debil",    centroPS:false, congresal:""},
+  {id:"humberto",      n:"Humberto Primo",    G:true,  px:"Gilabert Mauro (UNIDOS)",               pp:"UNIDOS",       el:4677,  pres:"debil",    centroPS:true,  congresal:""},
+  {id:"maria_juana",   n:"María Juana",       G:true,  px:"Maciel Zulma (UNIDOS)",                 pp:"UNIDOS",       el:4157,  pres:"debil",    centroPS:true,  congresal:"Bazzoni Amadeo"},
+  {id:"col_aldao",     n:"Colonia Aldao",     G:false, px:"Eberhardt Lorena (UNIDOS)",             pp:"PS",           el:1692,  pres:"fuerte",   centroPS:false, congresal:""},
+  {id:"angelica",      n:"Angélica",          G:false, px:"Andres Marcos (Más para SFE)",          pp:"Más para SFE", el:1201,  pres:"nula",     centroPS:false, congresal:""},
+  {id:"ataliva",       n:"Ataliva",           G:false, px:"Alvarez Jose Manuel (UNIDOS)",          pp:"UNIDOS",       el:1777,  pres:"debil",    centroPS:false, congresal:""},
+  {id:"aurelia",       n:"Aurelia",           G:false, px:"Morel Roberto (Esfuerzo Vecinal)",      pp:"Esfuerzo Vec.",el:138,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"bauer_sigel",   n:"Bauer y Sigel",     G:false, px:"Serrani Franco (UNIDOS)",               pp:"UNIDOS",       el:247,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"bella_italia",  n:"Bella Italia",      G:false, px:"Perotti Hector (Más para SFE)",         pp:"Más para SFE", el:1499,  pres:"nula",     centroPS:false, congresal:""},
+  {id:"col_bicha",     n:"Col. Bicha",        G:false, px:"Alochis Miguel (UNIDOS)",               pp:"UNIDOS",       el:179,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"col_bigand",    n:"Col. Bigand",       G:false, px:"Oggero Adrian (Más para SFE)",          pp:"Más para SFE", el:51,    pres:"nula",     centroPS:false, congresal:""},
+  {id:"castellanos_c", n:"Castellanos",       G:false, px:"Audino Diego (UNIDOS)",                 pp:"UNIDOS",       el:305,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"col_cello",     n:"Col. Cello",        G:false, px:"Heck Maria del Carmen (UNIDOS)",        pp:"UNIDOS",       el:174,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"col_iturraspe", n:"Col. Iturraspe",    G:false, px:"Picco Dario (UNIDOS)",                  pp:"PS",           el:48,    pres:"fuerte",   centroPS:false, congresal:""},
+  {id:"col_margarita", n:"Col. Margarita",    G:false, px:"Muratore Maria Soledad (UNIDOS)",       pp:"PS",           el:313,   pres:"fuerte",   centroPS:false, congresal:""},
+  {id:"col_raquel",    n:"Col. Raquel",       G:false, px:"Schmuck Oscar (UNIDOS)",                pp:"UNIDOS",       el:500,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"egusquiza",     n:"Egusquiza",         G:false, px:"",                                      pp:"UNIDOS",       el:220,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"esmeralda",     n:"Esmeralda",         G:false, px:"",                                      pp:"UNIDOS",       el:186,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"eustolia",      n:"Eustolia",          G:false, px:"",                                      pp:"UNIDOS",       el:82,    pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"eusebia_caro",  n:"Eusebia y Caro",    G:false, px:"",                                      pp:"UNIDOS",       el:390,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"fidela",        n:"Fidela",            G:false, px:"",                                      pp:"UNIDOS",       el:140,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"galisteo",      n:"Galisteo",          G:false, px:"",                                      pp:"UNIDOS",       el:114,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"josefina",      n:"Josefina",          G:false, px:"",                                      pp:"UNIDOS",       el:180,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"lehmann",       n:"Lehmann",           G:false, px:"",                                      pp:"UNIDOS",       el:320,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"maua",          n:"Maúa",              G:false, px:"",                                      pp:"UNIDOS",       el:60,    pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"ramona",        n:"Ramona",            G:false, px:"",                                      pp:"UNIDOS",       el:1050,  pres:"debil",    centroPS:false, congresal:"Tabín Duggo Juan Pablo"},
+  {id:"san_antonio",   n:"San Antonio",       G:false, px:"",                                      pp:"UNIDOS",       el:80,    pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"santa_clara",   n:"Santa Clara Saguier",G:false,px:"",                                      pp:"UNIDOS",       el:480,   pres:"debil",    centroPS:false, congresal:"Gallo Verónica"},
+  {id:"susana",        n:"Susana",            G:true,  px:"Ferrero (UNIDOS)",                      pp:"UNIDOS",       el:2580,  pres:"debil",    centroPS:false, congresal:""},
+  {id:"tacural",       n:"Tacural",           G:false, px:"",                                      pp:"UNIDOS",       el:310,   pres:"debil",    centroPS:false, congresal:""},
+  {id:"virginia",      n:"Virginia",          G:false, px:"",                                      pp:"UNIDOS",       el:150,   pres:"sin_datos",centroPS:false, congresal:""},
+  {id:"zenon_pereyra", n:"Zenón Pereyra",     G:false, px:"",                                      pp:"UNIDOS",       el:720,   pres:"debil",    centroPS:false, congresal:"Peter Luciana M."},
+];
+
+// Afiliados por localidad (padrón vigente)
+const AFIL = {
+  "Rafaela": 249, "Sunchales": 108, "María Juana": 83, "Humberto Primo": 46,
+  "Ramona": 16, "Frontera": 16, "Susana": 15, "Colonia Aldao": 14, "Col. Raquel": 10,
+  "Eusebia y Caro": 10, "Zenón Pereyra": 9, "Col. Margarita": 8, "Tacural": 8,
+  "Santa Clara Saguier": 6, "Lehmann": 4, "Ataliva": 3, "San Vicente": 3,
+  "Esmeralda": 2, "Fidela": 2,
+};
+function getAfil(n) { return AFIL[n] || 0; }
+
+const PRES_LBL = { fuerte:"Fuerte", debil:"Débil", nula:"Sin presencia", sin_datos:"Sin datos" };
+
+// ══ SUMMARY CARDS ════════════════════════════════════════
+function buildSummary() {
+  const totalEl = BASE.reduce((s,b)=>s+b.el,0);
+  const psGov = BASE.filter(b=>b.pp==="PS").length;
+  const centros = BASE.filter(b=>b.centroPS).length;
+  const conPresencia = BASE.filter(b=>b.pres==="fuerte"||b.pres==="debil").length;
+  const totalAfil = Object.values(AFIL).reduce((s,v)=>s+v,0);
+
+  document.getElementById("summaryCards").innerHTML = `
+    <div class="scard"><div class="scard-val">${BASE.length}</div><div class="scard-lbl">Localidades</div><div class="scard-sub">Dpto. Castellanos</div></div>
+    <div class="scard"><div class="scard-val green">${psGov}</div><div class="scard-lbl">Ejecutivos PS</div><div class="scard-sub">Intendente o Pte. Comunal</div></div>
+    <div class="scard"><div class="scard-val green">${centros}</div><div class="scard-lbl">Centros Socialistas</div><div class="scard-sub">Activos</div></div>
+    <div class="scard"><div class="scard-val yellow">${conPresencia}</div><div class="scard-lbl">Con presencia PS</div><div class="scard-sub">de ${BASE.length} localidades</div></div>
+    <div class="scard"><div class="scard-val blue">${totalAfil.toLocaleString("es-AR")}</div><div class="scard-lbl">Afiliados PS</div><div class="scard-sub">Padrón departamental</div></div>
+    <div class="scard"><div class="scard-val">${(totalEl/1000).toFixed(0)}k</div><div class="scard-lbl">Electores</div><div class="scard-sub">Castellanos 2025</div></div>
+  `;
+}
+
+// ══ AFILIADOS GRID ════════════════════════════════════════
+function buildAfilGrid() {
+  const sorted = Object.entries(AFIL).sort((a,b)=>b[1]-a[1]);
+  document.getElementById("afilGrid").innerHTML = sorted.map(([loc, n])=>`
+    <div class="afil-card">
+      <div>
+        <div class="afil-loc">${loc}</div>
+        <div class="afil-sub">afiliados/as</div>
+      </div>
+      <div class="afil-n">${n}</div>
+    </div>
+  `).join('');
+}
+
+// ══ TABLE ═════════════════════════════════════════════════
+function renderTable() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const fp = document.getElementById("filterPres").value;
+
+  const filtered = BASE.filter(b=>{
+    if(q && !b.n.toLowerCase().includes(q)) return false;
+    if(fp && b.pres !== fp) return false;
+    return true;
+  }).sort((a,b)=>b.el-a.el);
+
+  document.getElementById("countInfo").textContent = `Mostrando ${filtered.length} de ${BASE.length} localidades`;
+
+  document.getElementById("tableBody").innerHTML = filtered.map(b=>{
+    const afil = getAfil(b.n);
+    const afilClass = afil>0 ? "afil-num" : "afil-num zero";
+    const ppClass = b.pp==="PS" ? "pp-ps" : "pp-otros";
+    return `<tr>
+      <td><span class="loc-name">${b.n}</span></td>
+      <td style="color:#666;font-size:11px">${b.G?"Municipio":"Com. Comunal"}</td>
+      <td class="${ppClass}">${b.pp||"—"}</td>
+      <td><span class="badge b-${b.pres}">${PRES_LBL[b.pres]||b.pres}</span></td>
+      <td style="text-align:center">${b.centroPS?'<span class="centro-si">🌹</span>':'<span class="centro-no">—</span>'}</td>
+      <td><span class="${afilClass}">${afil||"—"}</span></td>
+      <td style="font-size:11px;color:#6a8aaa">${b.congresal||"—"}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══ INIT ═════════════════════════════════════════════════
+buildSummary();
+buildAfilGrid();
+renderTable();
+</script>
+</body>
+</html>

@@ -241,17 +241,47 @@ tr.sel-row td { background: #2a4a7f; }
         <div class="map-wrapper" id="mapWrapper">
           <svg id="mapBg" viewBox="0 0 555 719" xmlns="http://www.w3.org/2000/svg" style="display:block;width:555px;height:719px">
           <defs>
-            <radialGradient id="bgGradP" cx="50%" cy="50%" r="65%">
-              <stop offset="0%" stop-color="#152215"/>
-              <stop offset="100%" stop-color="#0a140a"/>
+            <radialGradient id="bgGradP" cx="48%" cy="46%" r="60%">
+              <stop offset="0%" stop-color="#152515"/>
+              <stop offset="100%" stop-color="#090e09"/>
             </radialGradient>
+            <filter id="glowMap" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
           </defs>
-          <rect width="555" height="719" fill="#0a140a"/>
-          <path d="M 55,15 L 510,15 L 510,700 L 95,700 L 55,660 Z"
-                fill="url(#bgGradP)" stroke="#1e3a1e" stroke-width="1.5"/>
-          <line x1="345" y1="15" x2="338" y2="700" stroke="#1a2a1a" stroke-width="1" stroke-dasharray="8,10" opacity=".6"/>
-          <line x1="55" y1="342" x2="510" y2="342" stroke="#1a2a1a" stroke-width="1" stroke-dasharray="8,10" opacity=".6"/>
-          <text x="360" y="346" text-anchor="middle" font-size="13" fill="rgba(240,192,64,.35)" pointer-events="none">&#x2736;</text>
+          <!-- Fondo negro -->
+          <rect width="555" height="719" fill="#080c08"/>
+          <!-- Silueta aproximada del Departamento Castellanos (Santa Fe) -->
+          <path d="M 62,22
+                   L 178,19 L 285,18 L 396,19 L 496,24
+                   L 500,90 L 504,185 L 507,280 L 508,365
+                   L 506,455 L 503,545 L 499,635 L 494,698
+                   L 390,701 L 285,702 L 178,700 L 105,697 L 68,660
+                   L 60,580 L 55,480 L 54,380 L 56,275 L 58,170 L 62,80 Z"
+                fill="url(#bgGradP)" stroke="#224422" stroke-width="2" opacity="1"/>
+          <!-- Límites internos horizontales (secciones municipales) -->
+          <line x1="56" y1="250" x2="506" y2="252" stroke="#163016" stroke-width="1" stroke-dasharray="5,9" opacity=".55"/>
+          <line x1="54" y1="472" x2="502" y2="475" stroke="#163016" stroke-width="1" stroke-dasharray="5,9" opacity=".55"/>
+          <!-- Límites internos verticales -->
+          <line x1="188" y1="19" x2="184" y2="701" stroke="#163016" stroke-width="1" stroke-dasharray="5,9" opacity=".45"/>
+          <line x1="346" y1="18" x2="343" y2="702" stroke="#163016" stroke-width="1" stroke-dasharray="5,9" opacity=".4"/>
+          <!-- Ríos / canales (líneas curvas decorativas) -->
+          <path d="M 150,22 Q 155,340 148,700" stroke="#0e2a1a" stroke-width="2" fill="none" opacity=".7"/>
+          <path d="M 56,338 Q 280,330 507,345" stroke="#0e2a1a" stroke-width="2" fill="none" opacity=".5"/>
+          <!-- Watermark -->
+          <text x="278" y="375" text-anchor="middle" font-size="26" font-family="Arial" font-weight="900"
+                fill="rgba(255,255,255,0.03)" letter-spacing="4" pointer-events="none"
+                transform="rotate(-5,278,375)">CASTELLANOS</text>
+          <text x="278" y="405" text-anchor="middle" font-size="11" font-family="Arial"
+                fill="rgba(255,255,255,0.025)" letter-spacing="3" pointer-events="none">SANTA FE · ARGENTINA</text>
+          <!-- Indicador Norte -->
+          <g transform="translate(476,50)">
+            <circle r="14" fill="none" stroke="rgba(120,200,120,.22)" stroke-width="1"/>
+            <polygon points="0,-11 -3.5,3 0,-0.5 3.5,3" fill="rgba(180,230,180,.4)"/>
+            <text y="23" text-anchor="middle" font-size="9" font-family="Arial" font-weight="bold"
+                  fill="rgba(160,220,160,.4)">N</text>
+          </g>
         </svg>
           <div class="tooltip-map" id="tooltip"></div>
         </div>
@@ -757,6 +787,30 @@ function buildAnalisis() {
   `;
 }
 
+function parseSC(sc) {
+  if(!sc) return "";
+  const items = sc.split(/\.\s+(?=[A-ZÁÉÍÓÚ🌹]|Sec\.|Ing\.|Dr\.|PS:|Centro|Concejal|Intendente|Presidente|Pte\.|Congresal)/).filter(s=>s.trim().length>2);
+  const getIcon = s => {
+    s = s.toLowerCase();
+    if(/intendente|pte\.\s*comunal|pres\.\s*comunal|presidente comunal/.test(s)) return "🏛️";
+    if(/concejal/.test(s)) return "💺";
+    if(/centro soc/.test(s)) return "🌹";
+    if(/congresal|congresales/.test(s)) return "🗳️";
+    if(/diputad/.test(s)) return "🏛️";
+    return "▸";
+  };
+  if(items.length<=1){
+    return `<div class='prow prow-block'><span class='plabel'>🌹 Situación PS</span><div class='pval pval-ps'>${sc}</div></div>`;
+  }
+  const rows = items.map(s=>`
+    <div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #1a2540;align-items:flex-start">
+      <span style="flex-shrink:0;font-size:15px;line-height:1.2">${getIcon(s)}</span>
+      <span style="color:#e0707a;font-size:12px;line-height:1.55">${s.trim()}</span>
+    </div>`).join('');
+  return `<div class='prow prow-block'><span class='plabel'>🌹 Situación PS</span></div>
+    <div style="padding:2px 12px 6px;margin-bottom:4px">${rows}</div>`;
+}
+
 function sortAnTable(col) {
   const tb = document.querySelector("#anTable tbody");
   if(!tb) return;
@@ -787,19 +841,19 @@ function sortAnTable(col) {
         <div class="pbox" id="panoBox"></div>
         <div class="rtable" id="resTable" style="display:none"></div>
         <div class="who-edited" id="whoEdited"></div>
-        <div class="sec" style="margin-top:4px">📞 Contactos PS</div>
+        <div class="sec" style="margin-top:4px">📋 Datos PS</div>
         <div class="frow">
           <label>Presencia PS</label>
           <select id="f_pres">
             <option value="fuerte">🟢 Fuerte</option>
-            <option value="debil">🟠 Debil</option>
+            <option value="debil">🟠 Débil</option>
             <option value="nula">🔴 Sin presencia</option>
             <option value="sin_datos">⚫ Sin datos</option>
           </select>
         </div>
-        <div class="frow"><label>Referente/a principal</label><input type="text" id="f_ref" placeholder="Nombre y apellido..."></div>
-        <div class="frow"><label>Telefono / WhatsApp</label><input type="text" id="f_tel" placeholder="+54 3492 ..."></div>
-        <div class="frow"><label>Como ubicarlo/a</label><input type="text" id="f_dir" placeholder="Trabajo, barrio, cuando llamar..."></div>
+        <div class="frow"><label>Referente/a PS</label><input type="text" id="f_ref" placeholder="Nombre y apellido..."></div>
+        <div class="frow"><label>Teléfono / WhatsApp</label><input type="text" id="f_tel" placeholder="+54 3492 ..."></div>
+        <div class="frow"><label>Cómo ubicarlo/a</label><input type="text" id="f_dir" placeholder="Trabajo, barrio, cuándo llamar..."></div>
         <div class="frow">
           <label>Centro Socialista</label>
           <select id="f_centro">
@@ -808,20 +862,7 @@ function sortAnTable(col) {
             <option value="no">❌ No tiene Centro</option>
           </select>
         </div>
-        <div class="frow"><label>N° Afiliados PS</label><input type="number" id="f_afil" placeholder="0" min="0"></div>
-        <div class="frow">
-          <label>Prioridad de visita</label>
-          <select id="f_prio">
-            <option value="">— sin definir —</option>
-            <option value="alta">🔴 Alta — ir pronto</option>
-            <option value="media">🟡 Media</option>
-            <option value="baja">🟢 Baja</option>
-          </select>
-        </div>
-        <div class="sec" style="margin-top:4px">🗒️ Notas de visita</div>
-        <div class="frow"><label>Para hablar / proponer</label><textarea id="f_ec" placeholder="Temas a llevar, como arrancar la charla..."></textarea></div>
-        <div class="frow"><label>Grupo PS / militancia</label><textarea id="f_eg" placeholder="Quienes estan, como esta el grupo..."></textarea></div>
-        <div class="frow"><label>Observaciones</label><textarea id="f_eo" placeholder="Otras notas utiles..."></textarea></div>
+        <div class="frow"><label>N° Afiliados PS (padrón)</label><input type="number" id="f_afil" placeholder="0" min="0"></div>
       </div>
       <div class="saving-indicator" id="savingInd"></div>
       <div class="dactions">
@@ -1129,7 +1170,7 @@ function openDetail(id) {
     const cls=cl==="unidos"?"g":cl==="mas"?"o":"ot";
     ph+=rw("Partido gobernante","<span class='pval "+cls+"'>"+b.pp+"</span>");
   }
-  if(b.sc) ph+="<div class='prow prow-block'><span class='plabel'>🌹 Situacion PS</span><div class='pval pval-ps'>"+b.sc+"</div></div>";
+  ph += parseSC(b.sc);
   if(b.el) ph+=rw("Electores 2025","<span class='pval'>"+fmt(b.el)+"</span>");
   if(b.vg) ph+=rw("Votos validos","<span class='pval'>"+fmt(b.vg)+" ("+pct(b.vg,b.el)+" particip.)</span>");
   document.getElementById("panoBox").innerHTML=ph||"<span style='color:#555'>Sin datos electorales</span>";
@@ -1152,10 +1193,7 @@ function openDetail(id) {
   document.getElementById("f_dir").value=d.dir||"";
   document.getElementById("f_centro").value=d.centro||(b.centroPS?"si":"");
   document.getElementById("f_afil").value=d.afil||"";
-  document.getElementById("f_prio").value=d.prio||"";
-  document.getElementById("f_ec").value=d.ec||"";
-  document.getElementById("f_eg").value=d.eg||"";
-  document.getElementById("f_eo").value=d.eo||"";
+
   document.getElementById("savingInd").textContent="";
 }
 
@@ -1170,10 +1208,6 @@ async function saveDetail() {
     afil: document.getElementById("f_afil").value || null,
     ref: document.getElementById("f_ref").value,
     tel: document.getElementById("f_tel").value,
-    prio: document.getElementById("f_prio").value,
-    ec: document.getElementById("f_ec").value,
-    eg: document.getElementById("f_eg").value,
-    eo: document.getElementById("f_eo").value,
   };
 
   if (sess.role === "admin") {
