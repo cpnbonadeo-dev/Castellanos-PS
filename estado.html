@@ -349,6 +349,18 @@ function elecStatus(b){
   }
   svg.innerHTML += grid;
 
+  // Contorno aproximado del Departamento Castellanos (lat/lng → SVG)
+  const depBorder = [
+    [-30.44,-62.45],[-30.47,-62.20],[-30.50,-61.90],
+    [-30.48,-61.48],[-30.52,-61.43],
+    [-31.55,-61.43],[-31.60,-61.65],
+    [-31.60,-62.00],[-31.58,-62.45]
+  ];
+  const bdPts = depBorder.map(([la,lo])=>`${toX(lo).toFixed(1)},${toY(la).toFixed(1)}`).join(' ');
+  svg.innerHTML += `
+    <polygon points="${bdPts}" fill="rgba(80,130,210,0.09)" stroke="rgba(100,160,255,0.35)" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <text x="${toX(-61.98).toFixed(0)}" y="${toY(-31.00).toFixed(0)}" text-anchor="middle" font-size="11" fill="rgba(100,160,255,0.18)" font-family="Barlow Condensed,sans-serif" font-weight="700" letter-spacing="3">CASTELLANOS</text>`;
+
   // Cardinal labels
   svg.innerHTML += `
     <text x="${W/2}" y="${PAD-8}" text-anchor="middle" font-size="9" fill="#333" font-family="monospace">N</text>
