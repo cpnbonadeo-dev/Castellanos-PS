@@ -56,55 +56,105 @@ body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;backgrou
 /* ── CARDS */
 .cards{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:0 16px 8px;max-width:1200px;margin:0 auto}
 
-/* ══ PANINI CARD ══════════════════════════════ */
-.pcard{width:175px;border-radius:10px;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,.45),0 0 0 1.5px rgba(255,255,255,.22);transition:transform .22s ease,box-shadow .22s ease;user-select:none;display:flex;flex-direction:column;background:linear-gradient(155deg,#9ec8e8 0%,#c8e0f5 50%,#74acdf 100%)}
-.pcard:hover{transform:translateY(-14px) scale(1.05) rotate(-1.5deg);box-shadow:0 28px 60px rgba(0,0,0,.55),0 0 0 2.5px rgba(255,255,255,.5);z-index:50}
-.foil-oro{background:linear-gradient(155deg,#f5f0e2 0%,#fffaee 50%,#ede0c4 100%)}
-.foil-rojo{background:linear-gradient(155deg,#dceefa 0%,#f0f8ff 50%,#c8e4f5 100%)}
-.foil-verde{background:linear-gradient(155deg,#e2f5e8 0%,#f2fff6 50%,#d0ecd8 100%)}
-.foil-azul{background:linear-gradient(155deg,#dde8fa 0%,#eef4ff 50%,#c8d8f2 100%)}
-.foil-azul .p-top-strip{background:linear-gradient(90deg,#1a3a8a 33%,#4a7ad0 33%,#4a7ad0 67%,#1a3a8a 67%)}
-.foil-azul .p-name-band{border-top-color:#1a3a8a}
-.foil-azul .p-num-bg{color:rgba(0,25,110,.17)}
+/* ══ PANINI CARD 2026 ══════════════════════════════ */
+@keyframes foilSpin{from{transform:rotate(0deg) scale(2.8)}to{transform:rotate(360deg) scale(2.8)}}
+@keyframes foilPulse{0%,100%{opacity:0}50%{opacity:1}}
 
-.pcard::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(-55deg,rgba(0,60,120,.055) 0,rgba(0,60,120,.055) 1px,transparent 1px,transparent 14px)}
-.p-top-strip{height:8px;background:linear-gradient(90deg,#5a9ad0 33%,#fff 33%,#fff 67%,#5a9ad0 67%);position:relative;z-index:3;flex-shrink:0}
-.foil-oro .p-top-strip{background:linear-gradient(90deg,#b8860b 33%,#f5d94e 33%,#f5d94e 67%,#b8860b 67%)}
-.foil-verde .p-top-strip{background:linear-gradient(90deg,#228022 33%,#90d090 33%,#90d090 67%,#228022 67%)}
-.p-num-bg{position:absolute;bottom:48px;left:-5px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:115px;line-height:1;color:rgba(0,40,130,.20);z-index:7;pointer-events:none;letter-spacing:-5px;font-weight:900}
-.foil-oro .p-num-bg{color:rgba(90,55,0,.20)}
-.foil-verde .p-num-bg{color:rgba(0,55,0,.20)}
-.p-badge{position:absolute;top:10px;right:9px;width:30px;height:30px;border-radius:50%;overflow:hidden;z-index:10;box-shadow:0 2px 7px rgba(0,0,0,.4),0 0 0 1.5px rgba(255,255,255,.65)}
-.p-country{position:absolute;top:10px;left:9px;width:28px;height:28px;border-radius:50%;overflow:hidden;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,.3),0 0 0 1.5px rgba(255,255,255,.5)}
-.p-photo-wrap{position:relative;width:100%;height:185px;overflow:hidden;background:transparent;z-index:2;flex-shrink:0}
+.pcard{width:162px;border-radius:11px;position:relative;overflow:hidden;cursor:pointer;
+  box-shadow:0 8px 26px rgba(0,0,0,.6),0 0 0 2.5px #c8a000,inset 0 0 0 1px rgba(255,220,50,.15);
+  transition:transform .22s ease,box-shadow .22s ease;user-select:none;display:flex;flex-direction:column;
+  background:#0c111e;isolation:isolate}
+.pcard:hover{transform:translateY(-14px) scale(1.07) rotate(-1.5deg);
+  box-shadow:0 32px 64px rgba(0,0,0,.65),0 0 0 3px #f5d030,0 0 30px rgba(255,210,0,.35);z-index:50}
+
+/* foil type base borders */
+.foil-oro{box-shadow:0 8px 26px rgba(0,0,0,.6),0 0 0 2.5px #c8a000,inset 0 0 0 1px rgba(255,220,50,.15)}
+.foil-oro:hover{box-shadow:0 32px 64px rgba(0,0,0,.65),0 0 0 3px #f5d030,0 0 30px rgba(255,200,0,.4)}
+.foil-rojo{box-shadow:0 8px 26px rgba(0,0,0,.6),0 0 0 2.5px #3a7fd4,inset 0 0 0 1px rgba(100,180,255,.15)}
+.foil-rojo:hover{box-shadow:0 32px 64px rgba(0,0,0,.65),0 0 0 3px #5aaaf0,0 0 30px rgba(60,140,255,.4)}
+.foil-verde{box-shadow:0 8px 26px rgba(0,0,0,.6),0 0 0 2.5px #1a8a3a,inset 0 0 0 1px rgba(60,200,100,.15)}
+.foil-verde:hover{box-shadow:0 32px 64px rgba(0,0,0,.65),0 0 0 3px #2ec85a,0 0 30px rgba(30,180,80,.4)}
+.foil-azul{box-shadow:0 8px 26px rgba(0,0,0,.6),0 0 0 2.5px #2255bb,inset 0 0 0 1px rgba(80,140,255,.15)}
+.foil-azul:hover{box-shadow:0 32px 64px rgba(0,0,0,.65),0 0 0 3px #4488ee,0 0 30px rgba(50,120,255,.4)}
+
+/* Foil shimmer overlay */
+.p-foil-sheen{position:absolute;inset:0;z-index:25;pointer-events:none;opacity:0;
+  background:conic-gradient(from 0deg,transparent 0deg,rgba(255,220,50,.18) 40deg,rgba(255,255,255,.22) 80deg,rgba(100,210,255,.16) 130deg,transparent 180deg,rgba(255,120,200,.1) 230deg,rgba(255,220,50,.18) 280deg,transparent 360deg);
+  mix-blend-mode:screen;transition:opacity .25s}
+.pcard:hover .p-foil-sheen{opacity:1;animation:foilSpin 2.4s linear infinite}
+
+/* Top arc — team color header */
+.p-top-arc{position:absolute;top:0;left:0;right:0;height:62px;z-index:5;pointer-events:none}
+.p-top-arc::before{content:'';position:absolute;top:0;left:0;right:0;height:62px;
+  background:linear-gradient(160deg,#8b0018 0%,#cc001e 55%,#e8002a 100%);
+  clip-path:ellipse(115% 80% at 50% 18%)}
+.foil-oro .p-top-arc::before{background:linear-gradient(160deg,#6e000f 0%,#aa0018 55%,#dd001e 100%)}
+.foil-rojo .p-top-arc::before{background:linear-gradient(160deg,#003080 0%,#0048c8 55%,#1a70ff 100%)}
+.foil-verde .p-top-arc::before{background:linear-gradient(160deg,#0a5018 0%,#157a28 55%,#1eaa38 100%)}
+.foil-azul .p-top-arc::before{background:linear-gradient(160deg,#0a1f70 0%,#1535b8 55%,#2555e8 100%)}
+
+/* Diagonal stripe texture overlay */
+.pcard::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(-50deg,rgba(255,255,255,.022) 0,rgba(255,255,255,.022) 1px,transparent 1px,transparent 12px)}
+
+/* Sticker number in arc */
+.p-sticker-num{position:absolute;bottom:5px;right:50%;transform:translateX(50%);
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:rgba(255,255,255,.85);
+  letter-spacing:1.5px;text-shadow:0 1px 3px rgba(0,0,0,.9);z-index:6}
+
+/* Badges in arc */
+.p-badge{position:absolute;top:8px;right:9px;width:28px;height:28px;border-radius:50%;overflow:hidden;z-index:10;
+  box-shadow:0 2px 7px rgba(0,0,0,.5),0 0 0 1.5px rgba(255,255,255,.7);background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center}
+.p-country{position:absolute;top:8px;left:9px;width:26px;height:26px;border-radius:50%;overflow:hidden;z-index:10;
+  box-shadow:0 2px 6px rgba(0,0,0,.45),0 0 0 1.5px rgba(255,255,255,.65)}
+
+/* Photo area */
+.p-photo-wrap{position:relative;width:100%;height:188px;overflow:hidden;background:#0a1525;z-index:2;flex-shrink:0}
 .p-photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
-.p-photo-wrap .p-sil{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px}
-.p-jersey-overlay{position:absolute;bottom:0;left:0;right:0;height:50%;background:repeating-linear-gradient(90deg,#4a8ec0 0px,#4a8ec0 9px,#eef6ff 9px,#eef6ff 18px);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 26%,rgba(0,0,0,.92) 52%,black 70%);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.55) 26%,rgba(0,0,0,.92) 52%,black 70%);z-index:6}
+.p-photo-wrap .p-sil{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:18px}
+.p-photo-fade{position:absolute;bottom:0;left:0;right:0;height:48px;
+  background:linear-gradient(to bottom,transparent,rgba(5,8,20,.75));z-index:4;pointer-events:none}
+
+/* Jersey overlay for silhouettes */
+.p-jersey-overlay{position:absolute;bottom:0;left:0;right:0;height:52%;
+  background:repeating-linear-gradient(90deg,#aa001e 0px,#aa001e 9px,#ff4466 9px,#ff4466 18px);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.5) 28%,rgba(0,0,0,.92) 55%,black 72%);
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.5) 28%,rgba(0,0,0,.92) 55%,black 72%);z-index:6}
+.foil-rojo .p-jersey-overlay{background:repeating-linear-gradient(90deg,#0048c8 0px,#0048c8 9px,#74b8ff 9px,#74b8ff 18px)}
+.foil-verde .p-jersey-overlay{background:repeating-linear-gradient(90deg,#0e6020 0px,#0e6020 9px,#3ec860 9px,#3ec860 18px)}
+.foil-azul .p-jersey-overlay{background:repeating-linear-gradient(90deg,#1535b8 0px,#1535b8 9px,#4488ee 9px,#4488ee 18px)}
 .has-jersey .p-jersey-overlay{display:none}
-.p-collar{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:30px;height:16px;border-radius:0 0 14px 14px;background:#74b3e8;border:2px solid rgba(255,255,255,.85);border-top:none;z-index:8}
+.p-collar{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:30px;height:16px;
+  border-radius:0 0 14px 14px;background:#cc001e;border:2px solid rgba(255,255,255,.8);border-top:none;z-index:8}
+.foil-rojo .p-collar{background:#0048c8}
+.foil-verde .p-collar{background:#0e6020}
+.foil-azul .p-collar{background:#1535b8}
 .has-jersey .p-collar{display:none}
-.p-chest-badge{position:absolute;top:12px;left:50%;transform:translateX(-75%);width:24px;height:24px;border-radius:50%;overflow:hidden;z-index:9;box-shadow:0 2px 5px rgba(0,0,0,.55),0 0 0 1.5px rgba(255,255,255,.4)}
+.p-chest-badge{position:absolute;top:14px;left:50%;transform:translateX(-75%);width:22px;height:22px;
+  border-radius:50%;overflow:hidden;z-index:9;box-shadow:0 2px 5px rgba(0,0,0,.6),0 0 0 1.5px rgba(255,255,255,.45)}
 .has-jersey .p-chest-badge{display:none}
 .p-shoulder{position:absolute;top:0;right:10px;display:flex;gap:3px;height:100%;align-items:stretch}
-.p-shoulder span{display:block;width:2.5px;background:rgba(255,255,255,.18);border-radius:1px}
+.p-shoulder span{display:block;width:2.5px;background:rgba(255,255,255,.15);border-radius:1px}
 .has-jersey .p-shoulder{display:none}
-.p-flag{display:none}
-.p-top-band{display:none}
-.p-top-txt{display:none}
-.p-num{display:none}
-.p-name-band{position:relative;z-index:10;background:rgba(255,255,255,.97);padding:7px 9px 9px;border-top:3px solid #5a9ad0;flex-shrink:0}
-.foil-oro .p-name-band{border-top-color:#c8960c}
-.foil-verde .p-name-band{border-top-color:#228022}
-.p-firstname{font-size:8px;color:rgba(0,0,0,.45);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;line-height:1}
-.p-lastname{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:21px;color:#0a0a0a;font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1;margin-top:2px}
-.p-info{font-size:8px;color:rgba(0,0,0,.45);margin-top:3px;letter-spacing:.3px;text-transform:uppercase}
-.p-club{display:flex;align-items:center;justify-content:space-between;margin-top:5px;border-top:1px solid rgba(0,0,0,.07);padding-top:4px}
-.p-club-name{font-size:8.5px;font-weight:900;color:rgba(0,0,0,.70);text-transform:uppercase;letter-spacing:.4px}
-.p-panini{font-size:7.5px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;color:#fff;background:#cc0018;padding:1px 5px 2px;border-radius:2px;letter-spacing:.5px}
-.p-cong{font-size:7px;color:rgba(180,0,10,.8);letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:700}
-.pcard.sz-grande{width:208px}
-.pcard.sz-grande .p-photo-wrap{height:218px}
-.pcard.sz-grande .p-lastname{font-size:25px}
+.p-flag{display:none}.p-top-band{display:none}.p-top-txt{display:none}.p-num{display:none}
+
+/* Name band — solid dark team color */
+.p-name-band{position:relative;z-index:10;background:#8b0018;padding:7px 9px 9px;flex-shrink:0;border-top:2px solid rgba(255,255,255,.15)}
+.foil-oro .p-name-band{background:#8b0018}
+.foil-rojo .p-name-band{background:#003c8f}
+.foil-verde .p-name-band{background:#0a5018}
+.foil-azul .p-name-band{background:#0a1f70}
+.p-firstname{font-size:7px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1}
+.p-lastname{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:22px;color:#fff;font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1;margin-top:1px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.p-info{font-size:7.5px;color:rgba(255,255,255,.7);margin-top:3px;letter-spacing:.3px;text-transform:uppercase;font-weight:600}
+.p-club{display:flex;align-items:center;justify-content:space-between;margin-top:5px;border-top:1px solid rgba(255,255,255,.12);padding-top:4px}
+.p-club-name{font-size:8px;font-weight:900;color:rgba(255,255,255,.82);text-transform:uppercase;letter-spacing:.4px}
+.p-panini{font-size:7px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;color:#111;background:rgba(255,255,255,.9);padding:1px 5px 2px;border-radius:2px;letter-spacing:1px}
+.p-cong{font-size:6.5px;color:rgba(255,240,120,.85);letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:700}
+.pcard.sz-grande{width:196px}
+.pcard.sz-grande .p-photo-wrap{height:224px}
+.pcard.sz-grande .p-lastname{font-size:26px}
 .pcard.no-click{cursor:default}
 
 /* ── MODAL */
@@ -270,7 +320,8 @@ function mkCard(p, foil, opts){
   const sz      = opts.grande  ? 'sz-grande'  : '';
   const nc      = opts.noClick ? 'no-click'   : '';
   const click   = opts.noClick ? '' : `onclick="openModal('${p._id}')"`; 
-  const hasJ    = p.realJersey ? 'has-jersey' : '';
+  // has-jersey = tarjeta con foto real → ocultar jersey overlay
+  const hasJ = (p.realJersey || p.photo) ? 'has-jersey' : '';
 
   const jerseyOverlay = `
     <div class="p-jersey-overlay">
@@ -279,8 +330,9 @@ function mkCard(p, foil, opts){
       <div class="p-shoulder"><span></span><span></span><span></span></div>
     </div>`;
 
+  // Si hay foto: solo la imagen limpia. Jersey solo cuando es silueta.
   const inner = p.photo
-    ? `<img src="${p.photo}" alt="${p.nombre}">${jerseyOverlay}`
+    ? `<img src="${p.photo}" alt="${p.nombre}">`
     : `<div class="p-sil">${sil()}</div>${jerseyOverlay}`;
 
   const parts = p.nombre.split(' ');
@@ -292,11 +344,13 @@ function mkCard(p, foil, opts){
     : '';
 
   return `<div class="pcard ${foil} ${sz} ${nc} ${hasJ}" ${click}>
-    <div class="p-top-strip"></div>
-    <div class="p-num-bg">${p.num||''}</div>
-    <div class="p-badge">${PS_ROSE}</div>
-    <div class="p-country">${ARG_FL}</div>
-    <div class="p-photo-wrap">${inner}</div>
+    <div class="p-foil-sheen"></div>
+    <div class="p-top-arc">
+      <div class="p-country">${ARG_FL}</div>
+      <div class="p-badge">${PS_ROSE}</div>
+      <div class="p-sticker-num">${p.num||''}</div>
+    </div>
+    <div class="p-photo-wrap">${inner}<div class="p-photo-fade"></div></div>
     <div class="p-name-band">
       <div class="p-firstname">${first}</div>
       <div class="p-lastname">${last}</div>
