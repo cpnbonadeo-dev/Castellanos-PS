@@ -174,12 +174,12 @@ footer{text-align:center;padding:22px;font-size:10px;color:#444;border-top:1px s
 <!-- ══ MAPA INTERACTIVO ══ -->
 <div class="mapa-sec">
   <div class="sec-title">MAPA DEL DEPARTAMENTO</div>
-  <div class="mapa-wrap" style="position:relative;background:#0e1525">
-    <!-- Imagen base del Senado (subir mapa_castellanos.png al repo) -->
+  <div class="mapa-wrap" style="position:relative;background:#0e1525;max-width:560px;margin:0 auto">
+    <!-- Imagen base del Senado (Dpto. Castellanos). El SVG usa el mismo aspect ratio. -->
     <img id="mapaBg" src="mapa_castellanos.png" alt="Mapa Castellanos"
-      style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;opacity:0.22;pointer-events:none;z-index:0"
+      style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;opacity:0.30;pointer-events:none;z-index:0"
       onerror="this.style.display='none'">
-    <svg id="svgMap" viewBox="0 0 720 540" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1"></svg>
+    <svg id="svgMap" viewBox="0 0 775 1004" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;width:100%;height:auto;display:block"></svg>
     <div class="map-tip" id="mapTip"></div>
     <div class="map-legend">
       <span><span class="leg-dot" style="background:#e63946"></span>Ejecutivo PS</span>
@@ -330,65 +330,50 @@ function elecStatus(b){
 // ══ MAPA SVG ══
 (function buildMap(){
   const svg = document.getElementById('svgMap');
-  const W=720, H=540, PAD=30;
-  const lats = BASE.map(b=>b.coord[0]);
-  const lngs = BASE.map(b=>b.coord[1]);
-  const minLat=Math.min(...lats)-0.08, maxLat=Math.max(...lats)+0.08;
-  const minLng=Math.min(...lngs)-0.06, maxLng=Math.max(...lngs)+0.06;
+  const W=775, H=1004;
 
-  function toX(lng){ return PAD + (lng-minLng)/(maxLng-minLng)*(W-2*PAD); }
-  function toY(lat){ return PAD + (maxLat-lat)/(maxLat-minLat)*(H-2*PAD); }
+  // Posiciones de cada localidad medidas en píxel sobre la imagen del Senado
+  // (Dpto. Castellanos), escaladas al viewBox 775x1004. Esto garantiza que cada
+  // punto caiga exactamente sobre su localidad en la imagen de fondo.
+  const PXMAP = {
+    rafaela:[442.8,468.0], sunchales:[438.0,218.4], frontera:[69.2,698.4],
+    san_vicente:[448.8,922.0], humberto:[604.8,137.2], maria_juana:[298.4,906.8],
+    susana:[481.6,605.6], col_aldao:[298.8,250.4], angelica:[463.2,776.0],
+    ataliva:[545.2,272.8], aurelia:[560.0,662.0], bauer_sigel:[136.8,537.2],
+    bella_italia:[562.0,529.6], col_bicha:[215.2,130.4], col_bigand:[318.4,345.6],
+    castellanos_c:[304.4,455.2], col_cello:[224.4,672.0], col_iturraspe:[406.0,716.0],
+    col_margarita:[374.0,904.0], col_raquel:[494.4,121.6], coronel_fraga:[152.8,432.0],
+    plaza_cluc:[333.2,688.8], egusquiza:[396.8,363.2], esmeralda:[156.0,849.2],
+    est_cluc:[320.4,760.4], eusebia:[207.2,222.0], eustolia:[276.0,807.6],
+    fidela:[256.0,332.4], galisteo:[611.6,303.2], garibaldi:[244.4,886.4],
+    hugentobler:[288.4,190.8], josefina:[110.4,645.6], lehmann:[526.0,386.0],
+    maua:[676.0,51.6], pte_roca:[400.0,472.0], pueblo_marini:[182.0,305.6],
+    ramona:[170.4,366.4], saguier:[348.8,571.6], san_antonio:[302.0,473.2],
+    sta_clara:[243.2,591.2], tacural:[411.6,123.2], tacurales:[288.0,112.0],
+    vila:[230.8,448.8], villa_san_jose:[398.0,582.0], virginia:[614.4,27.2],
+    zenon_pereyra:[178.0,799.2]
+  };
 
-  // Background
-  svg.innerHTML = `<rect width="${W}" height="${H}" fill="#0e1525"/>
-  <rect x="${PAD}" y="${PAD}" width="${W-2*PAD}" height="${H-2*PAD}" fill="#111b30" rx="6" stroke="#1e2a40" stroke-width="1"/>`;
-
-  // Grid lines
-  let grid='';
-  for(let i=1;i<5;i++){
-    const gx=PAD+(W-2*PAD)*i/5;
-    const gy=PAD+(H-2*PAD)*i/5;
-    grid+=`<line x1="${gx}" y1="${PAD}" x2="${gx}" y2="${H-PAD}" stroke="#1a2540" stroke-width="0.5"/>`;
-    grid+=`<line x1="${PAD}" y1="${gy}" x2="${W-PAD}" y2="${gy}" stroke="#1a2540" stroke-width="0.5"/>`;
-  }
-  svg.innerHTML += grid;
-
-  // Contorno aproximado del Departamento Castellanos (lat/lng → SVG)
-  const depBorder = [
-    [-30.44,-62.45],[-30.47,-62.20],[-30.50,-61.90],
-    [-30.48,-61.48],[-30.52,-61.43],
-    [-31.55,-61.43],[-31.60,-61.65],
-    [-31.60,-62.00],[-31.58,-62.45]
-  ];
-  const bdPts = depBorder.map(([la,lo])=>`${toX(lo).toFixed(1)},${toY(la).toFixed(1)}`).join(' ');
-  svg.innerHTML += `
-    <polygon points="${bdPts}" fill="rgba(80,130,210,0.09)" stroke="rgba(100,160,255,0.35)" stroke-width="2.5" stroke-dasharray="8,4"/>
-    <text x="${toX(-61.98).toFixed(0)}" y="${toY(-31.00).toFixed(0)}" text-anchor="middle" font-size="11" fill="rgba(100,160,255,0.18)" font-family="Barlow Condensed,sans-serif" font-weight="700" letter-spacing="3">CASTELLANOS</text>`;
-
-  // Cardinal labels
-  svg.innerHTML += `
-    <text x="${W/2}" y="${PAD-8}" text-anchor="middle" font-size="9" fill="#333" font-family="monospace">N</text>
-    <text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="9" fill="#333" font-family="monospace">S</text>
-    <text x="8" y="${H/2}" text-anchor="middle" font-size="9" fill="#333" font-family="monospace">O</text>
-    <text x="${W-8}" y="${H/2}" text-anchor="middle" font-size="9" fill="#333" font-family="monospace">E</text>`;
+  // Fondo transparente para dejar ver la imagen del Senado por debajo
+  svg.innerHTML = `<rect width="${W}" height="${H}" fill="none"/>`;
 
   const maxEl = Math.max(...BASE.map(b=>b.el));
 
   // Dots
   BASE.forEach(b=>{
-    const x=toX(b.coord[1]), y=toY(b.coord[0]);
-    const r = Math.max(4, Math.min(18, 4 + Math.sqrt(b.el/maxEl)*14));
+    const p = PXMAP[b.id];
+    if(!p) return;            // sin posición medida → no se dibuja
+    const x=p[0], y=p[1];
+    const r = Math.max(4, Math.min(16, 4 + Math.sqrt(b.el/maxEl)*12));
     let fill = b.psEjec ? '#e63946' : (b.centroPS ? '#f59e0b' : '#4a6fa5');
     let stroke = b.psEjec ? '#ff6b7a' : (b.centroPS ? '#fcd34d' : '#6a8fbd');
-    const afil = getAfil(b);
-    const status = elecStatus(b);
 
     const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
     circle.setAttribute('cx',x.toFixed(1));
     circle.setAttribute('cy',y.toFixed(1));
     circle.setAttribute('r',r);
     circle.setAttribute('fill',fill);
-    circle.setAttribute('fill-opacity','0.85');
+    circle.setAttribute('fill-opacity','0.9');
     circle.setAttribute('stroke',stroke);
     circle.setAttribute('stroke-width','1.5');
     circle.style.cursor='pointer';
@@ -401,13 +386,16 @@ function elecStatus(b){
     if(b.el > 4000){
       const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
       lbl.setAttribute('x',x.toFixed(1));
-      lbl.setAttribute('y',(y+r+10).toFixed(1));
+      lbl.setAttribute('y',(y+r+11).toFixed(1));
       lbl.setAttribute('text-anchor','middle');
-      lbl.setAttribute('font-size','9');
-      lbl.setAttribute('fill',b.psEjec?'#ff8a94':b.centroPS?'#fcd34d':'#7a9abf');
+      lbl.setAttribute('font-size','11');
+      lbl.setAttribute('fill',b.psEjec?'#ff8a94':b.centroPS?'#fcd34d':'#9fb8d6');
       lbl.setAttribute('font-family','Barlow Condensed,sans-serif');
       lbl.setAttribute('font-weight','700');
       lbl.setAttribute('letter-spacing','0.5');
+      lbl.setAttribute('stroke','#0e1525');
+      lbl.setAttribute('stroke-width','3');
+      lbl.setAttribute('paint-order','stroke');
       lbl.textContent = b.n;
       lbl.style.pointerEvents='none';
       svg.appendChild(lbl);
