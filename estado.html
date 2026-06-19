@@ -14,8 +14,8 @@ nav{background:#e63946;padding:10px 16px;display:flex;align-items:center;justify
 .nav-links a{color:rgba(255,255,255,.9);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.5px;padding:7px 12px;border-radius:6px;transition:all .15s;white-space:nowrap}
 .nav-links a:hover{background:rgba(0,0,0,.2);color:white}
 .nav-links a.active{background:#fff;color:#e63946;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.25)}
-.nav-links a.nav-hero{background:rgba(255,255,255,.18);font-size:14px;padding:8px 16px}
-.nav-links a.nav-hero.active{background:#fff;color:#e63946}
+.nav-links a.nav-hero{background:rgba(255,255,255,.18);font-size:15px;font-weight:700;padding:10px 20px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-links a.nav-hero.active{background:#fff;color:#e63946;box-shadow:0 4px 16px rgba(230,57,70,.4)}
 .nav-panel{margin-left:auto}
 .nav-links a.nav-panel-link{background:rgba(0,0,0,.22);color:rgba(255,255,255,.85);font-size:12px;border:1px solid rgba(255,255,255,.25)}
 .nav-links a.nav-panel-link:hover{background:rgba(0,0,0,.4);color:#fff}
@@ -285,7 +285,7 @@ footer{text-align:center;padding:22px;font-size:10px;color:#444;border-top:1px s
 // ══ BASE DE DATOS (46 localidades) ════════════════════════
 // coord: [lat, lng] aproximados para el mapa SVG
 const BASE = [
-  {id:"rafaela",       n:"Rafaela",              G:true,  psEjec:false, px:"Viotti Luis 'Leo' (UNIDOS)", el:83002, vg:27766, vg1:23257, p2:"Juntos Avancemos", v2:null,  p3:null,             v3:null,  pop:101470, centroPS:false, congresal:"",                                coord:[-31.252,-61.487]},
+  {id:"rafaela",       n:"Rafaela",              G:true,  psEjec:false, px:"Viotti Luis 'Leo' (UNIDOS)", el:83002, vg:27766, vg1:23257, p2:"Juntos Avancemos", v2:null,  p3:null,             v3:null,  pop:101470, centroPS:true, congresal:"",                                coord:[-31.252,-61.487]},
   {id:"sunchales",     n:"Sunchales",             G:true,  psEjec:true,  px:"Pinotti Pablo (PS)",          el:19552, vg:7009, vg1:2847, p2:"Juntos Avancemos",  v2:null,  p3:null,             v3:null,  pop:23379,  centroPS:true,  congresal:"Ochat Andrea · Galli Funes J.A.",  coord:[-30.944,-61.554]},
   {id:"frontera",      n:"Frontera",              G:true,  psEjec:false, px:"Milanesio Fabio (UNIDOS)",    el:7243,  vg:1894, vg1:1632, p2:"Juntos Avancemos", v2:null,  p3:null,             v3:null,  pop:9787,   centroPS:true,  congresal:"Pérez Susana · Pérez Carlos",      coord:[-31.063,-61.651]},
   {id:"san_vicente",   n:"San Vicente",           G:true,  psEjec:false, px:"Aira Gonzalo (UNIDOS)",       el:5427,  vg:3357, vg1:1711, p2:"Somos Vicente",v2:null,  p3:null,             v3:null,  pop:5902,   centroPS:false, congresal:"",                                coord:[-31.365,-61.483]},
@@ -465,8 +465,7 @@ function buildSummary(){
     <div class="scard"><div class="scard-val">${BASE.length}</div><div class="scard-lbl">Localidades</div></div>
     <div class="scard"><div class="scard-val" style="color:#e63946">${psGov}</div><div class="scard-lbl">Ejecutivos PS</div></div>
     <div class="scard"><div class="scard-val green">${centros}</div><div class="scard-lbl">Centros PS</div></div>
-    <div class="scard"><div class="scard-val blue">${totalAfil}</div><div class="scard-lbl">Afiliados</div></div>
-    <div class="scard"><div class="scard-val yellow">${conData}</div><div class="scard-lbl">Con datos elect.</div></div>`;
+    <div class="scard"><div class="scard-val blue">${totalAfil}</div><div class="scard-lbl">Afiliados</div></div>`;
 
   document.getElementById('elecStats').innerHTML = `
     <div class="elec-stat"><span class="dot-ok"></span>${conData} localidades con datos electorales oficiales 2025</div>`;
