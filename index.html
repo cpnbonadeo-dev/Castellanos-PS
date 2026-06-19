@@ -376,9 +376,10 @@ const CONDUCCION = [
   {_id:"peter",    num:3, nombre:"Luciana Peter",     cargo:"Vocal",                 localidad:"Col. Raquel", photo:"luciana%20peter.jpeg"},
 ];
 const MESA_OTROS = [
-  {_id:"gamero",   num:4, nombre:"Eugenia Gamero",    cargo:"Junta Provincial PS",   localidad:"Castellanos", photo:"eugenia%20gamero.jpeg"},
-  {_id:"marti_jc", num:5, nombre:"Juan Cruz Marti",   cargo:"Juventud PS",           localidad:"Castellanos", photo:"juan%20cruz%20marti.png"},
-  {_id:"gisel",    num:10,nombre:"Gisel Mahmud",      cargo:"Diputada Provincial",   localidad:"Santa Fe",    photo:"gisel%20mamhud.png"}
+  {_id:"gisel",    num:1, nombre:"Gisel Mahmud",      cargo:"Miembro Junta Provincial PS", localidad:"Santa Fe",      photo:"gisel%20mamhud.png"},
+  {_id:"enrico",   num:2, nombre:"Natalia Enrico",    cargo:"Miembro Junta Provincial PS", localidad:"Castellanos",   photo:"natalia%20enrico.png"},
+  {_id:"gamero",   num:3, nombre:"Eugenia Gamero",    cargo:"Miembro Junta Provincial PS", localidad:"Castellanos",   photo:"eugenia%20gamero.jpeg"},
+  {_id:"marti_jc", num:4, nombre:"Juan Cruz Marti",   cargo:"Representante Juventud PS",   localidad:"Castellanos",   photo:"juan%20cruz%20marti.png"}
 ];
 const PLANTEL = [
   {_id:"sunchales",num:4,nombre:"Galli Jose A.",cargo:"Sec. General",localidad:"Sunchales",photo:"jose%20galli.png",
@@ -419,20 +420,24 @@ const COMUNALES = [
   {_id:"c_margarita",num:7, nombre:"Maria S. Muratore", cargo:"Pres. Comunal",localidad:"Col. Margarita",photo:"maria%20muratore.png"},
   {_id:"c_eusebia",  num:11,nombre:"Susana Gimenez",    cargo:"Pres. Comunal",localidad:"Eusebia y Car.",photo:"susana%20gimenez.png"},
   {_id:"c_raquel",   num:22,nombre:"Luciana Peter",     cargo:"Pres. Comunal",localidad:"Col. Raquel",   photo:"luciana%20peter.jpeg"},
-  {_id:"c_maua",     num:9, nombre:"Ricardo Garbagnoli",cargo:"Pres. Comunal",localidad:"Mauá",          photo:null},
+  {_id:"c_maua",     num:9, nombre:"Ricardo Garbagnoli",cargo:"Pres. Comunal",localidad:"Mauá",          photo:"ricardo%20garbagnoli.jpeg"},
   {_id:"c_iturraspe",num:15,nombre:"Dario Picco",       cargo:"Pres. Comunal",localidad:"Col. Iturraspe",photo:null}
 ];
 
 // ══ RENDER ═══════════════════════════════════════
 const CONGRESALES = [
-  {_id:"cong_ochat",  num:1, nombre:"Ochat Andrea Ivana",   cargo:"CONGRESAL", localidad:"Sunchales",    photo:null, realJersey:true},
-  {_id:"cong_galli",  num:2, nombre:"Galli Jose A.",  cargo:"CONGRESAL", localidad:"Sunchales",    photo:"jose%20galli.png"},
-  {_id:"cong_perezS", num:3, nombre:"Perez Susana",         cargo:"CONGRESAL", localidad:"Frontera",     photo:null},
-  {_id:"cong_perezC", num:4, nombre:"Perez Carlos",         cargo:"CONGRESAL", localidad:"Frontera",     photo:null},
-  {_id:"cong_bazzoni",num:5, nombre:"Bazzoni Amadeo",       cargo:"CONGRESAL", localidad:"Maria Juana",  photo:null},
-  {_id:"cong_tabin",  num:6, nombre:"Tabin Duggo Juan P.",  cargo:"CONGRESAL", localidad:"Susana",       photo:null},
-  {_id:"cong_gallo",  num:7, nombre:"Gallo Veronica J.",    cargo:"CONGRESAL", localidad:"Zenon Pereyra",photo:null},
-  {_id:"cong_peter",  num:8, nombre:"Peter Luciana M.",     cargo:"CONGRESAL", localidad:"Col.Raquel",   photo:"luciana%20peter.jpeg"},
+  {_id:"cong_peter",   num:1, nombre:"Peter Luciana",           cargo:"CONGRESAL", localidad:"Colonia Raquel",   photo:"luciana%20peter.jpeg"},
+  {_id:"cong_perezS",  num:2, nombre:"Pérez Susana",            cargo:"CONGRESAL", localidad:"Frontera",        photo:null},
+  {_id:"cong_antonioli",num:3, nombre:"Antonioli Matias Gonzalo", cargo:"CONGRESAL", localidad:"Humberto Primo", photo:"matias%20antonioli.jpeg"},
+  {_id:"cong_bazzoni", num:4, nombre:"Bazzoni Amadeo",          cargo:"CONGRESAL", localidad:"Maria Juana",     photo:null},
+  {_id:"cong_gaspoz",  num:5, nombre:"Gaspoz Santiago Javier",  cargo:"CONGRESAL", localidad:"Rafaela",         photo:"santiago%20gaspoz.png"},
+  {_id:"cong_martinez",num:6, nombre:"Martínez María Victoria", cargo:"CONGRESAL", localidad:"Rafaela",         photo:null},
+  {_id:"cong_ambort",  num:7, nombre:"Ambort Alejandro",        cargo:"CONGRESAL", localidad:"Rafaela",         photo:null},
+  {_id:"cong_ardiles", num:8, nombre:"Ardiles Hernán",          cargo:"CONGRESAL", localidad:"Ramona",          photo:"hernan%20ardiles.jpeg"},
+  {_id:"cong_galli",   num:9, nombre:"Galli José Augusto",      cargo:"CONGRESAL", localidad:"Sunchales",       photo:"jose%20galli.png"},
+  {_id:"cong_ochat",   num:10,nombre:"Ochat Andrea Ivana",      cargo:"CONGRESAL", localidad:"Sunchales",       photo:null},
+  {_id:"cong_tabin",   num:11,nombre:"Tabin Juan Pablo",        cargo:"CONGRESAL", localidad:"Susana",          photo:null},
+  {_id:"cong_gallo",   num:12,nombre:"Gallo Verónica Jesica",   cargo:"CONGRESAL", localidad:"Zenon Pereyra",   photo:"veronica%20gallo.jpeg"}
 ];
 
 document.getElementById('mesa-wrap').innerHTML    = CONDUCCION.map(p=>mkCard(p,'foil-oro',{noClick:true})).join('');
