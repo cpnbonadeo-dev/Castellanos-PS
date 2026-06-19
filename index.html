@@ -24,8 +24,9 @@ body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;backgrou
 .tn-sumate:hover{background:#cc0018;box-shadow:0 0 12px rgba(204,0,24,.4)}
 .tn-panel{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.12)}
 .tn-panel:hover{background:rgba(255,255,255,.12);color:#fff}
-.tn-estado{background:#f0c040;color:#4a0008;border:1px solid #f0c040;font-size:12px;font-weight:900;padding:8px 18px;box-shadow:0 2px 10px rgba(240,192,64,.3)}
-.tn-estado:hover{background:#ffd24d;box-shadow:0 0 16px rgba(240,192,64,.55)}
+.tn-estado{background:#f0c040;color:#4a0008;border:2px solid #ffd24d;font-size:14px;font-weight:900;padding:10px 26px;box-shadow:0 3px 16px rgba(240,192,64,.5);position:relative;animation:estadoPulse 2.4s ease-in-out infinite;letter-spacing:2px}
+.tn-estado:hover{background:#ffd24d;box-shadow:0 0 24px rgba(240,192,64,.75);transform:scale(1.05)}
+@keyframes estadoPulse{0%,100%{box-shadow:0 3px 16px rgba(240,192,64,.5)}50%{box-shadow:0 3px 24px rgba(240,192,64,.85),0 0 0 4px rgba(240,192,64,.15)}}
 /* ── TICKER */
 .ticker{background:#cc0018;padding:5px 0;overflow:hidden}
 .ticker-inner{display:inline-block;white-space:nowrap;animation:scroll 55s linear infinite;font-size:11px;letter-spacing:2px;font-weight:700;color:#fff}
@@ -188,15 +189,28 @@ footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,
   .tn-left{justify-content:center}
   .tn-title{font-size:13px;letter-spacing:2px}
   .tn-links{width:100%;justify-content:center;flex-wrap:wrap;gap:8px}
-  .tn-estado{flex:1 1 100%;text-align:center;font-size:13px;padding:11px 18px;order:-1}
+  .tn-estado{flex:1 1 100%;text-align:center;font-size:15px;padding:14px 18px;order:-1;letter-spacing:2.5px}
   .tn-sumate,.tn-panel{flex:1 1 auto;text-align:center}
   .b-title{font-size:30px!important}
   .b-sub{font-size:11px}
   .tn-btn{min-height:40px;display:flex;align-items:center;justify-content:center}
+  /* Figuritas: 2 por fila que llenan el ancho */
+  .cards{gap:12px;padding:0 12px 8px}
+  .pcard{width:calc(50% - 6px);max-width:200px}
+  .pcard:hover{transform:none}
+  .pcard:active{transform:scale(0.97)}
+  .p-photo-wrap{height:auto;aspect-ratio:3/4}
+  .pcard.sz-grande .p-photo-wrap{height:auto;aspect-ratio:3/4}
+  .sec{margin-top:30px}
+  .sec h2{font-size:26px}
+  .modal{padding:18px 16px;max-height:86vh}
+  .modal h3{font-size:20px}
 }
 @media (max-width:380px){
   .tn-title{font-size:11px;letter-spacing:1.5px}
   .tn-sumate,.tn-panel{font-size:9px;padding:8px 10px}
+  .cards{gap:10px}
+  .pcard{width:calc(50% - 5px)}
 }
 </style>
 </head>
@@ -386,14 +400,14 @@ const PLANTEL = [
     centro:"Centro Socialista Sunchales",lista:"Socialismo en Acción",eleccion:"7 Jun 2026",
     comision:["Bossio Micaela Beatriz","Werger Marcelo Germán","Romero María Belén","Palacios Pablo Eliseo","Kisielewsky Laura Yasmin","Wasinger Pablo Damián"],
     cong_tit:["Ochat Andrea Ivana","Galli José Augusto"],cong_sup:["Palacios Pablo Eliseo","Romero María Belén"]},
-  {_id:"frontera",num:5,nombre:"Perez Susana",cargo:"Sec. General",localidad:"Frontera",photo:null,
+  {_id:"frontera",num:5,nombre:"Perez Susana",cargo:"Sec. General",localidad:"Frontera",photo:"susana%20perez.jpeg",
     centro:"Centro Socialista Frontera",lista:"Socialismo en Acción",eleccion:"7 Jun 2026",
     comision:["Pérez Carlos","Vanega Viviana","Peralta Nicolás"],cong_tit:["Pérez Susana"],cong_sup:["Pérez Carlos"]},
-  {_id:"mariajuana",num:6,nombre:"Luna Abelardo D.",cargo:"Sec. General",localidad:"María Juana",photo:null,
+  {_id:"mariajuana",num:6,nombre:"Luna Abelardo D.",cargo:"Sec. General",localidad:"María Juana",photo:"luna%20abelardo.jpeg",
     centro:"Centro Socialista María Juana",lista:null,eleccion:"7 Jun 2026",
     comision:["Wengger Juliana","Lobos Leonardo Sebastián","Kautz Verónica","Missan Nelson","Dominighini María Cristina","Dalmasso Ceballos Agustín"],
     cong_tit:["Bazzoni Amadeo"],cong_sup:["Ferrando Rosana"]},
-  {_id:"susana",num:7,nombre:"TABIN DUGGO Juan Pablo",cargo:"Sec. General",localidad:"Susana",photo:null,
+  {_id:"susana",num:7,nombre:"TABIN DUGGO Juan Pablo",cargo:"Sec. General",localidad:"Susana",photo:"juan%20pablo%20tabin%20duggo.jpeg",
     centro:"Centro Socialista Susana",lista:null,eleccion:"7 Jun 2026",
     comision:["Navarro Susana","Valsagna Diego","Fuhr Raquel Dominga"],
     cong_tit:["TABIN DUGGO Juan Pablo"],cong_sup:["Navarro Susana"]},
@@ -416,27 +430,27 @@ const FEATURED_GOB = [];
 const COMUNALES = [
   {_id:"pinotti",    num:1, nombre:"Pablo Pinotti",     cargo:"Intendente",   localidad:"Sunchales",     photo:"pablo%20pinotti.png"},
   {_id:"c_aldao",    num:5, nombre:"Lorena Eberhardt",  cargo:"Pres. Comunal",localidad:"Colonia Aldao", photo:"lorena%20eberhardt.jpeg"},
-  {_id:"c_zenon",    num:3, nombre:"Veronica Gallo",    cargo:"Pres. Comunal",localidad:"Zenón Pereyra", photo:null},
+  {_id:"c_zenon",    num:3, nombre:"Veronica Gallo",    cargo:"Pres. Comunal",localidad:"Zenón Pereyra", photo:"veronica%20gallo.jpeg"},
   {_id:"c_margarita",num:7, nombre:"Maria S. Muratore", cargo:"Pres. Comunal",localidad:"Col. Margarita",photo:"maria%20muratore.png"},
   {_id:"c_eusebia",  num:11,nombre:"Susana Gimenez",    cargo:"Pres. Comunal",localidad:"Eusebia y Car.",photo:"susana%20gimenez.png"},
   {_id:"c_raquel",   num:22,nombre:"Luciana Peter",     cargo:"Pres. Comunal",localidad:"Col. Raquel",   photo:"luciana%20peter.jpeg"},
   {_id:"c_maua",     num:9, nombre:"Ricardo Garbagnoli",cargo:"Pres. Comunal",localidad:"Mauá",          photo:"ricardo%20garbagnoli.jpeg"},
-  {_id:"c_iturraspe",num:15,nombre:"Dario Picco",       cargo:"Pres. Comunal",localidad:"Col. Iturraspe",photo:null}
+  {_id:"c_iturraspe",num:15,nombre:"Dario Picco",       cargo:"Pres. Comunal",localidad:"Col. Iturraspe",photo:"dario%20picco.jpeg"}
 ];
 
 // ══ RENDER ═══════════════════════════════════════
 const CONGRESALES = [
   {_id:"cong_peter",   num:1, nombre:"Peter Luciana",           cargo:"CONGRESAL", localidad:"Colonia Raquel",   photo:"luciana%20peter.jpeg"},
-  {_id:"cong_perezS",  num:2, nombre:"Pérez Susana",            cargo:"CONGRESAL", localidad:"Frontera",        photo:null},
+  {_id:"cong_perezS",  num:2, nombre:"Pérez Susana",            cargo:"CONGRESAL", localidad:"Frontera",        photo:"susana%20perez.jpeg"},
   {_id:"cong_antonioli",num:3, nombre:"Antonioli Matias Gonzalo", cargo:"CONGRESAL", localidad:"Humberto Primo", photo:"matias%20antonioli.jpeg"},
-  {_id:"cong_bazzoni", num:4, nombre:"Bazzoni Amadeo",          cargo:"CONGRESAL", localidad:"Maria Juana",     photo:null},
+  {_id:"cong_bazzoni", num:4, nombre:"Bazzoni Amadeo",          cargo:"CONGRESAL", localidad:"Maria Juana",     photo:"amadeo%20bazzoni.jpeg"},
   {_id:"cong_gaspoz",  num:5, nombre:"Gaspoz Santiago Javier",  cargo:"CONGRESAL", localidad:"Rafaela",         photo:"santiago%20gaspoz.png"},
-  {_id:"cong_martinez",num:6, nombre:"Martínez María Victoria", cargo:"CONGRESAL", localidad:"Rafaela",         photo:null},
-  {_id:"cong_ambort",  num:7, nombre:"Ambort Alejandro",        cargo:"CONGRESAL", localidad:"Rafaela",         photo:null},
+  {_id:"cong_martinez",num:6, nombre:"Martínez María Victoria", cargo:"CONGRESAL", localidad:"Rafaela",         photo:"maria%20victoria%20martinez.jpeg"},
+  {_id:"cong_ambort",  num:7, nombre:"Ambort Alejandro",        cargo:"CONGRESAL", localidad:"Rafaela",         photo:"alejandro%20ambort.jpeg"},
   {_id:"cong_ardiles", num:8, nombre:"Ardiles Hernán",          cargo:"CONGRESAL", localidad:"Ramona",          photo:"hernan%20ardiles.jpeg"},
   {_id:"cong_galli",   num:9, nombre:"Galli José Augusto",      cargo:"CONGRESAL", localidad:"Sunchales",       photo:"jose%20galli.png"},
-  {_id:"cong_ochat",   num:10,nombre:"Ochat Andrea Ivana",      cargo:"CONGRESAL", localidad:"Sunchales",       photo:null},
-  {_id:"cong_tabin",   num:11,nombre:"TABIN DUGGO Juan Pablo",        cargo:"CONGRESAL", localidad:"Susana",          photo:null},
+  {_id:"cong_ochat",   num:10,nombre:"Ochat Andrea Ivana",      cargo:"CONGRESAL", localidad:"Sunchales",       photo:"andrea%20ochat.jpg"},
+  {_id:"cong_tabin",   num:11,nombre:"TABIN DUGGO Juan Pablo",        cargo:"CONGRESAL", localidad:"Susana",          photo:"juan%20pablo%20tabin%20duggo.jpeg"},
   {_id:"cong_gallo",   num:12,nombre:"Gallo Verónica Jesica",   cargo:"CONGRESAL", localidad:"Zenon Pereyra",   photo:"veronica%20gallo.jpeg"}
 ];
 

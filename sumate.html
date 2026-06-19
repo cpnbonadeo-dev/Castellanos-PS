@@ -32,9 +32,9 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:#eee
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;font-size:12px}
 .leg-item{display:flex;align-items:center;gap:6px;color:#bbb}
 .leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.leg-fuerte{background:#22c55e}
+.leg-fuerte{background:#e63946}
 .leg-debil{background:#f59e0b}
-.leg-nula{background:#ef4444}
+.leg-nula{background:#4a6fa5}
 .leg-sd{background:#555}
 
 /* MAP */
@@ -117,34 +117,17 @@ footer a{color:#666;text-decoration:none}
   <div class="divider"></div>
 
   <div class="legend">
-    <div class="leg-item"><div class="leg-dot leg-fuerte"></div> PS con fuerte presencia</div>
-    <div class="leg-item"><div class="leg-dot leg-debil"></div> PS con presencia débil</div>
-    <div class="leg-item"><div class="leg-dot leg-nula"></div> PS sin presencia activa</div>
+    <div class="leg-item"><div class="leg-dot leg-fuerte"></div> Ejecutivo PS</div>
+    <div class="leg-item"><div class="leg-dot leg-debil"></div> Con Centro PS</div>
+    <div class="leg-item"><div class="leg-dot leg-nula"></div> Sin presencia PS</div>
   </div>
 
-  <div class="map-wrap" id="mapWrap">
-    <!-- SVG mapa dibujado — Departamento Castellanos, Santa Fe -->
-    <svg id="mapSvg" viewBox="0 0 310 400" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="bgGrad" cx="50%" cy="50%" r="60%">
-          <stop offset="0%" stop-color="#152215"/>
-          <stop offset="100%" stop-color="#0a140a"/>
-        </radialGradient>
-      </defs>
-      <!-- Fondo -->
-      <rect width="310" height="400" fill="#0a140a"/>
-      <!-- Silueta del departamento Castellanos -->
-      <path id="deptShape"
-        d="M 42,30 L 268,30 L 271,192 L 263,374 L 118,380 L 42,350 Z"
-        fill="url(#bgGrad)" stroke="#1e3a1e" stroke-width="1.5"/>
-      <!-- Rutas principales (referencia visual) -->
-      <line x1="155" y1="30" x2="148" y2="374" stroke="#1a2a1a" stroke-width=".8" stroke-dasharray="5,7" opacity=".7"/>
-      <line x1="42" y1="192" x2="271" y2="192" stroke="#1a2a1a" stroke-width=".8" stroke-dasharray="5,7" opacity=".7"/>
-      <!-- Capital (Rafaela) — estrella -->
-      <text x="138" y="192" text-anchor="middle" font-size="9" fill="rgba(240,192,64,.5)" pointer-events="none">✦</text>
-      <!-- Círculos de localidades (se agregan con JS) -->
-      <g id="dotsGroup"></g>
-    </svg>
+  <div class="map-wrap" id="mapWrap" style="background:#0e1525;max-width:560px">
+    <!-- Imagen base del Senado (Dpto. Castellanos). El SVG usa el mismo aspect ratio. -->
+    <img id="mapaBg" src="mapa_castellanos.png" alt="Mapa Castellanos"
+      style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;opacity:0.30;pointer-events:none;z-index:0"
+      onerror="this.style.display='none'">
+    <svg id="mapSvg" viewBox="0 0 775 1004" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;width:100%;height:auto;display:block"></svg>
     <div class="map-tip" id="mapTip"></div>
   </div>
 </div>
@@ -293,60 +276,56 @@ footer a{color:#666;text-decoration:none}
 <script>
 // ====================================================
 // DATOS ELECTORALES 2025 — SOLO INFORMACIÓN PÚBLICA
-// sx,sy = coordenadas en SVG viewBox 310x400
-// ====================================================
-const LOCS = [
-  // --- Con Centro Socialista (círculo grande, verde/amarillo/naranja) ---
-  {id:"rafaela",       n:"Rafaela",            sx:135,sy:188, gov:"Castellano Flor (UNO·Juntos)",   ps_pct:23.4, pres:"fuerte", centro:true},
-  {id:"sunchales",     n:"Sunchales",           sx:108,sy:95,  gov:"Pinotti Pablo (PS·Sunchales)",   ps_pct:47.8, pres:"fuerte", centro:true},
-  {id:"frontera",      n:"Frontera",            sx:170,sy:97,  gov:"Gómez Marcos (PS)",              ps_pct:55.2, pres:"fuerte", centro:true},
-  {id:"maria_juana",   n:"María Juana",         sx:230,sy:108, gov:"Farías Alfredo (PS)",            ps_pct:61.0, pres:"fuerte", centro:true},
-  {id:"susana",        n:"Susana",              sx:90, sy:132, gov:"Astorino Hector (PS)",           ps_pct:58.3, pres:"fuerte", centro:true},
-  {id:"zenon_pereyra", n:"Zenón Pereyra",       sx:118,sy:285, gov:"Gallo Verónica (UNIDOS)",       ps_pct:46.8, pres:"fuerte", centro:true},
-  {id:"col_raquel",    n:"Col. Raquel",         sx:160,sy:252, gov:"Peter Luciana (PS)",             ps_pct:72.1, pres:"fuerte", centro:true},
-  {id:"humberto_i",    n:"Humberto Primo",      sx:65, sy:197, gov:"Antonioli Matias (PS)",          ps_pct:51.4, pres:"fuerte", centro:true},
-  {id:"ramona",        n:"Ramona",              sx:58, sy:272, gov:"Ardiles Hernan (PS)",            ps_pct:48.9, pres:"fuerte", centro:true},
-  // --- Otros con presencia PS fuerte ---
-  {id:"aldao",         n:"Aldao",               sx:122,sy:58,  gov:"Eberhardt Carlos (PS)",          ps_pct:63.5, pres:"fuerte", centro:false},
-  {id:"margarita",     n:"Col. Margarita",      sx:210,sy:68,  gov:"Muratore Hector (PS)",           ps_pct:54.7, pres:"fuerte", centro:false},
-  {id:"santurce",      n:"Santurce",            sx:48, sy:228, gov:"PS",                             ps_pct:52.3, pres:"fuerte", centro:false},
-  // --- Presencia débil ---
-  {id:"col_iturraspe", n:"Col. Iturraspe",      sx:162,sy:325, gov:"Picco (UCR/PS)",                ps_pct:38.2, pres:"debil",  centro:false},
-  {id:"eusebia",       n:"Eusebia y M.O.",      sx:192,sy:192, gov:"Gimenez L. (PS)",               ps_pct:49.3, pres:"fuerte", centro:false},
-  {id:"maua",          n:"Mauá",                sx:238,sy:260, gov:"Garbagnoli (PS)",               ps_pct:55.0, pres:"fuerte", centro:false},
-  {id:"lehmann",       n:"Lehmann",             sx:118,sy:108, gov:"PS·PDP",                        ps_pct:42.0, pres:"debil",  centro:false},
-  {id:"vila",          n:"Vila",                sx:200,sy:222, gov:"PS·UCR",                        ps_pct:36.5, pres:"debil",  centro:false},
-  {id:"ataliva",       n:"Ataliva",             sx:88, sy:195, gov:"PS",                            ps_pct:44.1, pres:"debil",  centro:false},
-  {id:"plaza_cluc",    n:"Pl. Clucellas",       sx:152,sy:158, gov:"UCR",                          ps_pct:16.8, pres:"debil",  centro:false},
-  {id:"desvio_arijon", n:"Desvío Arijón",       sx:108,sy:298, gov:"PS",                           ps_pct:47.5, pres:"debil",  centro:false},
-  {id:"nueva_lehmann", n:"Nueva Lehmann",       sx:148,sy:210, gov:"UCR",                          ps_pct:11.7, pres:"nula",   centro:false},
-  {id:"esmeralda",     n:"Esmeralda",           sx:150,sy:318, gov:"PS·PDP",                       ps_pct:31.2, pres:"debil",  centro:false},
-  {id:"virginia",      n:"Virginia",            sx:108,sy:315, gov:"PS",                           ps_pct:41.6, pres:"debil",  centro:false},
-  {id:"castellanos_s", n:"Castellanos",         sx:65, sy:318, gov:"PS",                           ps_pct:38.7, pres:"debil",  centro:false},
-  {id:"logrono",       n:"Logroño",             sx:148,sy:262, gov:"UCR",                          ps_pct:12.0, pres:"nula",   centro:false},
-  {id:"col_belgrano",  n:"Col. Belgrano",       sx:88, sy:260, gov:"PJ",                           ps_pct:9.2,  pres:"nula",   centro:false},
-  // --- Sin presencia PS ---
-  {id:"angelica",      n:"Angélica",            sx:165,sy:42,  gov:"PJ",                           ps_pct:12.1, pres:"nula",   centro:false},
-  {id:"bauer",         n:"Bauer y Sigel",       sx:145,sy:52,  gov:"Unión por SF",                 ps_pct:8.4,  pres:"nula",   centro:false},
-  {id:"col_bicha",     n:"Col. Bicha",          sx:208,sy:52,  gov:"UCR",                          ps_pct:14.3, pres:"nula",   centro:false},
-  {id:"garibaldi",     n:"Garibaldi",           sx:238,sy:75,  gov:"UCR",                          ps_pct:9.7,  pres:"nula",   centro:false},
-  {id:"tacural",       n:"Tacural",             sx:88, sy:142, gov:"PJ",                           ps_pct:11.5, pres:"nula",   centro:false},
-  {id:"san_vicente",   n:"San Vicente",         sx:192,sy:270, gov:"PJ",                           ps_pct:10.2, pres:"nula",   centro:false},
-  {id:"col_cello",     n:"Col. Cello",          sx:218,sy:278, gov:"UCR",                          ps_pct:7.3,  pres:"nula",   centro:false},
-  {id:"sol_de_mayo",   n:"Sol de Mayo",         sx:255,sy:268, gov:"PJ",                           ps_pct:6.1,  pres:"nula",   centro:false},
-  {id:"san_antonio",   n:"San Antonio",         sx:258,sy:178, gov:"UCR",                          ps_pct:13.8, pres:"nula",   centro:false},
-  {id:"egusquiza",     n:"Egusquiza",           sx:55, sy:158, gov:"PJ",                           ps_pct:8.3,  pres:"nula",   centro:false},
-  {id:"col_rosa",      n:"Col. Rosa",           sx:192,sy:308, gov:"UCR",                          ps_pct:12.4, pres:"nula",   centro:false},
-  {id:"n_san_agustin", n:"N. San Agustín",      sx:255,sy:335, gov:"UCR",                         ps_pct:7.1,  pres:"nula",   centro:false},
-  {id:"col_sarmiento", n:"Col. Sarmiento",      sx:242,sy:312, gov:"PJ",                          ps_pct:5.8,  pres:"nula",   centro:false},
-  {id:"aurelia",       n:"Aurelia",             sx:46, sy:275, gov:"PJ",                           ps_pct:9.0,  pres:"nula",   centro:false},
-  {id:"camelia",       n:"Camelia",             sx:235,sy:320, gov:"PJ",                           ps_pct:6.4,  pres:"nula",   centro:false},
-  {id:"santa_clara",   n:"Santa Clara de B.",   sx:48, sy:330, gov:"PJ",                           ps_pct:8.8,  pres:"nula",   centro:false},
-  {id:"josefina",      n:"Josefina",            sx:48, sy:177, gov:"UCR",                          ps_pct:10.4, pres:"nula",   centro:false},
-  {id:"esperanza_c",   n:"Exp. del Norte",      sx:62, sy:72,  gov:"UCR",                         ps_pct:8.1,  pres:"nula",   centro:false},
-  {id:"col_aldao",     n:"Col. Aldao",          sx:175,sy:220, gov:"PS",                          ps_pct:44.8, pres:"debil",  centro:false},
-  {id:"pueblo_mues",   n:"Pueblo Muesas",       sx:158,sy:272, gov:"PJ",                          ps_pct:7.6,  pres:"nula",   centro:false},
+// Datos reales de las 46 localidades (Dpto. Castellanos) — mismos que 'Cómo estamos'
+const BASE = [
+  {id:"rafaela",       n:"Rafaela",              G:true,  psEjec:false, px:"Viotti Luis 'Leo' (UNIDOS)", el:83002, vg:27766, vg1:23257, p2:"Juntos Avancemos", v2:null,  p3:null,             v3:null,  pop:101470, centroPS:false, congresal:"",                                coord:[-31.252,-61.487]},
+  {id:"sunchales",     n:"Sunchales",             G:true,  psEjec:true,  px:"Pinotti Pablo (PS)",          el:19552, vg:7009, vg1:2847, p2:"Juntos Avancemos",  v2:null,  p3:null,             v3:null,  pop:23379,  centroPS:true,  congresal:"Ochat Andrea · Galli Funes J.A.",  coord:[-30.944,-61.554]},
+  {id:"frontera",      n:"Frontera",              G:true,  psEjec:false, px:"Milanesio Fabio (UNIDOS)",    el:7243,  vg:1894, vg1:1632, p2:"Juntos Avancemos", v2:null,  p3:null,             v3:null,  pop:9787,   centroPS:true,  congresal:"Pérez Susana · Pérez Carlos",      coord:[-31.063,-61.651]},
+  {id:"san_vicente",   n:"San Vicente",           G:true,  psEjec:false, px:"Aira Gonzalo (UNIDOS)",       el:5427,  vg:3357, vg1:1711, p2:"Somos Vicente",v2:null,  p3:null,             v3:null,  pop:5902,   centroPS:false, congresal:"",                                coord:[-31.365,-61.483]},
+  {id:"humberto",      n:"Humberto Primo",        G:true,  psEjec:false, px:"Gilabert Mauro (UNIDOS)",     el:4677,  vg:1903, vg1:1500, p2:null,           v2:null,  p3:null,             v3:null,  pop:5379,   centroPS:true,  congresal:"",                                coord:[-30.854,-62.159]},
+  {id:"maria_juana",   n:"María Juana",           G:true,  psEjec:false, px:"Maciel Zulma (UNIDOS)",       el:4157,  vg:1596, vg1:1092, p2:"Proyectamos M.J.", v2:null,  p3:null,             v3:null,  pop:4740,   centroPS:true,  congresal:"Bazzoni Amadeo",                  coord:[-30.683,-61.896]},
+  {id:"susana",        n:"Susana",                G:true,  psEjec:false, px:"Perino Jorge (UNIDOS)",        el:2580,  vg:615,  vg1:289,  p2:"Juntos Avancemos",  v2:null,  p3:null,             v3:null,  pop:1717,   centroPS:true,  congresal:"Tabín Duggo Juan Pablo",           coord:[-31.349,-62.014]},
+  {id:"col_aldao",     n:"Colonia Aldao",         G:false, psEjec:true,  px:"Eberhardt Lorena (PS/UNIDOS)",        el:1692,  vg:1012, vg1:538,  p2:"Más p/SFE",   v2:448,   p3:null,             v3:null,  pop:1720,   centroPS:false, congresal:"",                                coord:[-31.541,-61.673]},
+  {id:"angelica",      n:"Angélica",              G:false, psEjec:false, px:"Andres Marcos (Más p/SFE)",    el:1201,  vg:932,  vg1:634,  p2:"UNIDOS",       v2:293,   p3:null,             v3:null,  pop:1329,   centroPS:false, congresal:"",                                coord:[-30.753,-61.614]},
+  {id:"ataliva",       n:"Ataliva",               G:false, psEjec:false, px:"Alvarez Jose M. (UNIDOS)",     el:1777,  vg:868,  vg1:641,  p2:null,           v2:null,  p3:null,             v3:null,  pop:2015,   centroPS:false, congresal:"",                                coord:[-30.983,-62.033]},
+  {id:"aurelia",       n:"Aurelia",               G:false, psEjec:false, px:"Morel Roberto (Esf.Vecinal)",  el:138,   vg:79,   vg1:67,   p2:null,           v2:null,  p3:null,             v3:null,  pop:77,     centroPS:false, congresal:"",                                coord:[-31.066,-62.170]},
+  {id:"bauer_sigel",   n:"Bauer y Sigel",         G:false, psEjec:false, px:"Serrani Franco (UNIDOS)",      el:247,   vg:146,  vg1:117,  p2:null,           v2:null,  p3:null,             v3:null,  pop:232,    centroPS:false, congresal:"",                                coord:[-31.219,-62.086]},
+  {id:"bella_italia",  n:"Bella Italia",          G:false, psEjec:false, px:"Perotti Hector (Más p/SFE)",   el:1499,  vg:849,  vg1:733,  p2:null,           v2:null,  p3:null,             v3:null,  pop:1768,   centroPS:false, congresal:"",                                coord:[-30.599,-61.698]},
+  {id:"col_bicha",     n:"Col. Bicha",            G:false, psEjec:false, px:"Alochis Miguel (UNIDOS)",      el:179,   vg:79,   vg1:72,   p2:null,           v2:null,  p3:null,             v3:null,  pop:222,    centroPS:false, congresal:"",                                coord:[-31.308,-62.132]},
+  {id:"col_bigand",    n:"Col. Bigand",           G:false, psEjec:false, px:"Oggero Adrian (Más p/SFE)",    el:51,    vg:40,   vg1:38,   p2:null,           v2:null,  p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-30.474,-61.893]},
+  {id:"castellanos_c", n:"Castellanos",           G:false, psEjec:false, px:"Audino Diego (UNIDOS)",        el:305,   vg:168,  vg1:138,  p2:null,           v2:null,  p3:null,             v3:null,  pop:211,    centroPS:false, congresal:"",                                coord:[-31.413,-61.552]},
+  {id:"col_cello",     n:"Colonia Cello",         G:false, psEjec:false, px:"Heck Ma. del Carmen (UNIDOS)", el:174,   vg:104,  vg1:87,   p2:null,           v2:null,  p3:null,             v3:null,  pop:109,    centroPS:false, congresal:"",                                coord:[-31.000,-61.850]},
+  {id:"col_iturraspe", n:"Col. Iturraspe",        G:false, psEjec:true,  px:"Picco Dario (PS/UNIDOS)",             el:48,    vg:31,   vg1:24,   p2:null,           v2:null,  p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-31.112,-62.258]},
+  {id:"col_margarita", n:"Col. Margarita",        G:false, psEjec:true,  px:"Muratore Maria S. (PS/UNIDOS)",       el:313,   vg:249,  vg1:166,  p2:"Más p/SFE",   v2:82,    p3:null,             v3:null,  pop:248,    centroPS:false, congresal:"",                                coord:[-30.746,-62.076]},
+  {id:"col_raquel",    n:"Colonia Raquel",        G:false, psEjec:true,  px:"Peter Luciana (PS/UNIDOS)",           el:500,   vg:148,  vg1:null, p2:null,           v2:null,  p3:null,             v3:null,  pop:97,     centroPS:true,  congresal:"Gallo Verónica J.",               coord:[-31.185,-62.316]},
+  {id:"coronel_fraga", n:"Coronel Fraga",         G:false, psEjec:false, px:"Palacio Marisabel (UNIDOS)",   el:283,   vg:236,  vg1:166,  p2:"Más p/SFE",   v2:69,    p3:null,             v3:null,  pop:312,    centroPS:false, congresal:"",                                coord:[-30.541,-61.816]},
+  {id:"plaza_cluc",    n:"Plaza Clucellas",       G:false, psEjec:false, px:"Bono Gabriel (UNIDOS)",        el:1290,  vg:602,  vg1:403,  p2:null,           v2:null,  p3:null,             v3:null,  pop:1849,   centroPS:false, congresal:"",                                coord:[-31.009,-61.625]},
+  {id:"egusquiza",     n:"Egusquiza",             G:false, psEjec:false, px:"Celis Maria F. (UNIDOS)",      el:376,   vg:223,  vg1:196,  p2:null,           v2:null,  p3:null,             v3:null,  pop:357,    centroPS:false, congresal:"",                                coord:[-30.882,-61.618]},
+  {id:"esmeralda",     n:"Esmeralda",             G:false, psEjec:false, px:"Berra Luis A. (UNIDOS)",       el:514,   vg:322,  vg1:257,  p2:null,           v2:null,  p3:null,             v3:null,  pop:590,    centroPS:false, congresal:"",                                coord:[-30.876,-62.272]},
+  {id:"est_cluc",      n:"Est. Clucellas",        G:false, psEjec:false, px:"Peretti Eduardo (UNIDOS)",     el:778,   vg:516,  vg1:433,  p2:null,           v2:null,  p3:null,             v3:null,  pop:861,    centroPS:false, congresal:"",                                coord:[-30.980,-61.690]},
+  {id:"eusebia",       n:"Eusebia y Carolina",    G:false, psEjec:true,  px:"Gimenez Susana (PS/UNIDOS)",          el:718,   vg:319,  vg1:274,  p2:null,           v2:null,  p3:null,             v3:null,  pop:753,    centroPS:false, congresal:"Gimenez Susana",                  coord:[-31.257,-62.190]},
+  {id:"eustolia",      n:"Eustolia",              G:false, psEjec:false, px:"Beltramo Juan M. (Más p/SFE)", el:141,   vg:121,  vg1:77,   p2:"UNIDOS",       v2:42,    p3:null,             v3:null,  pop:17,     centroPS:false, congresal:"",                                coord:[-30.786,-61.929]},
+  {id:"fidela",        n:"Fidela",                G:false, psEjec:false, px:"Ovena Jorge A. (UNIDOS)",      el:88,    vg:53,   vg1:44,   p2:null,           v2:null,  p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-31.034,-62.400]},
+  {id:"galisteo",      n:"Galisteo",              G:false, psEjec:false, px:"Canavese Javier (UNIDOS)",     el:159,   vg:132,  vg1:111,  p2:"Más p/SFE",   v2:19,    p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-30.715,-61.757]},
+  {id:"garibaldi",     n:"Garibaldi",             G:false, psEjec:false, px:"Gamboa Maribel (Más p/SFE)",   el:168,   vg:138,  vg1:80,   p2:"UNIDOS",       v2:58,    p3:null,             v3:null,  pop:169,    centroPS:false, congresal:"",                                coord:[-31.158,-61.748]},
+  {id:"hugentobler",   n:"Hugentobler",           G:false, psEjec:false, px:"Milanesio Luciano (Más p/SFE)",el:46,    vg:33,   vg1:32,   p2:null,           v2:null,  p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-30.616,-62.085]},
+  {id:"josefina",      n:"Josefina",              G:false, psEjec:false, px:"Sicardi Jorgelina (UNIDOS)",   el:1659,  vg:445,  vg1:345,  p2:null,           v2:null,  p3:null,             v3:null,  pop:915,    centroPS:false, congresal:"",                                coord:[-30.763,-61.800]},
+  {id:"lehmann",       n:"Lehmann",               G:false, psEjec:false, px:"Bett Marcelo (UNIDOS)",        el:2649,  vg:1213, vg1:922,  p2:null,           v2:null,  p3:null,             v3:null,  pop:3102,   centroPS:false, congresal:"",                                coord:[-31.135,-61.615]},
+  {id:"maua",          n:"Maúa",                  G:false, psEjec:true,  px:"Garbagnoli Ricardo (PS/UNIDOS)",      el:53,    vg:23,   vg1:23,   p2:null,           v2:null,  p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-31.292,-62.289]},
+  {id:"pte_roca",      n:"Presidente Roca",       G:false, psEjec:false, px:"Montenegro Jessica (SVyL)",    el:746,   vg:528,  vg1:282,  p2:"UNIDOS",       v2:235,   p3:null,             v3:null,  pop:644,    centroPS:false, congresal:"",                                coord:[-30.591,-61.551]},
+  {id:"pueblo_marini", n:"Pueblo Marini",         G:false, psEjec:false, px:"Ferrer Amalia (Más p/SFE)",    el:104,   vg:60,   vg1:55,   p2:null,           v2:null,  p3:null,             v3:null,  pop:65,     centroPS:false, congresal:"",                                coord:[-30.909,-62.347]},
+  {id:"ramona",        n:"Ramona",                G:false, psEjec:false, px:"Barbero Jose A. (U.Vecinal)",  el:1575,  vg:1224, vg1:835,  p2:"UNIDOS",       v2:335,   p3:null,             v3:null,  pop:1846,   centroPS:true,  congresal:"Tabín Duggo Juan Pablo",           coord:[-31.197,-61.742]},
+  {id:"saguier",       n:"Saguier",               G:false, psEjec:false, px:"Ramos Sergio (UNIDOS)",        el:645,   vg:310,  vg1:247,  p2:null,           v2:null,  p3:null,             v3:null,  pop:null,   centroPS:false, congresal:"",                                coord:[-31.031,-61.796]},
+  {id:"san_antonio",   n:"San Antonio",           G:false, psEjec:false, px:"Previotto Mauro (UNIDOS)",     el:298,   vg:146,  vg1:111,  p2:null,           v2:null,  p3:null,             v3:null,  pop:251,    centroPS:false, congresal:"",                                coord:[-30.847,-61.766]},
+  {id:"sta_clara",     n:"Sta. Clara de Saguier", G:false, psEjec:false, px:"Tivano Sergio (Más p/SFE)",    el:1801,  vg:1124, vg1:617,  p2:"UNIDOS",       v2:470,   p3:null,             v3:null,  pop:1990,   centroPS:false, congresal:"Gallo Verónica",                  coord:[-31.032,-61.832]},
+  {id:"tacural",       n:"Tacural",               G:false, psEjec:false, px:"Sola Adrian (Más p/SFE)",      el:1339,  vg:678,  vg1:483,  p2:null,           v2:null,  p3:null,             v3:null,  pop:1267,   centroPS:false, congresal:"",                                coord:[-30.840,-61.980]},
+  {id:"tacurales",     n:"Tacurales",             G:false, psEjec:false, px:"Chiappero Damian (UNIDOS)",    el:162,   vg:68,   vg1:66,   p2:null,           v2:null,  p3:null,             v3:null,  pop:73,     centroPS:false, congresal:"",                                coord:[-30.719,-61.899]},
+  {id:"vila",          n:"Vila",                  G:false, psEjec:false, px:"Borgatello Ma.L. (UNIDOS)",    el:1292,  vg:1053, vg1:418,  p2:"Más p/SFE",   v2:403,   p3:"Vila de Frente", v3:223,   pop:1408,   centroPS:false, congresal:"",                                coord:[-30.663,-61.527]},
+  {id:"villa_san_jose",n:"Villa San José",        G:false, psEjec:false, px:"Forni Julio C. (UNIDOS)",      el:346,   vg:207,  vg1:162,  p2:null,           v2:null,  p3:null,             v3:null,  pop:278,    centroPS:false, congresal:"",                                coord:[-30.891,-62.162]},
+  {id:"virginia",      n:"Virginia",              G:false, psEjec:false, px:"Fraire Pedro (UNIDOS)",         el:168,   vg:106,  vg1:94,   p2:null,           v2:null,  p3:null,             v3:null,  pop:174,    centroPS:false, congresal:"",                                coord:[-31.080,-61.920]},
+  {id:"zenon_pereyra", n:"Zenón Pereyra",         G:false, psEjec:true,  px:"Gallo Verónica (PS/UNIDOS)",          el:1117,  vg:521,  vg1:null, p2:null,           v2:null,  p3:null,             v3:null,  pop:2034,   centroPS:true,  congresal:"Gallo Verónica J.",               coord:[-30.847,-62.035]},
 ];
+const LOCS = BASE;  // alias de compatibilidad
 
 // Populate dropdown
 const sel = document.getElementById("f_localidad");
@@ -355,119 +334,136 @@ const sel = document.getElementById("f_localidad");
   o.value = l.id; o.textContent = l.n; sel.appendChild(o);
 });
 
-// ===== RENDER SVG DOTS =====
-const svgG = document.getElementById("dotsGroup");
-const COLORS = {fuerte:"#22c55e", debil:"#f59e0b", nula:"#ef4444"};
+// ===== RENDER MAPA REAL (mismo que 'Cómo estamos') =====
+const svg = document.getElementById("mapSvg");
+const W=775, H=1004;
 
-LOCS.forEach(l=>{
-  const r = l.centro ? 5.5 : 3.5;
-  const col = COLORS[l.pres] || "#555";
-  
-  // Círculo principal
-  const circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
-  circle.setAttribute("cx", l.sx);
-  circle.setAttribute("cy", l.sy);
-  circle.setAttribute("r", r);
-  circle.setAttribute("fill", col);
-  circle.setAttribute("fill-opacity", l.centro ? "0.95" : "0.75");
-  circle.setAttribute("stroke", l.centro ? "rgba(255,255,255,.5)" : "rgba(255,255,255,.2)");
-  circle.setAttribute("stroke-width", l.centro ? "2" : "1");
-  circle.style.cursor = "pointer";
-  circle.style.transition = "r .15s";
-  circle.dataset.id = l.id;
-  
-  // Label solo para localidades con centro (más importantes)
-  if(l.centro){
-    const txt = document.createElementNS("http://www.w3.org/2000/svg","text");
-    const name = l.n.split(" ")[0];
-    // Offset label para no tapar el círculo
-    const offX = l.sx > 155 ? -8 : 8;
-    const anchor = l.sx > 155 ? "end" : "start";
-    txt.setAttribute("x", l.sx + offX);
-    txt.setAttribute("y", l.sy + 1);
-    txt.setAttribute("dominant-baseline","middle");
-    txt.setAttribute("text-anchor", anchor);
-    txt.setAttribute("font-size", "7.5");
-    txt.setAttribute("font-family","sans-serif");
-    txt.setAttribute("fill", "rgba(255,255,255,.7)");
-    txt.setAttribute("pointer-events","none");
-    txt.setAttribute("font-weight","600");
-    txt.textContent = name;
-    svgG.appendChild(txt);
-  }
-  
-  // Hover
-  circle.addEventListener("mouseenter", e => {
-    circle.setAttribute("r", r + 3);
-    circle.setAttribute("stroke","rgba(255,255,255,.8)");
-    circle.setAttribute("stroke-width","2");
-    const tip = document.getElementById("mapTip");
-    const wrap = document.getElementById("mapWrap");
+// Posiciones en píxel sobre la imagen del Senado (Dpto. Castellanos), viewBox 775x1004
+const PXMAP = {
+  rafaela:[442.8,468.0], sunchales:[438.0,218.4], frontera:[69.2,698.4],
+  san_vicente:[448.8,922.0], humberto:[604.8,137.2], maria_juana:[298.4,906.8],
+  susana:[481.6,605.6], col_aldao:[298.8,250.4], angelica:[463.2,776.0],
+  ataliva:[545.2,272.8], aurelia:[560.0,662.0], bauer_sigel:[136.8,537.2],
+  bella_italia:[562.0,529.6], col_bicha:[215.2,130.4], col_bigand:[318.4,345.6],
+  castellanos_c:[304.4,455.2], col_cello:[224.4,672.0], col_iturraspe:[406.0,716.0],
+  col_margarita:[374.0,904.0], col_raquel:[494.4,121.6], coronel_fraga:[152.8,432.0],
+  plaza_cluc:[333.2,688.8], egusquiza:[396.8,363.2], esmeralda:[156.0,849.2],
+  est_cluc:[320.4,760.4], eusebia:[207.2,222.0], eustolia:[276.0,807.6],
+  fidela:[256.0,332.4], galisteo:[611.6,303.2], garibaldi:[244.4,886.4],
+  hugentobler:[288.4,190.8], josefina:[110.4,645.6], lehmann:[526.0,386.0],
+  maua:[676.0,51.6], pte_roca:[400.0,472.0], pueblo_marini:[182.0,305.6],
+  ramona:[170.4,366.4], saguier:[348.8,571.6], san_antonio:[302.0,473.2],
+  sta_clara:[243.2,591.2], tacural:[411.6,123.2], tacurales:[288.0,112.0],
+  vila:[230.8,448.8], villa_san_jose:[398.0,582.0], virginia:[614.4,27.2],
+  zenon_pereyra:[178.0,799.2]
+};
+
+svg.innerHTML = `<rect width="${W}" height="${H}" fill="none"/>`;
+const maxEl = Math.max(...BASE.map(b=>b.el));
+
+function clearSel(){
+  document.querySelectorAll('#mapSvg circle').forEach(c=>{
+    const b = BASE.find(x=>x.id===c.dataset.id);
+    c.setAttribute('stroke', b.psEjec ? '#ff6b7a' : (b.centroPS ? '#fcd34d' : '#6a8fbd'));
+    c.setAttribute('stroke-width','1.5');
+  });
+}
+
+BASE.forEach(b=>{
+  const p = PXMAP[b.id];
+  if(!p) return;
+  const x=p[0], y=p[1];
+  const r = Math.max(7, Math.min(22, 7 + Math.sqrt(b.el/maxEl)*16));
+  let fill = b.psEjec ? '#e63946' : (b.centroPS ? '#f59e0b' : '#4a6fa5');
+  let stroke = b.psEjec ? '#ff6b7a' : (b.centroPS ? '#fcd34d' : '#6a8fbd');
+
+  const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  circle.setAttribute('cx',x.toFixed(1));
+  circle.setAttribute('cy',y.toFixed(1));
+  circle.setAttribute('r',r);
+  circle.setAttribute('fill',fill);
+  circle.setAttribute('fill-opacity','0.9');
+  circle.setAttribute('stroke',stroke);
+  circle.setAttribute('stroke-width','1.5');
+  circle.style.cursor='pointer';
+  circle.dataset.id = b.id;
+
+  // Nombre de la localidad
+  const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+  lbl.setAttribute('x',x.toFixed(1));
+  lbl.setAttribute('y',(y+r+10).toFixed(1));
+  lbl.setAttribute('text-anchor','middle');
+  lbl.setAttribute('font-size','10');
+  lbl.setAttribute('fill',b.psEjec?'#ff8a94':b.centroPS?'#fcd34d':'#cdddf0');
+  lbl.setAttribute('font-family','sans-serif');
+  lbl.setAttribute('font-weight','700');
+  lbl.setAttribute('stroke','#0e1525');
+  lbl.setAttribute('stroke-width','3.5');
+  lbl.setAttribute('paint-order','stroke');
+  lbl.textContent = b.n.toUpperCase();
+  lbl.style.pointerEvents='none';
+  svg.appendChild(lbl);
+
+  // Hover → tip
+  circle.addEventListener('mouseenter', ()=>{
+    const tip = document.getElementById('mapTip');
+    const wrap = document.getElementById('mapWrap');
     const wRect = wrap.getBoundingClientRect();
     const cRect = circle.getBoundingClientRect();
     const cx = cRect.left - wRect.left + cRect.width/2;
     const cy = cRect.top  - wRect.top  + cRect.height/2;
-    const presLabel = {fuerte:"FUERTE",debil:"DÉBIL",nula:"SIN PRESENCIA"}[l.pres];
-    const presCol   = {fuerte:"#22c55e",debil:"#f59e0b",nula:"#ef4444"}[l.pres];
-    const centroTag = l.centro ? '<span style="color:#22c55e">✅ Centro Socialista activo</span>' : '<span style="color:#666">Sin centro activo</span>';
+    const tipoLabel = b.psEjec ? '<span style="color:#e63946;font-weight:700">Ejecutivo PS</span>'
+      : (b.centroPS ? '<span style="color:#f59e0b;font-weight:700">Con Centro PS</span>'
+      : '<span style="color:#7a9cc6">Sin presencia PS</span>');
     tip.innerHTML = `
-      <div class="tip-name">${l.n}</div>
-      <div class="tip-row">🏛️ Gobierno 2025: <strong>${l.gov}</strong></div>
-      <div class="tip-row">🌹 PS 2025: <strong>${l.ps_pct > 0 ? l.ps_pct.toFixed(1)+"%" : "s/d"}</strong></div>
-      <div class="tip-row">Presencia PS: <span style="color:${presCol};font-weight:700">${presLabel}</span></div>
-      <div class="tip-row">${centroTag}</div>
-      <div style="margin-top:5px;font-size:10px;color:#444">Clic para seleccionar esta localidad</div>`;
-    let tx = cx + 10, ty = cy - 10;
-    const tipW = 200, tipH = 130;
-    if(tx + tipW > wrap.clientWidth) tx = cx - tipW - 10;
+      <div class="tip-name">${b.n}</div>
+      <div class="tip-row">🏛️ Ejecutivo 2025: <strong>${b.px}</strong></div>
+      <div class="tip-row">${tipoLabel}</div>
+      <div style="margin-top:5px;font-size:10px;color:#557">Clic para seleccionar esta localidad</div>`;
+    let tx = cx + 12, ty = cy - 10;
+    const tipW = 210, tipH = 110;
+    if(tx + tipW > wrap.clientWidth) tx = cx - tipW - 12;
     if(ty + tipH > wrap.clientHeight) ty = cy - tipH;
     if(ty < 0) ty = 4;
     tip.style.left = tx + "px";
     tip.style.top  = ty + "px";
     tip.classList.add("show");
   });
-  circle.addEventListener("mouseleave", ()=>{
-    circle.setAttribute("r", r);
-    circle.setAttribute("stroke", l.centro ? "rgba(255,255,255,.5)" : "rgba(255,255,255,.2)");
-    circle.setAttribute("stroke-width", l.centro ? "2" : "1");
-    setTimeout(()=> document.getElementById("mapTip").classList.remove("show"), 150);
+  circle.addEventListener('mouseleave', ()=>{
+    setTimeout(()=> document.getElementById('mapTip').classList.remove('show'), 150);
   });
-  circle.addEventListener("click", ()=>{
-    document.querySelectorAll("#dotsGroup circle").forEach(c=>{
-      c.setAttribute("stroke", LOCS.find(x=>x.id===c.dataset.id)?.centro ? "rgba(255,255,255,.5)" : "rgba(255,255,255,.2)");
-      c.setAttribute("stroke-width", LOCS.find(x=>x.id===c.dataset.id)?.centro ? "2" : "1");
-    });
-    circle.setAttribute("stroke","#f0c040");
-    circle.setAttribute("stroke-width","2.5");
-    sel.value = l.id;
-    document.getElementById("selLocName").textContent = l.n;
-    document.getElementById("selLoc").classList.add("show");
-    // Relevamiento: actualizar localidad seleccionada
-    window._relLocId = l.id;
-    window._relLocName = l.n;
-    document.getElementById("relLocName").textContent = l.n;
-    document.getElementById("relevamiento").scrollIntoView({behavior:"smooth",block:"start"});
-    document.getElementById("mapTip").classList.remove("show");
+  circle.addEventListener('click', ()=>{
+    clearSel();
+    circle.setAttribute('stroke','#f0c040');
+    circle.setAttribute('stroke-width','3');
+    sel.value = b.id;
+    const selLocName = document.getElementById('selLocName');
+    if(selLocName){ selLocName.textContent = b.n; document.getElementById('selLoc').classList.add('show'); }
+    window._relLocId = b.id;
+    window._relLocName = b.n;
+    const relLocName = document.getElementById('relLocName');
+    if(relLocName) relLocName.textContent = b.n;
+    const relSec = document.getElementById('relevamiento');
+    if(relSec) relSec.scrollIntoView({behavior:'smooth',block:'start'});
+    document.getElementById('mapTip').classList.remove('show');
   });
-  
-  svgG.appendChild(circle);
+
+  svg.appendChild(circle);
 });
 
 // Sync dropdown → highlight dot
 sel.addEventListener("change", ()=>{
   const id = sel.value;
-  document.querySelectorAll("#dotsGroup circle").forEach(c=>{
-    const ll = LOCS.find(x=>x.id===c.dataset.id);
-    c.setAttribute("stroke", ll?.centro ? "rgba(255,255,255,.5)" : "rgba(255,255,255,.2)");
-    c.setAttribute("stroke-width", ll?.centro ? "2" : "1");
-  });
+  clearSel();
   if(id){
-    const dot = svgG.querySelector(`[data-id="${id}"]`);
-    if(dot){dot.setAttribute("stroke","#f0c040");dot.setAttribute("stroke-width","2.5")}
-    const loc = LOCS.find(l=>l.id===id);
-    if(loc){document.getElementById("selLocName").textContent=loc.n;document.getElementById("selLoc").classList.add("show")}
+    const dot = svg.querySelector(`[data-id="${id}"]`);
+    if(dot){dot.setAttribute("stroke","#f0c040");dot.setAttribute("stroke-width","3")}
+    const loc = BASE.find(l=>l.id===id);
+    const selLocName = document.getElementById('selLocName');
+    if(loc && selLocName){selLocName.textContent=loc.n;document.getElementById("selLoc").classList.add("show")}
   } else {
-    document.getElementById("selLoc").classList.remove("show");
+    const selLoc = document.getElementById('selLoc');
+    if(selLoc) selLoc.classList.remove("show");
   }
 });
 
@@ -506,11 +502,7 @@ document.getElementById("contactoForm").addEventListener("submit", async e=>{
   if(!saved) document.getElementById("msgOk").textContent = "⚽ ¡Gracias! Anotamos tu interés. Pronto te contactamos.";
   e.target.reset();
   document.getElementById("selLoc").classList.remove("show");
-  document.querySelectorAll("#dotsGroup circle").forEach(c=>{
-    const ll = LOCS.find(x=>x.id===c.dataset.id);
-    c.setAttribute("stroke", ll?.centro ? "rgba(255,255,255,.5)" : "rgba(255,255,255,.2)");
-    c.setAttribute("stroke-width", ll?.centro ? "2" : "1");
-  });
+  clearSel();
   btn.disabled = false; btn.textContent = "¡Me sumo! 🌹";
 });
 
@@ -564,11 +556,7 @@ document.getElementById("relevamientoForm").addEventListener("submit", async fun
     e.target.reset();
     document.getElementById("relLocName").textContent = "— hacé clic en el mapa arriba";
     window._relLocId = null; window._relLocName = null;
-    document.querySelectorAll("#dotsGroup circle").forEach(function(c){
-      const ll = LOCS.find(function(x){ return x.id === c.dataset.id; });
-      c.setAttribute("stroke", ll && ll.centro ? "rgba(255,255,255,.5)" : "rgba(255,255,255,.2)");
-      c.setAttribute("stroke-width", ll && ll.centro ? "2" : "1");
-    });
+    clearSel();
   } else {
     document.getElementById("r_msgErr").textContent = "Error al guardar. Verifica tu conexion e intenta de nuevo.";
     document.getElementById("r_msgErr").classList.add("show");
