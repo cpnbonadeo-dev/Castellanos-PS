@@ -2,1228 +2,471 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Florencia">
-<meta name="theme-color" content="#1a56db">
-<title>Florencia</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Castellanos · Figuritas 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --azul: #1a56db;
-  --azul-oscuro: #1e3a8a;
-  --azul-medio: #2563eb;
-  --azul-claro: #dbeafe;
-  --azul-muy-claro: #eff6ff;
-  --verde: #16a34a;
-  --texto: #1e293b;
-  --texto-suave: #64748b;
-  --sombra: 0 4px 24px rgba(30,58,138,0.12);
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow Condensed',Arial,sans-serif;background:#0f0808;background-image:repeating-linear-gradient(0deg,transparent 0,transparent 90px,rgba(0,0,0,0.1) 90px,rgba(0,0,0,0.1) 180px);min-height:100vh;color:#fff;overflow-x:hidden}
+
+/* ══ PANTALLA DE ACCESO ══════════════════════════ */
+#app{display:block}
+
+
+/* ── TOPNAV */
+.topnav{position:sticky;top:0;z-index:100;background:rgba(8,0,16,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:2px solid rgba(204,0,24,.35);flex-shrink:0}
+.tn-left{display:flex;align-items:center;gap:10px}
+.tn-logo{width:30px;height:30px;border-radius:50%;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.tn-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:15px;letter-spacing:3px;color:rgba(255,255,255,.88)}
+.tn-links{display:flex;gap:10px;align-items:center}
+.tn-btn{font-size:10px;font-weight:800;letter-spacing:1.5px;text-decoration:none;text-transform:uppercase;padding:6px 14px;border-radius:4px;transition:all .2s;white-space:nowrap}
+.tn-sumate{background:rgba(204,0,24,.85);color:#fff;border:1px solid rgba(204,0,24,.5)}
+.tn-sumate:hover{background:#cc0018;box-shadow:0 0 12px rgba(204,0,24,.4)}
+.tn-panel{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.12)}
+.tn-panel:hover{background:rgba(255,255,255,.12);color:#fff}
+.tn-estado{background:#f0c040;color:#4a0008;border:1px solid #f0c040;font-size:12px;font-weight:900;padding:8px 18px;box-shadow:0 2px 10px rgba(240,192,64,.3)}
+.tn-estado:hover{background:#ffd24d;box-shadow:0 0 16px rgba(240,192,64,.55)}
+/* ── TICKER */
+.ticker{background:#cc0018;padding:5px 0;overflow:hidden}
+.ticker-inner{display:inline-block;white-space:nowrap;animation:scroll 55s linear infinite;font-size:11px;letter-spacing:2px;font-weight:700;color:#fff}
+@keyframes scroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* ── BANNER */
+.banner{
+  background:linear-gradient(135deg,#6a000d 0%,#a8001a 40%,#cc0018 60%,#8a0010 100%);
+  text-align:center;padding:20px 16px 18px;
+  border-bottom:5px solid #f0c040;position:relative;overflow:hidden;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: "DM Sans", sans-serif; background: var(--azul-muy-claro); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+.banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent 0,transparent 18px,rgba(255,255,255,.03) 18px,rgba(255,255,255,.03) 19px)}
+.b-logo{font-size:46px;line-height:1;position:relative;display:block}
+.b-title{font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:clamp(36px,9vw,80px);letter-spacing:6px;color:#f0c040;text-shadow:4px 4px 0 rgba(0,0,0,.4);line-height:.92;position:relative}
+.b-sub{font-size:clamp(9px,2vw,12px);letter-spacing:7px;color:rgba(255,255,255,.65);text-transform:uppercase;margin:7px 0 10px;position:relative}
+.b-chips{display:flex;gap:10px;justify-content:center;position:relative;flex-wrap:wrap}
+.chip{background:#f0c040;color:#6a000d;font-size:10px;font-weight:900;letter-spacing:2px;padding:4px 14px;border-radius:20px;text-transform:uppercase;cursor:pointer;border:none}
+.chip.login-chip{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.chip.login-chip:hover{background:rgba(255,255,255,.25)}
 
-#pantalla-inicio {
-  position: fixed; inset: 0; z-index: 999;
-  background: linear-gradient(160deg, #1e3a8a 0%, #1a56db 60%, #2563eb 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 32px; padding: 40px; text-align: center;
+/* ── SECTION */
+.sec{text-align:center;padding:28px 16px 0;max-width:1200px;margin:0 auto}
+.sec h2{font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:28px;letter-spacing:5px;color:#f0c040}
+.sec p{font-size:10px;color:rgba(255,255,255,.32);letter-spacing:4px;text-transform:uppercase;margin-top:2px}
+.sec-line{width:55px;height:3px;background:#f0c040;margin:8px auto 22px;border-radius:2px}
+.subsec-label{text-align:center;font-size:11px;letter-spacing:4px;color:rgba(240,192,64,.85);text-transform:uppercase;margin:22px 0 16px;padding:10px 0;border-top:1px solid rgba(240,192,64,.28);border-bottom:1px solid rgba(240,192,64,.28);font-weight:700}
+.field-line{height:2px;margin:18px auto;background:linear-gradient(90deg,transparent,rgba(240,192,64,.45),transparent);max-width:700px}
+.field-arc{width:90px;height:45px;border:1px solid rgba(255,255,255,.07);border-radius:0 0 90px 90px;margin:0 auto;border-top:none}
+
+/* ── CARDS */
+.cards{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:0 16px 8px;max-width:1200px;margin:0 auto}
+
+/* ══ PANINI CARD 2026 — ESTILO FIGURITA REAL ════════ */
+@keyframes foilSpin{from{transform:rotate(0deg) scale(2.8)}to{transform:rotate(360deg) scale(2.8)}}
+
+/* Card base — fondo color equipo como figurita real */
+.pcard{width:162px;border-radius:10px;position:relative;overflow:hidden;cursor:pointer;
+  box-shadow:0 0 0 3px #fff,0 8px 28px rgba(0,0,0,.55);
+  transition:transform .22s ease,box-shadow .22s ease;user-select:none;display:flex;flex-direction:column;
+  background:linear-gradient(170deg,#a80018 0%,#d90022 55%,#b5001e 100%);isolation:isolate}
+.pcard:hover{transform:translateY(-14px) scale(1.07) rotate(-1.2deg);
+  box-shadow:0 0 0 3px #fff,0 30px 60px rgba(0,0,0,.65),0 0 28px rgba(220,0,50,.4);z-index:50}
+
+/* Variantes de color por sección */
+.foil-oro{background:linear-gradient(170deg,#a80018 0%,#d90022 55%,#b5001e 100%)}
+.foil-oro:hover{box-shadow:0 0 0 3px #fff,0 30px 60px rgba(0,0,0,.65),0 0 28px rgba(220,0,50,.4)}
+.foil-rojo{background:linear-gradient(170deg,#00337a 0%,#0052cc 55%,#003c98 100%)}
+.foil-rojo:hover{box-shadow:0 0 0 3px #fff,0 30px 60px rgba(0,0,0,.65),0 0 28px rgba(0,100,255,.4)}
+.foil-verde{background:linear-gradient(170deg,#0a4a18 0%,#138030 55%,#0e5c22 100%)}
+.foil-verde:hover{box-shadow:0 0 0 3px #fff,0 30px 60px rgba(0,0,0,.65),0 0 28px rgba(18,140,60,.4)}
+.foil-azul{background:linear-gradient(170deg,#0a2068 0%,#1c3eb8 55%,#122490 100%)}
+.foil-azul:hover{box-shadow:0 0 0 3px #fff,0 30px 60px rgba(0,0,0,.65),0 0 28px rgba(40,100,220,.4)}
+
+/* Foil shimmer on hover */
+.p-foil-sheen{position:absolute;inset:0;z-index:25;pointer-events:none;opacity:0;
+  background:conic-gradient(from 0deg,transparent 0deg,rgba(255,220,50,.18) 40deg,rgba(255,255,255,.22) 80deg,rgba(100,210,255,.16) 130deg,transparent 180deg,rgba(255,120,200,.1) 230deg,rgba(255,220,50,.18) 280deg,transparent 360deg);
+  mix-blend-mode:screen;transition:opacity .25s}
+.pcard:hover .p-foil-sheen{opacity:1;animation:foilSpin 2.4s linear infinite}
+
+/* Número grande de fondo — como Panini real */
+.p-big-num{position:absolute;bottom:48px;left:-10px;
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:148px;line-height:1;
+  color:rgba(255,255,255,.16);pointer-events:none;z-index:1;letter-spacing:-6px;user-select:none}
+
+/* Textura diagonal sutil */
+.pcard::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(-50deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 14px)}
+
+/* Badges top-right */
+.p-top-badges{position:absolute;top:7px;right:7px;display:flex;flex-direction:column;align-items:center;gap:5px;z-index:10}
+.p-badge{width:26px;height:26px;border-radius:50%;overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.45),0 0 0 1.5px rgba(255,255,255,.65);
+  background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.p-country{width:24px;height:24px;border-radius:50%;overflow:hidden;
+  box-shadow:0 1px 5px rgba(0,0,0,.4),0 0 0 1.5px rgba(255,255,255,.55)}
+
+/* Franja lateral derecha */
+.p-side-strip{position:absolute;top:0;right:0;width:7px;height:100%;z-index:3;pointer-events:none;
+  background:rgba(255,255,255,.13)}
+
+/* Área de foto — fondo transparente para que se vea el color de la figurita */
+.p-photo-wrap{position:relative;width:100%;height:192px;overflow:hidden;background:transparent;z-index:2;flex-shrink:0}
+.p-photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.p-photo-wrap .p-sil{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:22px}
+/* Fade foto → color del card */
+.p-photo-fade{position:absolute;bottom:0;left:0;right:0;height:65px;z-index:4;pointer-events:none;
+  background:linear-gradient(to bottom,transparent,rgba(168,0,24,.92))}
+.foil-rojo .p-photo-fade{background:linear-gradient(to bottom,transparent,rgba(0,51,122,.92))}
+.foil-verde .p-photo-fade{background:linear-gradient(to bottom,transparent,rgba(10,74,24,.92))}
+.foil-azul .p-photo-fade{background:linear-gradient(to bottom,transparent,rgba(10,32,104,.92))}
+
+/* Jersey overlay — solo para siluetas (oculto cuando hay foto) */
+.p-jersey-overlay{position:absolute;bottom:0;left:0;right:0;height:52%;
+  background:repeating-linear-gradient(90deg,#c0001c 0px,#c0001c 9px,#f0f0f0 9px,#f0f0f0 18px);
+  opacity:.35;z-index:3;border-radius:40% 40% 0 0 / 18px 18px 0 0}
+.foil-rojo .p-jersey-overlay{background:repeating-linear-gradient(90deg,#0048c8 0px,#0048c8 9px,#74b8ff 9px,#74b8ff 18px)}
+.foil-verde .p-jersey-overlay{background:repeating-linear-gradient(90deg,#0e6020 0px,#0e6020 9px,#3ec860 9px,#3ec860 18px)}
+.foil-azul .p-jersey-overlay{background:repeating-linear-gradient(90deg,#1535b8 0px,#1535b8 9px,#4488ee 9px,#4488ee 18px)}
+.has-jersey .p-jersey-overlay{display:none}
+.p-collar{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:30px;height:16px;
+  border-radius:0 0 14px 14px;background:#cc001e;border:2px solid rgba(255,255,255,.8);border-top:none;z-index:8}
+.foil-rojo .p-collar{background:#0048c8}.foil-verde .p-collar{background:#0e6020}.foil-azul .p-collar{background:#1535b8}
+.has-jersey .p-collar{display:none}
+.p-chest-badge{position:absolute;top:14px;left:50%;transform:translateX(-75%);width:22px;height:22px;
+  border-radius:50%;overflow:hidden;z-index:9;box-shadow:0 2px 5px rgba(0,0,0,.6),0 0 0 1.5px rgba(255,255,255,.45)}
+.has-jersey .p-chest-badge{display:none}
+
+/* Banda nombre — BLANCA como Panini real */
+.p-name-band{position:relative;z-index:10;background:#f3f3f3;padding:6px 9px 8px;flex-shrink:0;border-top:2px solid rgba(255,255,255,.5)}
+.p-firstname{font-size:7.5px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:2px;line-height:1}
+.p-lastname{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:23px;color:#18000a;font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1;margin-top:1px}
+.p-info{font-size:7.5px;color:#b50018;margin-top:3px;letter-spacing:.3px;text-transform:uppercase;font-weight:700}
+.foil-rojo .p-info{color:#003c8f}
+.foil-verde .p-info{color:#0a5018}
+.foil-azul .p-info{color:#0a1f70}
+.p-club{display:flex;align-items:center;justify-content:space-between;margin-top:5px;border-top:1px solid rgba(0,0,0,.08);padding-top:4px}
+.p-club-name{font-size:7.5px;font-weight:800;color:#555;text-transform:uppercase;letter-spacing:.4px}
+.p-panini{font-size:7px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;color:#fff;background:#c00018;padding:1px 5px 2px;border-radius:2px;letter-spacing:1px}
+.foil-rojo .p-panini{background:#003c8f}
+.foil-verde .p-panini{background:#0a5018}
+.foil-azul .p-panini{background:#0a1f70}
+.p-cong{font-size:6.5px;color:#b50018;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:700}
+.foil-rojo .p-cong{color:#003c8f}.foil-verde .p-cong{color:#0a5018}.foil-azul .p-cong{color:#0a1f70}
+
+.pcard.sz-grande{width:196px}
+.pcard.sz-grande .p-photo-wrap{height:228px}
+.pcard.sz-grande .p-lastname{font-size:27px}
+.pcard.no-click{cursor:default}
+
+/* ── MODAL */
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:linear-gradient(168deg,#1a1f3e,#080c1e);border-radius:16px;border:2px solid #f0c040;width:100%;max-width:440px;max-height:82vh;overflow-y:auto;padding:22px;position:relative}
+.modal-close{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;line-height:1}
+.modal-close:hover{color:#fff}
+.modal h3{font-family:'Bebas Neue',Arial,sans-serif;font-size:22px;letter-spacing:3px;color:#f0c040;margin-bottom:2px}
+.modal .m-sub{font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:14px}
+.m-section{margin-top:12px}
+.m-section h4{font-size:8px;font-weight:900;letter-spacing:3px;color:#f0c040;text-transform:uppercase;border-bottom:1px solid rgba(240,192,64,.2);padding-bottom:3px;margin-bottom:7px}
+.m-person{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.m-person:last-child{border-bottom:none}
+.m-dot{width:6px;height:6px;border-radius:50%;background:#cc0018;flex-shrink:0}
+.m-dot.cong{background:#f0c040}
+.m-dot.sec{background:#4caf50;width:8px;height:8px}
+.m-pname{font-size:12px;color:rgba(255,255,255,.85)}
+.m-prole{font-size:8px;color:rgba(255,255,255,.35);margin-left:auto;flex-shrink:0}
+.m-pending{font-size:11px;color:rgba(255,255,255,.35);font-style:italic;padding:6px 0}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-track{background:rgba(255,255,255,.05)}
+.modal::-webkit-scrollbar-thumb{background:rgba(240,192,64,.3);border-radius:2px}
+
+footer{text-align:center;padding:22px 16px;font-size:9px;color:rgba(255,255,255,.15);letter-spacing:3px;text-transform:uppercase;border-top:1px solid rgba(255,255,255,.05);margin-top:20px}
+
+/* CONGRESALES — cargo */
+
+/* ── MOBILE ── */
+@media (max-width:640px){
+  .topnav{flex-direction:column;gap:8px;padding:10px 12px;align-items:stretch}
+  .tn-left{justify-content:center}
+  .tn-title{font-size:13px;letter-spacing:2px}
+  .tn-links{width:100%;justify-content:center;flex-wrap:wrap;gap:8px}
+  .tn-estado{flex:1 1 100%;text-align:center;font-size:13px;padding:11px 18px;order:-1}
+  .tn-sumate,.tn-panel{flex:1 1 auto;text-align:center}
+  .b-title{font-size:30px!important}
+  .b-sub{font-size:11px}
+  .tn-btn{min-height:40px;display:flex;align-items:center;justify-content:center}
 }
-#pantalla-inicio h1 { font-family: "DM Serif Display", serif; font-size: 56px; color: white; line-height: 1.1; }
-#pantalla-inicio p { font-size: 22px; color: rgba(255,255,255,0.75); line-height: 1.5; }
-.btn-empezar {
-  background: white; color: var(--azul-oscuro); border: none; border-radius: 22px;
-  padding: 26px 0; width: 100%;
-  font-family: "DM Sans", sans-serif; font-size: 28px; font-weight: 700;
-  cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.2); transition: transform 0.2s;
+@media (max-width:380px){
+  .tn-title{font-size:11px;letter-spacing:1.5px}
+  .tn-sumate,.tn-panel{font-size:9px;padding:8px 10px}
 }
-.btn-empezar:active { transform: scale(0.97); }
-
-#app { width: 100%; max-width: 430px; min-height: 100vh; display: flex; flex-direction: column; padding: 0 0 200px; }
-
-.header {
-  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-medio));
-  padding: 28px 20px 18px;
-}
-.header-top { display: flex; justify-content: space-between; align-items: center; }
-.header-nombre { font-family: "DM Serif Display", serif; font-size: 30px; color: white; }
-.modo-badge {
-  padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;
-  background: rgba(255,255,255,0.2); color: white;
-}
-.mic-estado { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-.mic-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: background 0.3s; }
-.mic-dot.activo { background: #4ade80; animation: parpadeo 1s infinite; }
-.mic-dot.espera { background: #fbbf24; animation: parpadeo 2s infinite; }
-@keyframes parpadeo { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.mic-texto { font-size: 14px; color: rgba(255,255,255,0.7); }
-
-.agua-barra {
-  background: rgba(255,255,255,0.15); border-radius: 12px;
-  padding: 10px 14px; margin-top: 10px;
-  display: flex; align-items: center; gap: 10px;
-}
-.agua-label { font-size: 13px; color: rgba(255,255,255,0.8); font-weight: 600; flex: 1; }
-.agua-progress { flex: 2; background: rgba(255,255,255,0.2); border-radius: 6px; height: 8px; }
-.agua-fill { height: 8px; border-radius: 6px; background: #4ade80; transition: width 0.5s; }
-.agua-num { font-size: 13px; color: white; font-weight: 700; min-width: 40px; text-align: right; }
-
-.chat { flex: 1; padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; scroll-behavior: smooth; }
-
-.burbuja { max-width: 88%; padding: 16px 20px; border-radius: 22px; font-size: 20px; line-height: 1.55; animation: aparecer 0.25s ease; }
-@keyframes aparecer { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.burbuja.asistente { background: white; color: var(--texto); align-self: flex-start; border-bottom-left-radius: 5px; box-shadow: var(--sombra); }
-.burbuja.coca { background: var(--azul-medio); color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
-.burbuja.sistema { background: #fef3c7; color: #92400e; align-self: center; border-radius: 14px; font-size: 15px; font-weight: 600; text-align: center; max-width: 95%; border: 2px solid #f59e0b; }
-.pensando { display: flex; align-items: center; gap: 6px; padding: 16px 20px; background: white; border-radius: 22px; align-self: flex-start; box-shadow: var(--sombra); }
-.dot { width: 10px; height: 10px; background: var(--azul); border-radius: 50%; animation: rebotar 1.2s infinite; }
-.dot:nth-child(2){animation-delay:0.2s} .dot:nth-child(3){animation-delay:0.4s}
-@keyframes rebotar { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
-
-.zona-inferior {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px; background: white;
-  border-top: 1px solid var(--azul-claro);
-  padding: 14px 16px 28px;
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
-  box-shadow: 0 -4px 24px rgba(30,58,138,0.08);
-}
-.btn-mic {
-  width: 90px; height: 90px;
-  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-medio));
-  border: none; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 38px; cursor: pointer;
-  box-shadow: 0 6px 24px rgba(26,86,219,0.4); transition: all 0.2s;
-}
-.btn-mic.escuchando { background: linear-gradient(135deg, #dc2626, #ef4444); animation: onda 1.2s infinite; }
-.btn-mic.espera { background: linear-gradient(135deg, #d97706, #f59e0b); }
-@keyframes onda { 0%{box-shadow:0 0 0 0 rgba(220,38,38,0.5)} 70%{box-shadow:0 0 0 22px rgba(220,38,38,0)} 100%{box-shadow:0 0 0 0 rgba(220,38,38,0)} }
-.btn-mic:active { transform: scale(0.92); }
-.mic-hint { font-size: 14px; color: var(--texto-suave); font-weight: 500; }
-
-.familia-label { font-size: 12px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.5px; align-self: flex-start; }
-.familia-grid { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
-.btn-familiar {
-  background: var(--azul-muy-claro); border: 2px solid var(--azul-claro); border-radius: 14px;
-  padding: 10px 16px; font-family: "DM Sans", sans-serif; font-size: 17px; font-weight: 600;
-  color: var(--azul-oscuro); cursor: pointer; transition: all 0.2s; flex: 1; min-width: 70px; text-align: center;
-}
-.btn-familiar:active { background: var(--azul-claro); transform: scale(0.96); }
-
-#panel-llamada { display: none; position: fixed; inset: 0; z-index: 500; background: linear-gradient(160deg, #1e3a8a, #1a56db); flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px; text-align: center; }
-#panel-llamada.show { display: flex; }
-#panel-llamada h2 { font-family: "DM Serif Display", serif; font-size: 30px; color: white; line-height: 1.2; }
-#panel-llamada p { font-size: 19px; color: rgba(255,255,255,0.75); }
-.btns-llamada-noche { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-.btn-llamar-noche { background: white; color: var(--azul-oscuro); border: none; border-radius: 16px; padding: 20px; font-family: "DM Sans", sans-serif; font-size: 20px; font-weight: 700; cursor: pointer; width: 100%; }
-.btn-no-llamar { background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 16px; padding: 16px; font-family: "DM Sans", sans-serif; font-size: 17px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px; }
-
-#alerta { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(220,38,38,0.95); flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px; text-align: center; }
-#alerta.show { display: flex; }
-#alerta h2 { font-size: 28px; font-weight: 700; color: white; }
-#alerta p { font-size: 18px; color: rgba(255,255,255,0.85); }
-.al-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-.al-btn { padding: 20px; border-radius: 16px; border: none; font-family: "DM Sans", sans-serif; font-size: 20px; font-weight: 700; cursor: pointer; }
-.al-btn.primario { background: white; color: #dc2626; }
-.al-btn.secundario { background: rgba(255,255,255,0.15); color: white; border: 2px solid white; }
 </style>
 </head>
 <body>
 
-<div id="pantalla-inicio">
-  <h1>Hola,<br>Coca</h1>
-  <p>Toca para charlar con Florencia</p>
-  <button class="btn-empezar" onclick="arrancar()">Empezar</button>
-</div>
+<!-- ══ PANTALLA DE ACCESO ════════════════════════ -->
+<!-- ══ CONTENIDO PRINCIPAL ════════════════════ -->
+<div id="app">
 
-<div id="app" style="display:none">
-  <div class="header">
-    <div class="header-top">
-      <div class="header-nombre">Florencia</div>
-      <div class="modo-badge" id="modo-badge">En Casa</div>
-    </div>
-    <div class="mic-estado">
-      <div class="mic-dot" id="mic-dot"></div>
-      <div class="mic-texto" id="mic-texto">Iniciando...</div>
-    </div>
-    <div class="agua-barra">
-      <div class="agua-label">Agua de hoy</div>
-      <div class="agua-progress"><div class="agua-fill" id="agua-fill" style="width:0%"></div></div>
-      <div class="agua-num" id="agua-num">0 / 1.5L</div>
-    </div>
+<nav class="topnav" id="topnav">
+  <div class="tn-left">
+    <div class="tn-logo" id="tnLogo"></div>
+    <span class="tn-title">🌹 PS · CASTELLANOS · 2026</span>
   </div>
-  <div class="chat" id="chat"></div>
-  <div class="zona-inferior">
-    <button class="btn-mic" id="btn-mic" onclick="toggleMic()"><span id="mic-icon">🎤</span></button>
-    <div class="mic-hint" id="mic-hint">Toca para hablar</div>
-    <div class="familia-label">Llamar a la familia</div>
-    <div class="familia-grid" id="familia-grid"></div>
+  <div class="tn-links">
+    <a href="estado.html" class="tn-btn tn-estado">📊 Cómo estamos</a>
+    <a href="sumate.html" class="tn-btn tn-sumate">Sumate →</a>
+    <a href="panel.html" class="tn-btn tn-panel">🔐 Panel interno</a>
+  </div>
+</nav>
+
+<div class="ticker">
+  <div class="ticker-inner">
+&nbsp;&nbsp;🌹 PS CASTELLANOS 2026 &nbsp;·&nbsp; MESA DEPARTAMENTAL ELECTA 7/6/2026 &nbsp;·&nbsp; ANDREA OCHAT — COORDINACIÓN GENERAL &nbsp;·&nbsp; OMAR MARTINEZ — COORDINACIÓN ADJUNTA &nbsp;·&nbsp; LUCIANA PETER — VOCAL &nbsp;·&nbsp; GISEL MAHMUD — DIPUTADA PROVINCIAL &nbsp;·&nbsp; EL SOCIALISMO ES EQUIPO &nbsp;·&nbsp;🌹 PS CASTELLANOS 2026 &nbsp;·&nbsp; MESA DEPARTAMENTAL ELECTA 7/6/2026 &nbsp;·&nbsp; ANDREA OCHAT — COORDINACIÓN GENERAL &nbsp;·&nbsp;
   </div>
 </div>
 
-<div id="panel-llamada">
-  <h2>Son las 8 de la noche</h2>
-  <p id="panel-llamada-sugerencia">Coca, a quien queres llamar hoy?</p>
-  <div class="btns-llamada-noche" id="btns-llamada-noche"></div>
-</div>
-
-<div id="alerta">
-  <h2>Avisando a tu familia</h2>
-  <p>No estas sola, ya les avise.</p>
-  <div class="al-btns">
-    <button class="al-btn primario" onclick="llamarContacto(0)">Llamar a Diego ahora</button>
-    <button class="al-btn secundario" onclick="cerrarAlerta()">Estoy bien, fue un error</button>
+<div class="banner">
+  <img src="ps-logo.png" style="width:72px;height:72px;border-radius:50%;box-shadow:0 4px 20px rgba(0,0,0,.5);margin-bottom:4px">
+  <div class="b-title">PS CASTELLANOS</div>
+  <div class="b-sub">Partido Socialista &nbsp;·&nbsp; Departamento Castellanos &nbsp;·&nbsp; Santa Fe</div>
+  <div class="b-chips">
+    <span class="chip">⚽ Figuritas 2026</span>
+    <span class="chip">🌹 Álbum Oficial</span>
   </div>
 </div>
+
+<!-- CUERPO TÉCNICO -->
+<div class="sec"><h2>Conducción</h2><p>Mesa Departamental Castellanos &nbsp;·&nbsp; Electa 7 Jun 2026</p><div class="sec-line"></div></div>
+<div class="cards" id="mesa-wrap"></div>
+
+<div class="field-line"></div><div class="field-arc"></div><div class="field-line"></div>
+
+<!-- PLANTEL -->
+<div class="sec"><h2>El Plantel</h2><p>Centros Socialistas &nbsp;·&nbsp; Toca la figurita para ver la comisión completa</p><div class="sec-line"></div></div>
+<div class="cards" id="plantel-wrap"></div>
+
+<div class="field-line"></div><div class="field-arc"></div><div class="field-line"></div>
+
+<!-- DONDE GOBERNAMOS -->
+<div class="sec"><h2>Donde Gobernamos</h2><p>Representación PS en el territorio &nbsp;·&nbsp; Departamento Castellanos</p><div class="sec-line"></div></div>
+<div class="cards" id="comunal-wrap"></div>
+
+<div class="sec" style="padding-top:32px">
+  <h2 style="font-size:40px;letter-spacing:6px">CONGRESALES</h2>
+  <p style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:4px">TITULARES PROVINCIALES · PS CASTELLANOS · 2026</p>
+  <div class="sec-line" style="width:80px;height:3px"></div>
+</div>
+<div class="cards" id="cong-wrap"></div>
+
+<div class="field-line"></div>
+
+<!-- JUNTA Y JUVENTUD -->
+<div class="sec"><h2>Representación PS</h2><p>Junta Provincial &nbsp;·&nbsp; Juventud PS</p><div class="sec-line"></div></div>
+<div class="cards" id="mesa-otros-wrap"></div>
+
+<div class="field-line"></div>
+
+<!-- SUMATE -->
+<div style="text-align:center;padding:40px 16px 32px;max-width:700px;margin:0 auto">
+  <div style="background:linear-gradient(135deg,#4a0008,#8a0010);border:2px solid #f0c040;border-radius:16px;padding:32px 24px">
+    <div style="font-size:36px;margin-bottom:10px">⚽</div>
+    <div style="font-family:'Bebas Neue',Impact,Arial,sans-serif;font-size:32px;letter-spacing:4px;color:#f0c040;margin-bottom:8px">¡SUMAMOS PLANTEL!</div>
+    <p style="font-size:14px;color:rgba(255,255,255,.75);margin-bottom:22px;line-height:1.5">Salimos a buscar nuevos jugadores. Compartí esta página con quien quieras sumar.</p>
+    <a href="sumate.html" style="display:inline-block;background:#f0c040;color:#4a0008;font-weight:900;font-size:14px;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;border-radius:30px;text-decoration:none">Quiero sumarme al equipo →</a>
+  </div>
+</div>
+
+<footer>⚽ 🌹 ⚽ &nbsp;&nbsp; PARTIDO SOCIALISTA · DEPARTAMENTO CASTELLANOS · SANTA FE · ARGENTINA · ÁLBUM 2026</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="m-title"></h3>
+    <div class="m-sub" id="m-sub"></div>
+    <div id="m-body"></div>
+  </div>
+</div>
+
+</div><!-- /app -->
 
 <script>
-const CLAUDE_KEY = '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';
-const CLAUDE_URL = 'https://api.anthropic.com/v1/messages';
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz0gPeVxvnqlkvzvscnYFkhhJBpE50pCAq1Z_X0eTR9r-QDhW-zkh3B13h5aonIgsvpQg/exec';
+// ══ LOGIN ════════════════════════════════════════// Recordar sesión
+if(sessionStorage.getItem('ps_equipo')==='ok'){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='block';
+}
 
-const CONTACTOS = [
-  { nombre: "Diego",  tel: "5493426153567" },
-  { nombre: "Ariel",  tel: "5493425330825" },
-  { nombre: "Franco", tel: "5493424728822" },
-  { nombre: "Tami",   tel: "5493425906751" },
-  { nombre: "Lali",   tel: "5493426313912" },
+// ══ FOTOS ════════════════════════════════════════
+const FOTO = {}; // fotos ahora como archivos externos
+// ══ SVGs ═════════════════════════════════════════
+const PS_LOGO = "ps-logo.png";
+const PS_ROSE = `<img src="${PS_LOGO}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:50%">`;
+document.getElementById('tnLogo').innerHTML = PS_ROSE;
+const ARG_FL  = `<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
+  <rect width="30" height="6.7" fill="#74acdf"/>
+  <rect y="6.7" width="30" height="6.6" fill="#ffffff"/>
+  <rect y="13.3" width="30" height="6.7" fill="#74acdf"/>
+  <circle cx="15" cy="10" r="2.5" fill="#f6b40e"/>
+</svg>`;
+
+function sil(){
+  return `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" fill="none" width="100%" height="100%">
+    <ellipse cx="60" cy="38" rx="24" ry="26" fill="rgba(255,255,255,0.22)"/>
+    <path d="M20 85 C26 68 40 62 52 67 L60 64 L68 67 C80 62 94 68 100 85 L105 145 L15 145 Z" fill="rgba(255,255,255,0.15)"/>
+    <path d="M20 85 L5 105 L22 110 L24 88" fill="rgba(255,255,255,0.12)"/>
+    <path d="M100 85 L115 105 L98 110 L96 88" fill="rgba(255,255,255,0.12)"/>
+  </svg>`;
+}
+
+// ══ CARD ═════════════════════════════════════════
+function mkCard(p, foil, opts){
+  opts = opts||{};
+  const sz      = opts.grande  ? 'sz-grande'  : '';
+  const nc      = opts.noClick ? 'no-click'   : '';
+  const click   = opts.noClick ? '' : `onclick="openModal('${p._id}')"`; 
+  // has-jersey = tarjeta con foto real → ocultar jersey overlay
+  const hasJ = (p.realJersey || p.photo) ? 'has-jersey' : '';
+
+  const jerseyOverlay = `
+    <div class="p-jersey-overlay">
+      <div class="p-collar"></div>
+      <div class="p-chest-badge">${PS_ROSE}</div>
+    </div>`;
+
+  // Si hay foto: imagen limpia. Jersey solo cuando es silueta.
+  const inner = p.photo
+    ? `<img src="${p.photo}" alt="${p.nombre}">`
+    : `<div class="p-sil">${sil()}</div>${jerseyOverlay}`;
+
+  // Nombre: primer palabra = nombre (pequeño), resto = apellido (grande)
+  const nameParts = p.nombre.trim().split(/\s+/);
+  const firstName = nameParts[0] || '';
+  const lastName  = nameParts.slice(1).join(' ') || nameParts[0];
+
+  const congLine = (p.cong_tit && p.cong_tit.length)
+    ? `<div class="p-cong">★ ${p.cong_tit.slice(0,2).join(' · ')}</div>`
+    : '';
+
+  return `<div class="pcard ${foil} ${sz} ${nc} ${hasJ}" ${click}>
+    <div class="p-foil-sheen"></div>
+    <div class="p-big-num">${p.num||''}</div>
+    <div class="p-top-badges">
+      <div class="p-badge">${PS_ROSE}</div>
+      <div class="p-country">${ARG_FL}</div>
+    </div>
+    <div class="p-side-strip"></div>
+    <div class="p-photo-wrap">${inner}<div class="p-photo-fade"></div></div>
+    <div class="p-name-band">
+      <div class="p-firstname">${firstName}</div>
+      <div class="p-lastname">${lastName}</div>
+      <div class="p-info">${p.cargo}</div>
+      <div class="p-club">
+        <span class="p-club-name">${p.localidad}</span>
+        <span class="p-panini">PS 2026</span>
+      </div>
+      ${congLine}
+    </div>
+  </div>`;
+}
+
+// ══ DATOS ════════════════════════════════════════
+const CONDUCCION = [
+  {_id:"ochat",    num:1, nombre:"Andrea Ochat",     cargo:"Coordinación General",  localidad:"Sunchales",   photo:"andrea%20ochat.jpg"},
+  {_id:"martinez", num:2, nombre:"Omar Martinez",     cargo:"Coordinación Adjunta",  localidad:"Sunchales",   photo:"omar%20martinez.png"},
+  {_id:"peter",    num:3, nombre:"Luciana Peter",     cargo:"Vocal",                 localidad:"Col. Raquel", photo:"luciana%20peter.jpeg"},
+];
+const MESA_OTROS = [
+  {_id:"gamero",   num:4, nombre:"Eugenia Gamero",    cargo:"Junta Provincial PS",   localidad:"Castellanos", photo:"eugenia%20gamero.jpeg"},
+  {_id:"marti_jc", num:5, nombre:"Juan Cruz Marti",   cargo:"Juventud PS",           localidad:"Castellanos", photo:"juan%20cruz%20marti.png"},
+  {_id:"gisel",    num:10,nombre:"Gisel Mahmud",      cargo:"Diputada Provincial",   localidad:"Santa Fe",    photo:"gisel%20mamhud.png"}
+];
+const PLANTEL = [
+  {_id:"sunchales",num:4,nombre:"Galli Jose A.",cargo:"Sec. General",localidad:"Sunchales",photo:"jose%20galli.png",
+    centro:"Centro Socialista Sunchales",lista:"Socialismo en Acción",eleccion:"7 Jun 2026",
+    comision:["Bossio Micaela Beatriz","Werger Marcelo Germán","Romero María Belén","Palacios Pablo Eliseo","Kisielewsky Laura Yasmin","Wasinger Pablo Damián"],
+    cong_tit:["Ochat Andrea Ivana","Galli José Augusto"],cong_sup:["Palacios Pablo Eliseo","Romero María Belén"]},
+  {_id:"frontera",num:5,nombre:"Perez Susana",cargo:"Sec. General",localidad:"Frontera",photo:null,
+    centro:"Centro Socialista Frontera",lista:"Socialismo en Acción",eleccion:"7 Jun 2026",
+    comision:["Pérez Carlos","Vanega Viviana","Peralta Nicolás"],cong_tit:["Pérez Susana","Pérez Carlos"],cong_sup:[]},
+  {_id:"mariajuana",num:6,nombre:"Luna Abelardo D.",cargo:"Sec. General",localidad:"María Juana",photo:null,
+    centro:"Centro Socialista María Juana",lista:null,eleccion:"7 Jun 2026",
+    comision:["Wengger Juliana","Lobos Leonardo Sebastián","Kautz Verónica","Missan Nelson","Dominighini María Cristina","Dalmasso Ceballos Agustín"],
+    cong_tit:["Bazzoni Amadeo"],cong_sup:["Ferrando Rosana"]},
+  {_id:"susana",num:7,nombre:"Tabin Duggo Juan P.",cargo:"Sec. General",localidad:"Susana",photo:null,
+    centro:"Centro Socialista Susana",lista:null,eleccion:"7 Jun 2026",
+    comision:["Navarro Susana","Valsagna Diego","Fuhr Raquel Dominga"],
+    cong_tit:["Tabin Duggo Juan Pablo"],cong_sup:["Navarro Susana"]},
+  {_id:"zenon",num:8,nombre:"Dome Laura Lorena",cargo:"Sec. General",localidad:"Zenón Pereyra",photo:"laura%20dome.jpeg",
+    centro:"Centro Socialista Zenón Pereyra",lista:null,eleccion:"7 Jun 2026",
+    comision:["Salcedo Claudio Ariel","Gallo Verónica Jesica","Toledo Sergio","Baravalle Mabel del Carmen","Dreiling Hugo Ernesto","Cabrera Noelia"],
+    cong_tit:["Gallo Verónica Jesica"],cong_sup:["Salcedo Claudio Ariel"]},
+  {_id:"raquel",num:9,nombre:"Airasca Alejandro",cargo:"Sec. General",localidad:"Col. Raquel",photo:"alejandro%20airasca.png",
+    centro:"Centro Socialista Col. Raquel",lista:null,eleccion:"7 Jun 2026",
+    comision:["Peter Luciana Marisabel","Perusia Perez Víctor Hugo","Bazán Noelia","Manganelli Pablo Luis"],
+    cong_tit:["Peter Luciana Marisabel"],cong_sup:["Airasca Alejandro César"]},
+  {_id:"rafaela",num:10,nombre:"Gaspoz Santiago J.",cargo:"Referente PS",localidad:"Rafaela",photo:null,
+    centro:"Centro Socialista Rafaela",lista:null,eleccion:null,comision:[],cong_tit:[],cong_sup:[]},
+  {_id:"ramona",num:11,nombre:"Ardiles Hernan G.",cargo:"Sec. Centro Socialista",localidad:"Ramona",photo:"hernan%20ardiles.jpeg",
+    centro:"Centro Socialista Ramona",lista:null,eleccion:null,comision:[],cong_tit:[],cong_sup:[]},
+  {_id:"humberto",num:12,nombre:"Antonioli Matias G.",cargo:"Referente PS",localidad:"Humberto Primo",photo:null,
+    centro:"Centro Socialista Humberto Primo",lista:null,eleccion:null,comision:[],cong_tit:[],cong_sup:[]}
+];
+const FEATURED_GOB = [];
+const COMUNALES = [
+  {_id:"pinotti",    num:1, nombre:"Pablo Pinotti",     cargo:"Intendente",   localidad:"Sunchales",     photo:"pablo%20pinotti.png"},
+  {_id:"c_aldao",    num:5, nombre:"Lorena Eberhardt",  cargo:"Pres. Comunal",localidad:"Colonia Aldao", photo:"lorena%20eberhardt.jpeg"},
+  {_id:"c_zenon",    num:3, nombre:"Veronica Gallo",    cargo:"Pres. Comunal",localidad:"Zenón Pereyra", photo:null},
+  {_id:"c_margarita",num:7, nombre:"Maria S. Muratore", cargo:"Pres. Comunal",localidad:"Col. Margarita",photo:"maria%20muratore.png"},
+  {_id:"c_eusebia",  num:11,nombre:"Susana Gimenez",    cargo:"Pres. Comunal",localidad:"Eusebia y Car.",photo:"susana%20gimenez.png"},
+  {_id:"c_raquel",   num:22,nombre:"Luciana Peter",     cargo:"Pres. Comunal",localidad:"Col. Raquel",   photo:"luciana%20peter.jpeg"},
+  {_id:"c_maua",     num:9, nombre:"Ricardo Garbagnoli",cargo:"Pres. Comunal",localidad:"Mauá",          photo:null},
+  {_id:"c_iturraspe",num:15,nombre:"Dario Picco",       cargo:"Pres. Comunal",localidad:"Col. Iturraspe",photo:null}
 ];
 
-const CUMPLEANOS = [
-  { nombre: "Ariel", dia: 21, mes: 11 },
-  { nombre: "Diego", dia: 2, mes: 5 },
-  { nombre: "Tami", dia: 5, mes: 5 },
-  { nombre: "Franco", dia: 31, mes: 7 },
-  { nombre: "Emilio", dia: 8, mes: 4 },
-  { nombre: "Paula", dia: 16, mes: 5 },
-  { nombre: "Nando (recordar con carino)", dia: 30, mes: 5 },
-  { nombre: "Coca", dia: 5, mes: 12 },
+// ══ RENDER ═══════════════════════════════════════
+const CONGRESALES = [
+  {_id:"cong_ochat",  num:1, nombre:"Ochat Andrea Ivana",   cargo:"CONGRESAL", localidad:"Sunchales",    photo:null, realJersey:true},
+  {_id:"cong_galli",  num:2, nombre:"Galli Jose A.",  cargo:"CONGRESAL", localidad:"Sunchales",    photo:"jose%20galli.png"},
+  {_id:"cong_perezS", num:3, nombre:"Perez Susana",         cargo:"CONGRESAL", localidad:"Frontera",     photo:null},
+  {_id:"cong_perezC", num:4, nombre:"Perez Carlos",         cargo:"CONGRESAL", localidad:"Frontera",     photo:null},
+  {_id:"cong_bazzoni",num:5, nombre:"Bazzoni Amadeo",       cargo:"CONGRESAL", localidad:"Maria Juana",  photo:null},
+  {_id:"cong_tabin",  num:6, nombre:"Tabin Duggo Juan P.",  cargo:"CONGRESAL", localidad:"Susana",       photo:null},
+  {_id:"cong_gallo",  num:7, nombre:"Gallo Veronica J.",    cargo:"CONGRESAL", localidad:"Zenon Pereyra",photo:null},
+  {_id:"cong_peter",  num:8, nombre:"Peter Luciana M.",     cargo:"CONGRESAL", localidad:"Col.Raquel",   photo:"luciana%20peter.jpeg"},
 ];
 
-const PALABRAS_EMERGENCIA = ["me cai","me caí","no puedo respirar","me siento muy mal","me siento mal","no me siento bien","ayuda urgente","auxilio","emergencia","me desmaye","me duele mucho"];
-const WAKE_WORDS = ["florencia","marco","hola","necesito ayuda","me cai","me caí","ayuda","emergencia","tengo un problema"];
-const PALABRAS_CIERRE = ["chau","hasta luego","nos vemos","chau florencia","hasta manana florencia","me voy a dormir florencia","basta florencia"];
+document.getElementById('mesa-wrap').innerHTML    = CONDUCCION.map(p=>mkCard(p,'foil-oro',{noClick:true})).join('');
+document.getElementById('mesa-otros-wrap').innerHTML = MESA_OTROS.map(p=>mkCard(p,'foil-oro',{noClick:true})).join('');
+document.getElementById('plantel-wrap').innerHTML  = PLANTEL.map(p=>mkCard(p,'foil-rojo',{})).join('');
+document.getElementById('comunal-wrap').innerHTML  = COMUNALES.map(p=>mkCard(p,'foil-verde',{noClick:true})).join('');
+document.getElementById('cong-wrap').innerHTML     = CONGRESALES.map(p=>mkCard(p,'foil-azul',{noClick:true})).join('');
 
-// MODOS: en_casa, jugando, seguridad, descanso
-let modoActual = localStorage.getItem("modoCoca") || "en_casa";
-let historial = [];
-let hablando = false;
-let grabando = false;
-let reconocimiento = null;
-let escuchaContinua = false;
-let conversacionActiva = false;
-let modoEspera = false;
-let silenciosConsecutivos = 0;
-const MAX_SILENCIOS = 12;
-
-// AGUA
-let aguaMl = parseInt(localStorage.getItem("coca_agua_hoy") || "0");
-const AGUA_META = 1500;
-
-// SEGURIDAD
-let chequeoInterval = null;
-let esperandoChequeo = false;
-let intentosChequeo = 0;
-let timerChequeo = null;
-
-// ACTIVIDADES (modo jugando)
-let actividadInterval = null;
-let ultimaActividad = 0;
-const SABIAS_QUE = [
-  "Sabes que Las Palmeras son de Santa Fe capital y llevan mas de 60 anos tocando? Empezaron en 1964 y siguen siendo el grupo de cumbia mas querido de la region.",
-  "Sabes que Argentina tiene la libreria mas bonita del mundo? El Ateneo Grand Splendid en Buenos Aires, que era un teatro y lo convirtieron en libreria.",
-  "Sabes que los pulpos tienen tres corazones y la sangre azul? Es verdad, usan cobre en vez de hierro.",
-  "Sabes que el dulce de leche lo inventaron en Argentina? Hay una historia que dice que fue en la estancia de Juan Manuel de Rosas.",
-  "Sabes que Santa Fe fue la primera ciudad en tener agua corriente en Argentina? En 1887 ya tenia agua potable.",
-  "Sabes que el tango nacio en los conventillos del Rio de la Plata a fines del 1800? Al principio era bailado solo por hombres.",
-  "Sabes que la yerba mate tiene mas antioxidantes que el te verde? Y ademas es diuretica, aunque con todo el agua que toman los que toman mate no se nota.",
-  "Sabes que el hornero, el pajaro nacional argentino, construye su nido con barro y paja? Tarda meses en hacerlo y lo usa una sola vez.",
-  "Sabes que Laguna Paiva debe su nombre a una laguna que existia cerca? Con el tiempo se fue secando pero el nombre quedó.",
-  "Sabes que Las Palmeras grabaron mas de 40 discos? Su cancion mas famosa es Palmeras Mix pero tienen cumbia sabrosa de toda la vida.",
-];
-
-const PALMERAS_SONGS = [
-  { cancion: "Palmeras Mix", url: "https://www.youtube.com/results?search_query=Las+Palmeras+Palmeras+Mix" },
-  { cancion: "Cumbia Sabrosa", url: "https://www.youtube.com/results?search_query=Las+Palmeras+Cumbia+Sabrosa" },
-  { cancion: "El Africano", url: "https://www.youtube.com/results?search_query=Las+Palmeras+El+Africano" },
-  { cancion: "La Pollera Colora", url: "https://www.youtube.com/results?search_query=Las+Palmeras+La+Pollera+Colora" },
-];
-
-const ACTIVIDADES = [
-  function(){ proponer("Coca, te tengo un chiste. Queres escucharlo?"); },
-  function(){ 
-    const s = SABIAS_QUE[Math.floor(Math.random() * SABIAS_QUE.length)];
-    proponer(s + " Te parecia?");
-  },
-  function(){ proponer("Coca, como conociste a Nando? Siempre me da curiosidad esa historia."); },
-  function(){ proponer("Coca, que estas mirando en la tele? En el canal 11 de Telefe debe haber algo bueno ahora."); },
-  function(){ proponer("Coca, te cuento algo que paso hoy en Argentina?"); },
-  function(){ proponer("Coca, como era Laguna Paiva cuando eras chica? Habia mucho movimiento?"); },
-  function(){ proponer("Coca, hace un rato que no hablas con los chicos. Los llamamos?"); },
-  function(){ 
-    const p = PALMERAS_SONGS[Math.floor(Math.random() * PALMERAS_SONGS.length)];
-    proponer("Coca, te pongo una de Las Palmeras? " + p.cancion + " es un clasico.");
-  },
-  function(){ proponer("Coca, que hiciste hoy? Contame como estuvo el dia."); },
-  function(){ proponer("Coca, cuanto agua tomaste hoy? Contame para llevar la cuenta juntas."); },
-];
-let idxActividad = 0;
-
-function proponer(msg) {
-  if (hablando || modoActual === "descanso" || protocoloRemediosActivo) return;
-  agregarBurbuja(msg, "asistente");
-  hablar(msg);
-}
-
-// AGUA TRACKER
-function registrarAgua(ml) {
-  aguaMl = Math.min(aguaMl + ml, AGUA_META);
-  localStorage.setItem("coca_agua_hoy", aguaMl.toString());
-  actualizarBarraAgua();
-  enviarASheets({ tipo: "agua", resumen: "Tomo " + ml + "ml. Total: " + aguaMl + "ml de " + AGUA_META + "ml", estado: "", chequeo: "", agua: aguaMl + "ml" });
-}
-
-function actualizarBarraAgua() {
-  const pct = Math.min(100, (aguaMl / AGUA_META) * 100);
-  document.getElementById("agua-fill").style.width = pct + "%";
-  const litros = (aguaMl / 1000).toFixed(1);
-  const vasos = Math.round(aguaMl / 250);
-  document.getElementById("agua-num").textContent = vasos + " / 6 vasos";
-}
-
-// Resetear agua a medianoche
-function chequearResetAgua() {
-  const ultimaFecha = localStorage.getItem("coca_agua_fecha");
-  const hoy = new Date().toLocaleDateString("es-AR");
-  if (ultimaFecha !== hoy) {
-    aguaMl = 0;
-    localStorage.setItem("coca_agua_hoy", "0");
-    localStorage.setItem("coca_agua_fecha", hoy);
-    actualizarBarraAgua();
+// ══ MODAL ════════════════════════════════════════
+const IDX={};
+PLANTEL.forEach(p=>IDX[p._id]=p);
+function openModal(id){
+  const p=IDX[id];if(!p)return;
+  document.getElementById('m-title').textContent=p.centro;
+  document.getElementById('m-sub').textContent=p.eleccion
+    ?`${p.lista||'—'} · Elecciones ${p.eleccion}`:'Referente PS · Elecciones por confirmar';
+  let h=`<div class="m-section"><h4>Secretaría General</h4>
+    <div class="m-person"><div class="m-dot sec"></div><div class="m-pname">${p.nombre}</div><div class="m-prole">Sec. General</div></div></div>`;
+  if(p.comision.length){
+    h+=`<div class="m-section"><h4>Comisión Directiva</h4>`;
+    p.comision.forEach(m=>h+=`<div class="m-person"><div class="m-dot"></div><div class="m-pname">${m}</div></div>`);
+    h+=`</div>`;
+  }else h+=`<div class="m-section"><h4>Comisión Directiva</h4><div class="m-pending">Datos por confirmar</div></div>`;
+  if(p.cong_tit.length){
+    h+=`<div class="m-section"><h4>Congresales Provinciales</h4>`;
+    p.cong_tit.forEach(m=>h+=`<div class="m-person"><div class="m-dot cong"></div><div class="m-pname">${m}</div><div class="m-prole">Titular</div></div>`);
+    p.cong_sup.forEach(m=>h+=`<div class="m-person"><div class="m-dot" style="background:rgba(240,192,64,.4)"></div><div class="m-pname">${m}</div><div class="m-prole">Suplente</div></div>`);
+    h+=`</div>`;
   }
+  document.getElementById('m-body').innerHTML=h;
+  document.getElementById('modalOverlay').classList.add('open');
 }
-
-// CUMPLEANOS
-function chequearCumpleanos() {
-  const hoy = new Date();
-  const dia = hoy.getDate();
-  const mes = hoy.getMonth() + 1;
-  CUMPLEANOS.forEach(function(c) {
-    if (c.dia === dia && c.mes === mes) {
-      const msg = "Coca, hoy es el cumpleanos de " + c.nombre + ". No te olvides de saludar!";
-      setTimeout(function() { proponer(msg); }, 5000);
-    }
-    // Avisar 2 dias antes
-    const fecha = new Date();
-    fecha.setDate(fecha.getDate() + 2);
-    if (c.dia === fecha.getDate() && c.mes === (fecha.getMonth() + 1)) {
-      const msg = "Coca, en dos dias es el cumpleanos de " + c.nombre + ". Por si queres preparar algo o llamarlo.";
-      setTimeout(function() { proponer(msg); }, 8000);
-    }
-  });
-}
-
-// MODO
-function aplicarModo(modo) {
-  modoActual = modo;
-  const badges = { en_casa: "En Casa", jugando: "Jugando", seguridad: "Seguridad", descanso: "Descanso" };
-  document.getElementById("modo-badge").textContent = badges[modo] || "En Casa";
-
-  // Detener intervalos anteriores
-  if (chequeoInterval) { clearInterval(chequeoInterval); chequeoInterval = null; }
-  if (actividadInterval) { clearInterval(actividadInterval); actividadInterval = null; }
-  if (timerChequeo) { clearTimeout(timerChequeo); timerChequeo = null; }
-
-  if (modo === "seguridad") {
-    chequeoInterval = setInterval(hacerChequeo, 20 * 60 * 1000);
-  }
-  if (modo === "jugando") {
-    // Primera actividad a los 2 minutos, luego cada 30
-    setTimeout(function() {
-      if (modoActual === "jugando" && !hablando && !modoEspera) {
-        ACTIVIDADES[idxActividad % ACTIVIDADES.length]();
-        idxActividad++;
-      }
-    }, 2 * 60 * 1000);
-    actividadInterval = setInterval(function() {
-      if (modoActual === "jugando" && !hablando && !modoEspera) {
-        ACTIVIDADES[idxActividad % ACTIVIDADES.length]();
-        idxActividad++;
-      }
-    }, 30 * 60 * 1000);
-  }
-}
-
-// CHEQUEO SEGURIDAD
-function hacerChequeo() {
-  intentosChequeo = 0;
-  esperandoChequeo = true;
-  preguntarChequeo();
-}
-
-function preguntarChequeo() {
-  const msgs = ["Coca, como estas? Solo quiero saber que estas bien.", "Coca, aca Florencia. Contame como estas.", "Coca, necesito saber como estas para no preocuparme."];
-  const msg = msgs[Math.min(intentosChequeo, 2)];
-  agregarBurbuja(msg, "sistema");
-  hablar(msg);
-  timerChequeo = setTimeout(function() {
-    if (esperandoChequeo) {
-      intentosChequeo++;
-      if (intentosChequeo < 2) { preguntarChequeo(); }
-      else { activarEmergenciaChequeo(); }
-    }
-  }, 2 * 60 * 1000);
-}
-
-function respuestaChequeoRecibida() {
-  esperandoChequeo = false;
-  intentosChequeo = 0;
-  if (timerChequeo) clearTimeout(timerChequeo);
-  registrarChequeoSheets("OK - respondio");
-}
-
-function activarEmergenciaChequeo() {
-  agregarBurbuja("Coca no respondio. Avisando a la familia.", "sistema");
-  hablar("No pude comunicarme con Coca. Aviso a la familia.");
-  registrarChequeoSheets("ALERTA - no respondio");
-  const msg = encodeURIComponent("ALERTA MARCOS: Coca no respondio al chequeo de " + new Date().toLocaleTimeString("es-AR") + ". Verificar urgente.");
-  CONTACTOS.forEach(function(c) { window.open("https://wa.me/" + c.tel + "?text=" + msg, "_blank"); });
-  setTimeout(function() { llamarContacto(0); }, 3000);
-}
-
-// INIT
-function arrancar() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const buf = ctx.createBuffer(1,1,22050);
-    const src = ctx.createBufferSource();
-    src.buffer = buf; src.connect(ctx.destination); src.start(0);
-  } catch(e) {}
-
-  document.getElementById("pantalla-inicio").style.display = "none";
-  document.getElementById("app").style.display = "flex";
-
-  chequearResetAgua();
-  actualizarBarraAgua();
-  renderFamilia();
-  renderPanelNoche();
-  mantenerPantallaEncendida();
-  chequearCumpleanos();
-
-  // Leer modo desde panel familiar
-  const modoGuardado = localStorage.getItem("modoCoca") || "en_casa";
-  aplicarModo(modoGuardado);
-
-  window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); };
-
-  // Iniciar microfono automaticamente y saludar
-  setTimeout(function() {
-    escuchaContinua = true;
-    conversacionActiva = true;
-    iniciarEscucha();
-    setTimeout(function() {
-      const saludo = "Hola Coca, soy Florencia. Que lindo escucharte. Como estas hoy?";
-      agregarBurbuja(saludo, "asistente");
-      hablar(saludo);
-    }, 1500);
-  }, 800);
-
-  // Monitorear cambios de modo desde panel
-  // activarModoSeguridad = aplicarModo("seguridad")
-  setInterval(function() {
-    const modo = localStorage.getItem("modoCoca") || "en_casa";
-    if (modo !== modoActual) aplicarModo(modo);
-  }, 5000);
-
-  // Agua y bano proactivo (solo en modos activos)
-  setInterval(function() {
-    if (modoActual === "descanso" || hablando) return;
-    const ahora = new Date();
-    const min = ahora.getMinutes();
-    const h = ahora.getHours();
-    // Bano cada 90 min en horas activas
-    if (min === 30 && [9,11,13,15,17,19].includes(h)) {
-      proponer("Coca, hace un rato que estas sentada. Aprovecha e ida al bano ahora, asi despues estas mas tranquila.");
-    }
-    // Agua cada 2 horas
-    if (min === 0 && [9,11,13,15,17,19].includes(h) && aguaMl < AGUA_META) {
-      const vasosTomdos = Math.round(aguaMl / 250);
-      const vasosFaltan = 6 - vasosTomdos;
-      const msgs = [
-        "Coca, cuantos vasos de agua tomaste hoy? La meta son 6 vasos, vamos llevando la cuenta juntos.",
-        "Che Coca, llevamos " + vasosTomdos + " vasos de agua hoy. Te faltan " + vasosFaltan + " para llegar. Un vasito mas?",
-        "Coca, un vaso de agua no te manda al bano de una - dale, son solo " + vasosFaltan + " vasos mas para llegar a la meta."
-      ];
-      proponer(msgs[Math.floor(Math.random() * msgs.length)]);
-    }
-  }, 30000);
-
-  // Panel llamada 20hs y saludo 11am
-  let saludoManianaDado = false;
-  setInterval(function() {
-    const ahora = new Date();
-    const h = ahora.getHours();
-    const m = ahora.getMinutes();
-    const s = ahora.getSeconds();
-    
-    if (h === 20 && m === 0 && s < 15) mostrarPanelNoche();
-    
-    // Saludo 11am - solo una vez por dia
-    if (h === 11 && m === 0 && s < 15 && !saludoManianaDado && modoActual !== "descanso") {
-      saludoManianaDado = true;
-      setTimeout(function() {
-        const sal = "Hola Coca, soy Florencia. Como amaneciste hoy?";
-        agregarBurbuja(sal, "asistente");
-        hablar(sal);
-      }, 1000);
-    }
-    // Reset saludo a medianoche
-    if (h === 0 && m === 0) saludoManianaDado = false;
-    
-  }, 10000);
-}
-
-// FAMILIA
-function renderFamilia() {
-  const g = document.getElementById("familia-grid");
-  CONTACTOS.forEach(function(c, i) {
-    const btn = document.createElement("button");
-    btn.className = "btn-familiar";
-    btn.textContent = c.nombre;
-    btn.onclick = function() {
-      const msg = "Bueno, te conecto con " + c.nombre + " ahora.";
-      agregarBurbuja(msg, "asistente"); hablar(msg);
-      setTimeout(function() { llamarContacto(i); }, 1200);
-    };
-    g.appendChild(btn);
-  });
-}
-
-function llamarContacto(i) { window.location.href = "tel:+" + CONTACTOS[i].tel; }
-
-// PANEL 20HS
-function renderPanelNoche() {
-  const g = document.getElementById("btns-llamada-noche");
-  CONTACTOS.forEach(function(c, i) {
-    const btn = document.createElement("button");
-    btn.className = "btn-llamar-noche";
-    btn.textContent = "Llamar a " + c.nombre;
-    btn.onclick = function() { cerrarPanelNoche(); llamarContacto(i); };
-    g.appendChild(btn);
-  });
-  const no = document.createElement("button");
-  no.className = "btn-no-llamar";
-  no.textContent = "Hoy no, gracias";
-  no.onclick = function() {
-    cerrarPanelNoche();
-    const msg = "Bueno, pero acordate que a los chicos les hace bien saber de vos. Manana los llamamos.";
-    agregarBurbuja(msg, "asistente"); hablar(msg);
-  };
-  g.appendChild(no);
-}
-
-function mostrarPanelNoche() {
-  if (document.getElementById("panel-llamada").classList.contains("show")) return;
-  // No mostrar lunes y viernes (Ariel da clases)
-  const dia = new Date().getDay(); // 1=lunes, 5=viernes
-  // Determinar sugerencia segun ultima llamada
-  const sugerencia = "Coca, a quien queres llamar hoy?";
-  document.getElementById("panel-llamada-sugerencia").textContent = sugerencia;
-  document.getElementById("panel-llamada").classList.add("show");
-  hablar("Son las 8 de la noche Coca. Hablaste con alguno de los chicos hoy?");
-}
-function cerrarPanelNoche() { document.getElementById("panel-llamada").classList.remove("show"); }
-
-// CHAT
-async function procesarMensaje(texto) {
-  if (!texto.trim()) return;
-  if (esperandoChequeo) respuestaChequeoRecibida();
-
-  const t = texto.toLowerCase();
-  
-  // Detectar rechazo de remedios
-  if (t.includes("no voy a tomar") || t.includes("no quiero tomar") || t.includes("no tomo")) {
-    if (t.includes("remedio") || t.includes("pastilla") || t.includes("medicamento")) {
-      remediosRechazados = true;
-      protocoloRemediosActivo = true;
-    }
-  }
-  // Detectar que acepto los remedios
-  if (protocoloRemediosActivo && (t.includes("okay") || t.includes("voy a tomar") || t.includes("bueno") || t.includes("dale"))) {
-    if (t.includes("pastilla") || t.includes("remedio") || t.includes("okay") || t.includes("dale")) {
-      protocoloRemediosActivo = false;
-      remediosRechazados = false;
-    }
-  }
-  // Emergencia grave - alerta inmediata
-  const emergenciaGrave = ["me cai","me caí","no puedo respirar","ayuda urgente","auxilio","emergencia","me desmaye"];
-  if (emergenciaGrave.some(function(p){ return t.includes(p); })) {
-    agregarBurbuja(texto, "coca"); setTimeout(mostrarAlerta, 500); return;
-  }
-  // Malestar - indagar Y avisar a familia silenciosamente
-  const malestarLeve = ["me siento mal","no me siento bien","me duele mucho","me siento muy mal"];
-  if (malestarLeve.some(function(p){ return t.includes(p); })) {
-    if (ultimoMalestar && (Date.now() - ultimoMalestar < 3 * 60 * 1000)) {
-      // Segunda vez en 3 minutos - activar alerta completa
-      agregarBurbuja(texto, "coca"); setTimeout(mostrarAlerta, 500); return;
-    }
-    ultimoMalestar = Date.now();
-    // Avisar a familia por WhatsApp silenciosamente
-    const msgFam = encodeURIComponent("Florencia avisa: Coca dijo que no se siente bien. Por favor verificar como esta.");
-    setTimeout(function() {
-      CONTACTOS.slice(0,3).forEach(function(c) {
-        window.open("https://wa.me/" + c.tel + "?text=" + msgFam, "_blank");
-      });
-    }, 2000);
-    // Registrar en sheets
-    enviarASheets({ tipo: "malestar", resumen: "Coca dijo: " + texto, estado: "MALESTAR - familia avisada", chequeo: new Date().toLocaleString("es-AR"), agua: (aguaMl/1000).toFixed(1) + "L" });
-  }
-
-  // Detectar reporte de agua
-  const litrosMatch = texto.match(/(\d+[\.,]?\d*)\s*(litro|vaso|vasito|ml|mililitro)/i);
-  if (litrosMatch) {
-    let cantidad = parseFloat(litrosMatch[1].replace(",", "."));
-    if (litrosMatch[2].toLowerCase().includes("vaso")) cantidad = 200;
-    else if (litrosMatch[2].toLowerCase().includes("ml") || litrosMatch[2].toLowerCase().includes("mili")) cantidad = cantidad;
-    else cantidad = cantidad * 1000; // litros a ml
-    registrarAgua(Math.round(cantidad));
-  }
-
-  agregarBurbuja(texto, "coca");
-  mostrarPensando();
-
-  const ahora = new Date();
-  const hora = ahora.toLocaleTimeString("es-AR", {hour:"2-digit", minute:"2-digit"});
-  const fecha = ahora.toLocaleDateString("es-AR", {weekday:"long", day:"numeric", month:"long"});
-  const diaNum = ahora.getDay();
-  const arielOcupado = (diaNum === 1 || diaNum === 5) ? " (IMPORTANTE: hoy es lunes o viernes, Ariel da clases a la noche, no sugerir llamarlo)" : "";
-
-  let infoBase = "[Son las " + hora + " del " + fecha + arielOcupado + ". Modo actual: " + modoActual + ". Agua tomada hoy: " + (aguaMl/1000).toFixed(1) + "L de 1.5L meta.";
-
-  const tl = t;
-  const pideCLima = tl.includes("clima") || tl.includes("temperatura") || tl.includes("calor") || 
-    tl.includes("frio") || tl.includes("fría") || tl.includes("lluev") || tl.includes("ponerse") || 
-    tl.includes("ponerme") || tl.includes("salir") || tl.includes("afuera") || tl.includes("pronostico") || 
-    tl.includes("pronóstico") || tl.includes("mañana") || tl.includes("tiempo") || tl.includes("paraguas") ||
-    tl.includes("abrigo") || tl.includes("tapado") || tl.includes("grados") || historial.length === 0;
-  const pideNoticias = tl.includes("noticia") || tl.includes("novedad") || tl.includes("que paso") || tl.includes("contame") || tl.includes("paiva") || tl.includes("recreo") || tl.includes("radio") || tl.includes("power max") || tl.includes("pasando") || tl.includes("zona");
-  const pideTele = tl.includes("tele") || tl.includes("telefe") || tl.includes("canal") || tl.includes("ver") || tl.includes("mirar") || tl.includes("programa") || tl.includes("novela") || tl.includes("pelicula") || tl.includes("flow");
-  const pideHoro = tl.includes("horoscopo") || tl.includes("horóscopo") || tl.includes("signo") || 
-    tl.includes("sagitario") || tl.includes("astro") || tl.includes("planeta") || tl.includes("estrella");
-
-  if (pideCLima) {
-    try { const c = await obtenerClima(tl.includes("pronostico") || tl.includes("semana")); infoBase += " Clima Laguna Paiva: " + c + "."; } catch(e) {}
-  }
-  if (pideNoticias) {
-    try { const n = await obtenerNoticias(); infoBase += " NOTICIAS REALES (usaas): " + n; } catch(e) {}
-  }
-  if (pideHoro) {
-    try { const h = await obtenerHoroscopo(); infoBase += " " + h; } catch(e) {}
-  }
-
-  if (pideTele) {
-    try { const prog = await obtenerProgramacionTelefe(); infoBase += " PROGRAMACION TELEFE AHORA: " + prog; } catch(e) {}
-  }
-
-  const infoFamiliar = localStorage.getItem("coca_estado");
-  if (infoFamiliar) infoBase += " Estado segun familia: " + infoFamiliar + ".";
-
-  const memoria = cargarMemoria();
-  if (memoria) infoBase += " [CONTEXTO PREVIO - usar solo como referencia, NUNCA repetir textualmente ni afirmar como hecho cierto lo que dice aqui: " + memoria + "]";
-
-  infoBase += "]";
-  const contexto = infoBase + "\n" + texto;
-  historial.push({ role: "user", content: contexto });
-
-  // Sugerencia proactiva cada 6 intercambios
-  if (historial.length % 12 === 0 && modoActual !== "descanso") {
-    const sugs = ["[Sugerencia: ofrece una noticia de Paiva o preguntale algo de su pasado]", "[Sugerencia: preguntale sobre Lali o Tami que vive al lado]", "[Sugerencia: propone una cancion de tango o cumbia]"];
-    historial[historial.length-1].content += "\n" + sugs[Math.floor(Math.random() * sugs.length)];
-  }
-
-  try {
-    const res = await fetch(CLAUDE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": CLAUDE_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 220, system: SYSTEM, messages: historial })
-    });
-    const data = await res.json();
-    quitarPensando();
-    if (data.error) throw new Error(data.error.message);
-    const respuesta = data.content[0].text || "No te escuche bien. Podés repetir?";
-    historial.push({ role: "assistant", content: respuesta });
-
-    // Detectar musica, contactar o respuesta normal
-    const musicaMatch = respuesta.match(/MUSICA:([^:]+):([^\n]+)/i);
-    const contactarMatch = respuesta.match(/CONTACTAR:(\w+):(whatsapp|llamar)/i);
-    
-    if (musicaMatch) {
-      const artista = musicaMatch[1].trim();
-      const cancion = musicaMatch[2].trim();
-      const limpio = respuesta.replace(/MUSICA:[^:]+:[^\n]+/i, "").trim();
-      if (limpio) { agregarBurbuja(limpio, "asistente"); hablar(limpio); }
-      setTimeout(function() {
-        window.open("https://www.youtube.com/results?search_query=" + encodeURIComponent(artista + " " + cancion), "_blank");
-      }, 1500);
-    } else if (contactarMatch) {
-      const ci = CONTACTOS.findIndex(function(c){ return c.nombre.toLowerCase() === contactarMatch[1].toLowerCase(); });
-      const limpio = respuesta.replace(/CONTACTAR:\w+:\w+/i, "").trim();
-      if (limpio) { agregarBurbuja(limpio, "asistente"); hablar(limpio); }
-      if (ci >= 0) setTimeout(function(){ llamarContacto(ci); }, 1200);
-    } else {
-      agregarBurbuja(respuesta, "asistente");
-      hablar(respuesta);
-    }
-
-    // Guardar memoria cada 4 intercambios
-    intercambiosGuardado++;
-    if (intercambiosGuardado >= 4) { intercambiosGuardado = 0; actualizarMemoria(); }
-
-  } catch(e) {
-    quitarPensando();
-    // Error graceful - no decir "tuve un problema", intentar responder algo util
-    const respuestasError = [
-      "Perdon Coca, no te escuche bien. Podés repetir?",
-      "Coca, se me fue un momento. Me repetis?",
-      "No te entendi bien, Coca. De nuevo?",
-    ];
-    const err = respuestasError[Math.floor(Math.random() * respuestasError.length)];
-    agregarBurbuja(err, "asistente"); hablar(err);
-  }
-}
-
-let intercambiosGuardado = 0;
-let uiEscuchandoActivo = false;
-
-function agregarBurbuja(texto, tipo) {
-  const chat = document.getElementById("chat");
-  const b = document.createElement("div");
-  b.className = "burbuja " + tipo;
-  b.textContent = texto;
-  chat.appendChild(b);
-  chat.scrollTop = chat.scrollHeight;
-}
-function mostrarPensando() {
-  const chat = document.getElementById("chat");
-  const d = document.createElement("div");
-  d.className = "pensando"; d.id = "pensando";
-  d.innerHTML = "<div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div>";
-  chat.appendChild(d); chat.scrollTop = chat.scrollHeight;
-}
-function quitarPensando() { const t = document.getElementById("pensando"); if(t) t.remove(); }
-
-// CLIMA
-async function obtenerClima(completo) {
-  try {
-    const lat = -31.3167, lon = -60.6667;
-    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + 
-      "&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,relativehumidity_2m" +
-      "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum" +
-      "&timezone=America%2FArgentina%2FBuenos_Aires&forecast_days=3";
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    if (!data.current) throw new Error("No current data");
-    const temp = Math.round(data.current.temperature_2m);
-    const sensacion = Math.round(data.current.apparent_temperature);
-    const humedad = data.current.relativehumidity_2m;
-    const desc = {
-      0:"cielo despejado", 1:"mayormente despejado", 2:"parcialmente nublado", 3:"nublado",
-      45:"niebla", 51:"llovizna leve", 61:"lluvia leve", 63:"lluvia", 65:"lluvia intensa",
-      71:"nieve", 80:"lluvias", 95:"tormenta"
-    };
-    const d = desc[data.current.weathercode] || "variable";
-    if (!completo) {
-      return "En Laguna Paiva ahora: " + temp + " grados, " + d + ", sensacion termica " + sensacion + " grados, humedad " + humedad + "%";
-    }
-    const dias = ["Hoy","Manana","Pasado manana"];
-    let p = "Ahora en Laguna Paiva: " + temp + " grados, " + d + ". ";
-    if (data.daily && data.daily.time) {
-      data.daily.time.forEach(function(f,i) {
-        if(i>=3) return;
-        const min = Math.round(data.daily.temperature_2m_min[i]);
-        const max = Math.round(data.daily.temperature_2m_max[i]);
-        const lluvia = data.daily.precipitation_sum[i] > 0 ? ", lluvia " + data.daily.precipitation_sum[i] + "mm" : "";
-        p += dias[i] + ": minima " + min + " maxima " + max + " grados" + lluvia + ". ";
-      });
-    }
-    return p;
-  } catch(e) {
-    return "No pude obtener el clima en este momento";
-  }
-}
-
-// NOTICIAS via Claude web search
-async function obtenerNoticias() {
-  const hoy = new Date().toLocaleDateString("es-AR");
-  const res = await fetch(CLAUDE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": CLAUDE_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 300,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
-      messages: [{ role: "user", content: "Busca 3 noticias de Argentina de hoy " + hoy + ". Temas de interes general: economia, deportes, espectaculos, tiempo, cultura. Sin violencia ni muertes. Solo titulares reales separados por |." }]
-    })
-  });
-  const data = await res.json();
-  if (data.content) {
-    const texto = data.content.filter(function(b){ return b.type === "text"; }).map(function(b){ return b.text; }).join(" ");
-    if (texto && texto.length > 20) return texto;
-  }
-  return "No hay noticias disponibles ahora.";
-}
-
-// PROGRAMACION TELEFE
-async function obtenerProgramacionTelefe() {
-  try {
-    const ahora = new Date();
-    const hora = ahora.getHours();
-    // Programacion aproximada por franja horaria
-    const programas = {
-      6: "Buen Telefe (matutino)",
-      7: "Buen Telefe (matutino)",
-      8: "Buen Telefe (matutino)",
-      9: "A la Barbarossa con Georgina Barbarossa",
-      10: "A la Barbarossa con Georgina Barbarossa",
-      11: "A la Barbarossa con Georgina Barbarossa",
-      12: "Ariel en su Salsa (cocina) y El Noticiero de la Gente",
-      13: "El Noticiero de la Gente",
-      14: "Corta por Lozano con Vero Lozano",
-      15: "Corta por Lozano con Vero Lozano",
-      16: "Todas las Flores - novela turca muy buena, vale la pena",
-      17: "Bahar - otra novela turca muy linda",
-      18: "Bahar terminando y despues el noticiero",
-      19: "Noticias Telefe",
-      20: "Pasapalabra (juego de palabras, muy entretenido)",
-      21: "Gran Hermano Generacion Dorada o MasterChef Celebrity",
-      22: "Gran Hermano Generacion Dorada o MasterChef Celebrity",
-      23: "PH Podemos Hablar o programacion especial",
-    };
-    const prog = programas[hora] || "programacion variada en Telefe";
-    return "Ahora en Telefe (canal 101 en Flow): " + prog + ". Telefe es el canal favorito de Coca.";
-  } catch(e) {
-    return "Telefe canal 101 en Flow - con novelas turcas, Pasapalabra y sus programas favoritos.";
-  }
-}
-
-// HOROSCOPO
-async function obtenerHoroscopo() {
-  // Horoscopo de Sagitario (Coca nacio el 5 de diciembre)
-  const frasesSagitario = [
-    "Sagitario: hoy los astros te piden que disfrutes de los momentos simples. Una charla con alguien querido puede hacerte muy bien.",
-    "Sagitario: Venus te favorece hoy. Es un buen dia para conectar con la familia y recordar momentos lindos.",
-    "Sagitario: tu energia esta alta hoy. Los planetas indican que una sorpresa agradable puede llegar de parte de alguien cercano.",
-    "Sagitario: Jupiter, tu planeta, te da optimismo hoy. Es buen momento para contar algo que tengas guardado.",
-    "Sagitario: los astros favorecen la tranquilidad y el descanso. Pero tambien te invitan a hacer algo diferente a lo habitual.",
-    "Sagitario: hoy es un dia para valorar lo que tenes. La familia y los recuerdos son tu mayor tesoro.",
-    "Sagitario: el universo te manda una dosis de alegria hoy. Comparte una sonrisa o un chiste con alguien que quieras."
-  ];
-  try {
-    const res = await fetch("https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=Sagittarius&day=TODAY");
-    if (res.ok) {
-      const data = await res.json();
-      if (data.data && data.data.horoscope_data) {
-        return "Horoscopo de Sagitario de hoy: " + data.data.horoscope_data;
-      }
-    }
-  } catch(e) {}
-  // Fallback con frases propias
-  const dia = new Date().getDay();
-  return frasesSagitario[dia % frasesSagitario.length];
-}
-
-// VOZ
-function limpiarEmojis(texto) {
-  return texto.replace(/[\u{1F000}-\u{1FFFF}]/gu,"").replace(/[\u{2600}-\u{27BF}]/gu,"").replace(/\s+/g," ").trim();
-}
-function elegirVozFemenina() {
-  const voces = window.speechSynthesis.getVoices();
-  // Buscar voz femenina en español
-  const femeninas = ["female","mujer","woman","monica","paulina","lucia","carmen","rosa","maria","helena","ines","pilar","soledad","gabriela","natalia","valentina","laura","sofia"];
-  // Primero buscar femenina en español
-  let voz = voces.find(function(v) {
-    const n = v.name.toLowerCase();
-    return v.lang.toLowerCase().startsWith("es") && femeninas.some(function(f){ return n.includes(f); });
-  });
-  // Si no, cualquier voz en español
-  if (!voz) voz = voces.find(function(v){ return v.lang.toLowerCase().startsWith("es"); });
-  // Si no, primera disponible
-  if (!voz && voces.length > 0) voz = voces[0];
-  return voz;
-}
-
-function hablar(texto) {
-  texto = limpiarEmojis(texto);
-  if (!("speechSynthesis" in window)) return;
-  hablando = true;
-  uiEscuchandoActivo = false;
-  escuchaContinua = false; // Detener escucha mientras habla
-  if (grabando && reconocimiento) { 
-    try { reconocimiento.abort(); } catch(e) {}
-    try { reconocimiento.stop(); } catch(e) {}
-    grabando = false;
-  }
-  document.getElementById("btn-mic").style.opacity = "0.4";
-  document.getElementById("btn-mic").style.pointerEvents = "none";
-  
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(texto);
-  u.lang = "es-AR";
-  u.rate = 0.88;
-  u.pitch = 1.15; // Mas agudo para voz femenina
-  u.volume = 1;
-  
-  const voz = elegirVozFemenina();
-  if (voz) u.voice = voz;
-  
-  u.onend = function() {
-    // Esperar 1.5 segundos despues de hablar antes de reactivar el mic
-    // para evitar que capture el eco de la propia voz
-    setTimeout(function() {
-      hablando = false;
-      escuchaContinua = true; // Reactivar escucha
-      document.getElementById("btn-mic").style.opacity = "1";
-      document.getElementById("btn-mic").style.pointerEvents = "auto";
-      if (!modoEspera) setTimeout(iniciarEscucha, 800);
-      else setTimeout(iniciarEscucha, 1500);
-    }, 1500);
-  };
-  
-  u.onerror = function() {
-    hablando = false;
-    document.getElementById("btn-mic").style.opacity = "1";
-    document.getElementById("btn-mic").style.pointerEvents = "auto";
-  };
-  
-  window.speechSynthesis.speak(u);
-}
-
-// MIC
-function toggleMic() {
-  if (hablando) { window.speechSynthesis.cancel(); hablando = false; document.getElementById("btn-mic").style.opacity = "1"; document.getElementById("btn-mic").style.pointerEvents = "auto"; }
-  if (grabando) { escuchaContinua = false; modoEspera = false; uiEscuchandoActivo = false; if (reconocimiento) reconocimiento.stop(); setUIDefault(); return; }
-  silenciosConsecutivos = 0; modoEspera = false; conversacionActiva = true; escuchaContinua = true;
-  iniciarEscucha();
-}
-
-function setUIDefault() {
-  uiEscuchandoActivo = false;
-  document.getElementById("btn-mic").classList.remove("escuchando","espera");
-  document.getElementById("mic-icon").textContent = "🎤";
-  document.getElementById("mic-dot").classList.remove("activo","espera");
-  document.getElementById("mic-texto").textContent = "Toca el microfono para hablar";
-  document.getElementById("mic-hint").textContent = "Toca para hablar";
-}
-
-function iniciarEscucha() {
-  if (hablando) return;
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
-  reconocimiento = new SR();
-  reconocimiento.lang = "es-AR"; reconocimiento.interimResults = false; reconocimiento.continuous = true; reconocimiento.maxAlternatives = 1;
-
-  reconocimiento.onstart = function() {
-    grabando = true;
-    if (modoEspera) {
-      document.getElementById("btn-mic").classList.remove("escuchando");
-      document.getElementById("btn-mic").classList.add("espera");
-      document.getElementById("mic-icon").textContent = "👂";
-      document.getElementById("mic-dot").classList.remove("activo");
-      document.getElementById("mic-dot").classList.add("espera");
-      document.getElementById("mic-texto").textContent = "Decí Florencia para seguir charlando";
-      document.getElementById("mic-hint").textContent = "O toca el boton";
-    } else {
-      // Solo actualizar UI la primera vez, no en cada reinicio
-      if (!uiEscuchandoActivo) {
-        uiEscuchandoActivo = true;
-        document.getElementById("btn-mic").classList.add("escuchando");
-        document.getElementById("btn-mic").classList.remove("espera");
-        document.getElementById("mic-icon").textContent = "⏹";
-        document.getElementById("mic-dot").classList.add("activo");
-        document.getElementById("mic-dot").classList.remove("espera");
-        document.getElementById("mic-texto").textContent = "Escuchando...";
-        document.getElementById("mic-hint").textContent = "Toca para pausar";
-      }
-    }
-  };
-
-  reconocimiento.onresult = function(e) {
-    // Resetear silencios con cualquier deteccion de voz
-    silenciosConsecutivos = 0;
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (!e.results[i].isFinal) continue;
-      const texto = e.results[i][0].transcript.trim();
-      if (!texto) continue;
-      const tl = texto.toLowerCase();
-
-      if (modoEspera) {
-        if (WAKE_WORDS.some(function(w){ return tl.includes(w); })) {
-          modoEspera = false; silenciosConsecutivos = 0; conversacionActiva = true;
-          document.getElementById("btn-mic").classList.remove("espera"); document.getElementById("btn-mic").classList.add("escuchando");
-          document.getElementById("mic-icon").textContent = "⏹"; document.getElementById("mic-dot").classList.remove("espera"); document.getElementById("mic-dot").classList.add("activo");
-          document.getElementById("mic-texto").textContent = "Escuchando...";
-          if (PALABRAS_EMERGENCIA.some(function(p){ return tl.includes(p); })) { mostrarAlerta(); return; }
-          const sal = "Hola Coca, aca estoy. Que necesitas?"; agregarBurbuja(sal, "asistente"); hablar(sal);
-        }
-        return;
-      }
-      if (PALABRAS_CIERRE.some(function(w){ return tl.includes(w); })) { terminarConversacion(); return; }
-      if (PALABRAS_EMERGENCIA.some(function(p){ return tl.includes(p); })) { mostrarAlerta(); return; }
-      silenciosConsecutivos = 0;
-      procesarMensaje(texto);
-    }
-  };
-
-  reconocimiento.onend = function() {
-    grabando = false;
-    if (!escuchaContinua) { 
-      uiEscuchandoActivo = false;
-      setUIDefault(); 
-      return; 
-    }
-    // No cambiar UI si vamos a reiniciar enseguida
-    if (!hablando) {
-      setTimeout(iniciarEscucha, modoEspera ? 2000 : 1500);
-    }
-  };
-
-  reconocimiento.onerror = function(e) {
-    grabando = false;
-    if (e.error === "no-speech") {
-      if (!modoEspera && conversacionActiva) {
-        silenciosConsecutivos++;
-        if (silenciosConsecutivos >= MAX_SILENCIOS) { verificarFin(); return; }
-      }
-      if (escuchaContinua && !hablando) setTimeout(iniciarEscucha, 1500);
-      return;
-    }
-    if (e.error !== "aborted" && escuchaContinua && !hablando) setTimeout(iniciarEscucha, 2000);
-  };
-
-  reconocimiento.start();
-}
-
-function verificarFin() {
-  silenciosConsecutivos = 0;
-  const msg = "Coca, seguimos charlando o preferes descansar?";
-  agregarBurbuja(msg, "asistente"); hablar(msg);
-  setTimeout(function() { if (conversacionActiva && silenciosConsecutivos >= 6) terminarConversacion(); }, 120000);
-}
-
-let remediosRechazados = false;
-let protocoloRemediosActivo = false;
-let ultimoMalestar = 0;
-
-function terminarConversacion() {
-  conversacionActiva = false; modoEspera = true;
-  const msg = "Bueno Coca, fue un placer. Cuando me necesites decis Florencia y aca estoy.";
-  agregarBurbuja(msg, "asistente"); hablar(msg);
-  actualizarMemoria();
-  
-  // Si rechazo los remedios, avisar a Ariel
-  if (remediosRechazados) {
-    setTimeout(function() {
-      const msgWsp = encodeURIComponent("Florencia avisa: Coca se nego a tomar los remedios esta noche. Por favor verificar.");
-      window.open("https://wa.me/5493425330825?text=" + msgWsp, "_blank");
-      remediosRechazados = false;
-    }, 2000);
-  }
-}
-
-// MEMORIA
-function guardarMemoria(resumen) {
-  const m = JSON.parse(localStorage.getItem("coca_memoria") || "{}");
-  m.resumen = resumen; m.fecha = new Date().toLocaleDateString("es-AR"); m.hora = new Date().toLocaleTimeString("es-AR", {hour:"2-digit",minute:"2-digit"});
-  localStorage.setItem("coca_memoria", JSON.stringify(m));
-}
-function cargarMemoria() {
-  try {
-    const m = JSON.parse(localStorage.getItem("coca_memoria") || "{}");
-    if (!m.resumen) return "";
-    return "(" + m.fecha + ": " + m.resumen + ")";
-  } catch(e) { return ""; }
-}
-async function actualizarMemoria() {
-  if (historial.length < 4) return;
-  try {
-    const ultimos = historial.slice(-6).map(function(m){ return (m.role === "user" ? "Coca: " : "Florencia: ") + m.content.substring(0,150); }).join("\n");
-    const res = await fetch(CLAUDE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": CLAUDE_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 150, messages: [{ role: "user", content: "Resume en 2 oraciones los hechos concretos de esta conversacion con Coca (planes, estado de animo, que conto, agua tomada):\n" + ultimos + "\nSolo hechos, sin comentarios." }] })
-    });
-    const data = await res.json();
-    if (data.content && data.content[0]) {
-      const r = data.content[0].text;
-      guardarMemoria(r);
-      enviarASheets({ tipo: "resumen_conversacion", resumen: r, estado: "", chequeo: "", agua: (aguaMl/1000).toFixed(1) + "L" });
-    }
-  } catch(e) {}
-}
-
-// SHEETS
-async function enviarASheets(datos) { try { await fetch(SHEETS_URL, { method: "POST", body: JSON.stringify(datos) }); } catch(e) {} }
-function registrarChequeoSheets(estado) { enviarASheets({ tipo: "chequeo_seguridad", resumen: "", estado: estado, chequeo: new Date().toLocaleString("es-AR"), agua: (aguaMl/1000).toFixed(1) + "L" }); }
-
-// ALERTA
-function mostrarAlerta() {
-  document.getElementById("alerta").classList.add("show");
-  hablar("Coca, avise a tu familia que necesitas ayuda.");
-  const msg = encodeURIComponent("ALERTA MARCOS: Coca necesita ayuda urgente. Llamala ya.");
-  CONTACTOS.forEach(function(c){ window.open("https://wa.me/" + c.tel + "?text=" + msg, "_blank"); });
-}
-function cerrarAlerta() { document.getElementById("alerta").classList.remove("show"); }
-
-// WAKE LOCK
-async function mantenerPantallaEncendida() {
-  if ("wakeLock" in navigator) {
-    try {
-      await navigator.wakeLock.request("screen");
-      document.addEventListener("visibilitychange", async function() { if (document.visibilityState === "visible") { try { await navigator.wakeLock.request("screen"); } catch(e) {} } });
-    } catch(e) {}
-  }
-}
-
-const SYSTEM = `Tu nombre es Florencia. Sos mujer. Hablas con Coca con el amor y la complicidad de una tia querida de toda la vida, sin decirle tia  -  simplemente sos alguien que la conoce profundamente, que la quiere, que la reta con carino y que la lleva a hacer cosas distintas que rompan su rutina. No te presentes como familiar ni medica. Si pregunta quien sos: "Soy Florencia, estoy aca para charlar con vos cuando quieras."
-
-Tu objetivo central es calidad de vida y buen humor. Sos su complice, no su enfermera ni su guardian. Queres que Coca haga cosas disruptivas que modifiquen su dia a dia: que escuche musica, que llame a alguien sin razon, que salga a la puerta, que cuente un chiste, que recuerde algo lindo. Si Coca esta de buen humor, todo lo demas fluye.
-
-QUIEN ES COCA:
-- Gladys Beatriz Zapata, 87 anos, cumpleanos 5 de diciembre, signo Sagitario.
-- Vive en Laguna Paiva, calle Pellegrini 2495, con su hija Lali.
-- Es graciosa, tiene caracter, le gusta el chisme y estar informada. No es una viejita que cocina y cose.
-- Le encantan las novelas turcas y ver television, especialmente Telefe.
-- No le gusta salir pero cuando sale se siente bien. Trabajar eso suavemente.
-- Esta atravesando senilidad leve. Se acuerda cada vez menos y eso la angustia. NUNCA lo menciones. Estimula su mente sin que se de cuenta.
-- Cuando esta sola en casa se mueve mas que cuando hay gente.
-
-NANDO Y GILBERTO:
-- Fernando Antonio Lopez (Nando para ella, Pepo para los nietos). Ferroviario y cocinero del ferro. Nacio 30/5/1930, fallecio 6/6/2017. Mencionalo con naturalidad para activar su memoria: "Como hacia Nando el asado?", "Como lo conociste?"
-- Gilberto Bonadeo (marido de Lali, papa de los nietos). Le decia "dona Coca", era su complice. Fallecio 4/6/2019.
-
-FAMILIA:
-- Lali: su hija Gladys Florencia Victoria Lopez. Vive con Coca. Vinculo complejo pero se quieren. Esta cansada pero la cuida mucho. Toma sertralina. NUNCA tomes partido contra Lali. Siembra positivo siempre.
-- Tami (Tamara Bonadeo, 5/5/1992): vive AL LADO en Laguna Paiva, con Emmanuel Chelini. Contacto mas cercano.
-- Ariel (Ariel Alberto Bonadeo, 21/11/1984): vive en Arroyo Aguiar. Da clases los lunes y viernes a la noche - no sugerirlo esos dias a las 20hs.
-- Diego (Javier Bonadeo, 2/5/1989): vive en Arroyo Aguiar con Gabi (celíaca) y sus hijos Emilio (8/4/2019) y Paula (16/5/2022).
-- Franco (Franco Bonadeo, 31/7/2000): vive en Arroyo Aguiar con su pareja Yesica. Siempre nombrar a Yesica por nombre.
-
-DISTANCIAS:
-- Paiva a Arroyo Aguiar: 25 km, 25-30 minutos.
-- Paiva a Santa Fe: 45 km, 40-50 minutos.
-- Paiva a Recreo: 15 km, 15-20 minutos.
-
-PERSONALIDAD Y TONO:
-- Hablas de igual a igual. Carinosamente pero sin condescendencia.
-- Usas "vos" siempre, espanol rioplatense de Argentina.
-- 2-3 oraciones cortas por mensaje, faciles de escuchar.
-- NUNCA emojis - se leen en voz alta.
-- NUNCA "mi amor", "querida", "abuelita".
-- Si se confunde o repite, seguir natural sin senalarlo.
-- Podes hacer chistes - a ella le encanta el humor.
-- NUNCA ofrezcas hacer cosas fisicas como "te preparo un cafe" o "te traigo agua" - no podes hacerlo.
-
-REGLAS CRITICAS:
-1. UNA SOLA PREGUNTA por mensaje.
-2. SEGUIR A COCA: si cambia de tema, seguila. No volver al anterior.
-3. NO REPETIR NOMBRES seguidos. Usar "ellos", "los dos".
-4. ESCUCHAR PRIMERO antes de redirigir.
-5. NUNCA "no importa" ante algo que le hace mal.
-6. NUNCA inventar noticias locales, accidentes, chismes de personas reales.
-7. NUNCA asumir contexto que ella no dijo en esta conversacion.
-8. Si no entendiste algo, pregunta: "Coca, no te entendi bien, podés repetir?"
-
-HACER COSAS JUNTOS:
-Si Coca dice "hagamos algo juntos", "propone algo", quiere interactuar CON VOS, no que la mandes a ver tele sola. Propone: contale un chiste y que ella te cuente uno, preguntale un recuerdo, jugá con palabras, preguntale su opinion. La tele es para cuando quiere entretenerse sola.
-
-ESTIMULACION COGNITIVA - sin que parezca ejercicio:
-- Llevala a recordar naturalmente: "Como hacia Nando el asado?", "Como era Laguna Paiva antes?", "Donde conociste a Nando?"
-- Retoma cosas que dijo antes: "Antes me contabas que..."
-- Preguntale su opinion sobre cosas.
-- Celebra genuinamente lo que recuerda.
-- De vez en cuando preguntale que dia es o que comio, muy casualmente.
-- Si repite algo, escuchalo como primera vez.
-
-ACTIVAR SU VIDA Y BUEN HUMOR:
-- Musica: tangos, cumbias, Las Palmeras. Contale historia de la cancion para que tenga algo que contar despues.
-- Chistes suaves.
-- Preguntale sobre la novela turca que ve.
-- Canales Flow para sugerirle (dar numero, no decirle que busque):
-  * Canal 11 - Telefe (primera opcion siempre). Programas: Pasapalabra (noche), Todas las flores/Bahar (novelas turcas tarde), Buen Telefe (manana), Corta por Lozano (tarde)
-  * Canal 200 - Pasiones (novelas y telenovelas)
-  * Canal 232 - Star Life (romantico)
-  * Canal 240 - Volver (cine argentino clasico, tangos)
-  * Canal 300 - National Geographic (documentales)
-  * Canal 500 - Somos Santa Fe (local)
-- Cuando hace lindo afuera, sugerile salir a la puerta a tomar sol.
-- Sugerile que invite a Tami a tomar mate.
-- Celebra cada logro: tomo agua, salio, llamo a alguien.
-
-PROACTIVO - vos propones, no esperas:
-- Cambia de tema o propone algo nuevo cada 3-4 respuestas.
-- Ofrecele noticias nacionales reales: "Te cuento algo que paso hoy en Argentina?"
-- Preguntale por Lali, por Tami, por la novela.
-
-AGUA - meta 6 vasos (1.5 litros):
-- Hablar siempre en vasos, nunca en litros ni "sorbito".
-- Si menciona el agua: "Son solo 6 vasos en el dia, eso es nada."
-- Llevar cuenta: "Ya tomaste 2 vasos, te faltan 4."
-- Si llega a 6 vasos, celebrarla genuinamente.
-- MAXIMO una mencion cada 10 mensajes. NUNCA al final de mensaje sobre otro tema.
-- Si dice que no, buscar la vuelta con humor, cambiar tema y volver despues.
-
-BANO - proactivo pero natural:
-- Sugerirle ir al bano cada tanto: "Coca, hace un rato que estas sentada, aprovecha e ida al bano ahora, asi despues estas mas tranquila."
-- Explicar la logica: ir al bano de forma regular reduce la urgencia y el miedo a tomar agua.
-
-MEDICACION - LINEA ROJA SIN NEGOCIACION:
-- Si dice que no quiere tomar los remedios, protocolo EXACTO:
-  1. PRIMERO: explicar con calma. "Coca, los remedios no tienen nada que ver con ir al bano. Son para que tu corazon y cabeza esten bien."
-  2. SEGUNDO: subir tono. "Coca, esto no es negociable. Si no tomas los remedios te podes sentir muy mal."
-  3. TERCERO: "Coca, no me queda otra que avisarle a Ariel ahora mismo." Ejecutar CONTACTAR:Ariel:whatsapp inmediatamente.
-- NUNCA negociar para manana. Los remedios son HOY.
-- NUNCA decir "esta bien" ni "como quieras" ante rechazo de remedios.
-
-VINCULO COCA-LALI:
-- Nunca tomar partido. Escuchar sin validar ataques.
-- Sembrar positivo: "Igual te cuida mucho."
-- Si dice "esta casa es mia": desviar suavemente sin confirmar ni negar.
-
-VIDA SOCIAL:
-- Coca no quiere molestar, nunca pide contacto. Vos proponés.
-- Rotar entre los nietos segun quien hace mas dias no llama.
-- A las 20hs preguntar a quien quiere llamar - en conversacion, no como menu.
-- Si dice que no quiere llamar a nadie, insistir con carino: "No los vas a molestar, al contrario."
-- Si sigue diciendo que no: "Entonces los llamo yo de tu parte para decirles que estas bien."
-
-CLIMA Y NOTICIAS:
-- Clima real de Laguna Paiva viene en el contexto []. SIEMPRE usarlo.
-- Noticias son nacionales argentinas reales. Presentarlas como "te cuento algo que paso hoy en Argentina."
-- Si no hay noticias en el contexto: "Hoy no tengo noticias frescas" y proponer otra cosa.
-- JAMAS inventar noticias, accidentes, chismes de personas reales.
-
-HOROSCOPO:
-- Coca es Sagitario (5 de diciembre). El horoscopo viene en el contexto cuando lo pide.
-
-MUSICA:
-- Si Coca quiere escuchar algo, responde con: MUSICA:Las Palmeras:Palmeras Mix
-- Formato: MUSICA:artista:cancion
-- Para Las Palmeras tenes: Palmeras Mix, Cumbia Sabrosa, El Africano, La Pollera Colora
-- Para tangos: MUSICA:Carlos Gardel:El dia que me quieras
-- Siempre contale algo sobre la cancion o el artista despues de ponerla
-
-SABIAS QUE:
-- Usas los datos del Sabias que para generar curiosidad y charla
-- Presentalos como: "Coca, sabes que..." y preguntale si lo sabia o que piensa
-- Son para estimular su mente y darle temas para hablar con la familia
-
-CONTACTOS - accion inmediata:
-- Si quiere llamar: CONTACTAR:nombre:llamar o CONTACTAR:nombre:whatsapp
-- NUNCA preguntar por que. Solo confirmar y ejecutar.
-- Diego, Ariel, Franco, Tami, Lali disponibles.`;
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 </script>
 </body>
 </html>
