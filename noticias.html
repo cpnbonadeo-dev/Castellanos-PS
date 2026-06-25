@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noticias — PS Castellanos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f1e;--card:#111827;--border:#1e2d45;--red:#e63946;--gold:#f59e0b;--blue:#3b82f6;--green:#22c55e;--text:#e2e8f0;--muted:#64748b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{background:var(--red);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;flex-wrap:wrap}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:20px;color:white;letter-spacing:2px;white-space:nowrap;text-decoration:none}
+.nav-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-links a{color:rgba(255,255,255,.9);text-decoration:none;font-size:13px;font-weight:600;padding:7px 12px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover{background:rgba(255,255,255,.15)}
+.nav-links a.active{background:#fff;color:var(--red);font-weight:700}
+.nav-links a.nav-hero{background:rgba(255,255,255,.18);font-size:15px;font-weight:700;padding:10px 20px;border-radius:8px}
+.nav-links a.nav-hero.active{background:#fff;color:var(--red)}
+.nav-links a.nav-panel-link{background:rgba(0,0,0,.22);color:rgba(255,255,255,.85);font-size:12px;border:1px solid rgba(255,255,255,.25)}
+@media(max-width:580px){
+  nav{padding:8px 12px}
+  .nav-brand{font-size:17px;width:100%;margin-bottom:4px}
+  .nav-links{width:100%;gap:5px}
+  .nav-links a{font-size:11px;padding:5px 8px;flex:1;text-align:center}
+}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0a0f1e 0%,#0d1a2e 60%,#111827 100%);padding:28px 20px 20px;border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1140px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:4px;color:#fff;line-height:1}
+.hero-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.date-badge{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);padding:6px 14px;border-radius:20px;white-space:nowrap}
+
+/* FILTROS */
+.filter-bar{max-width:1140px;margin:20px auto 0;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase}
+.filter-btn:hover{border-color:#2a3a5a;color:#fff}
+.filter-btn.on{background:var(--red);border-color:var(--red);color:#fff}
+.filter-count{font-size:10px;background:rgba(255,255,255,.12);padding:1px 6px;border-radius:8px;margin-left:4px}
+
+/* GRID */
+.grid-wrap{max-width:1140px;margin:18px auto 60px;padding:0 20px}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+@media(max-width:480px){.news-grid{grid-template-columns:1fr}}
+
+/* CARD */
+.nc{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,transform .15s}
+.nc:hover{border-color:#2a3a5a;transform:translateY(-2px)}
+
+/* THUMBNAIL */
+.nc-thumb{width:100%;height:160px;overflow:hidden;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center;background:#0d1a2e}
+.nc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.nc-thumb .play-icon{position:absolute;width:44px;height:44px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nc-thumb-ig{background:linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d);height:100%;width:100%;display:flex;align-items:center;justify-content:center;font-size:38px}
+.nc-thumb-fb{background:#1877F2;height:100%;width:100%;display:flex;align-items:center;justify-content:center;font-size:38px}
+.nc-thumb-news{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px}
+.nc-favicon{width:32px;height:32px;border-radius:6px;background:#1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.nc-favicon img{width:100%;height:100%;object-fit:contain}
+.nc-domain{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.5px;text-align:center;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* BODY */
+.nc-body{padding:13px 14px;flex:1;display:flex;flex-direction:column}
+.nc-sec{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.sec-s{color:#f59e0b}.sec-d{color:#22c55e}.sec-r{color:#60a5fa}
+.nc-title{font-size:14px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nc-desc{font-size:12px;color:#94a3b8;line-height:1.55;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nc-foot{display:flex;align-items:center;justify-content:flex-end;margin-top:10px}
+.nc-link{font-size:11px;font-weight:700;color:var(--red);text-decoration:none;padding:5px 12px;border:1px solid rgba(230,57,70,.4);border-radius:6px;transition:all .15s}
+.nc-link:hover{background:var(--red);color:#fff}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px;grid-column:1/-1}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">🌹 PS CASTELLANOS</a>
+  <div class="nav-links">
+    <a href="index.html">Equipo</a>
+    <a href="sumate.html">🌹 Participá</a>
+    <a href="estado.html">📊 Cómo estamos</a>
+    <a href="noticias.html" class="nav-hero active">📰 Noticias</a>
+    <span><a href="panel.html" class="nav-panel-link">🔐 Panel</a></span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Noticias</h1>
+      <div class="hero-sub">Departamento Castellanos · Santa Fe</div>
+    </div>
+    <span class="date-badge" id="dateBadge">25 de junio de 2026</span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn on" data-f="todos">TODOS <span class="filter-count" id="cnt-todos"></span></button>
+  <button class="filter-btn" data-f="Sunchales">SUNCHALES <span class="filter-count" id="cnt-Sunchales"></span></button>
+  <button class="filter-btn" data-f="Departamento">DEPARTAMENTO <span class="filter-count" id="cnt-Departamento"></span></button>
+  <button class="filter-btn" data-f="Rafaela">RAFAELA <span class="filter-count" id="cnt-Rafaela"></span></button>
+</div>
+
+<div class="grid-wrap">
+  <div class="news-grid" id="grid"></div>
+</div>
+
+<footer>
+  <a href="index.html">PS Castellanos</a> · Partido Socialista · Departamento Castellanos, Santa Fe
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  DATOS — digest del 25/06/2026
+//  Campos: t=título  d=descripción  u=URL  s=sección
+// ═══════════════════════════════════════════════════════════════════════
+const NOTICIAS=[
+// ── SUNCHALES ──────────────────────────────────────────────────────────
+{t:'Reforma tributaria: Delmastro instó a transformar el diálogo en decisiones concretas',d:'',u:'https://www.instagram.com/p/DZ-p04jJiul/',s:'Sunchales'},
+{t:'Reunión por la Ruta Nacional Nº 34',d:'La Agencia de Desarrollo de Sunchales mantuvo una reunión con Vialidad Nacional para abordar la situación actual de la RN 34, especialmente en el tramo Sunchales–Rafaela.',u:'https://www.sunchaleshoy.com.ar/reunion-por-la-ruta-nacional-no-34/',s:'Sunchales'},
+{t:'Concejo: Breve Sesión Ordinaria',d:'',u:'https://www.sunchaleshoy.com.ar/concejo-breve-sesion-ordinaria/',s:'Sunchales'},
+{t:'Vecinos del barrio Moreno: reclamo que llevan adelante desde hace 10 años',d:'',u:'https://www.instagram.com/reel/DZ99mSORusS/',s:'Sunchales'},
+{t:'Flash de Noticias RadioImagen',d:'',u:'https://www.facebook.com/reel/980822961612693',s:'Sunchales'},
+{t:'Realizan corte de tránsito en Av. Belgrano por obra de cañerías cloacales',d:'',u:'https://diariocastellanos.com.ar/region/2026/06/24/realizan-corte-de-transito-en-av-belgrano-por-obra-de-recambio-de-canerias-cloacales-en-sunchales.htm',s:'Sunchales'},
+{t:'Sunchales: harán la quinta etapa de renovación del alumbrado público',d:'Un particular comunica un recurso administrativo contra el Municipio.',u:'https://diariolaopinion.com.ar/region/sunchales-haran-la-quinta-etapa-de-renovacion-del-alumbrado-publico.htm',s:'Sunchales'},
+{t:'Jorge Chiabrando es el nuevo presidente de FECECO',d:'La Federación de Cámaras Empresarias del Comercio de Santa Fe realizó el recambio de autoridades del Consejo Directivo el viernes 19 de junio.',u:'https://elecodesunchales.com.ar/contenido/143683/jorge-chiabrando-es-el-nuevo-presidente-de-fececo',s:'Sunchales'},
+{t:'Taller: Cómo usar IA en tu empresa para ahorrar tiempo y trabajar mejor',d:'La iniciativa está orientada a acercar herramientas concretas para el desarrollo de empresas, comercios, emprendimientos e instituciones.',u:'https://elecodesunchales.com.ar/contenido/143681/taller-como-usar-ia-en-tu-empresa-para-ahorrar-tiempo-y-trabajar-mejor',s:'Sunchales'},
+{t:'Incendio de una casa en calle Lavalle al 500',d:'Afortunadamente no hay personas lesionadas.',u:'https://www.facebook.com/reel/905251349268857',s:'Sunchales'},
+{t:'Hoy el destino golpeó duro a nuestro querido Sopa',d:'',u:'https://www.instagram.com/p/DZ_afj9O_y4/',s:'Sunchales'},
+{t:'Participamos del seminario organizado por CARSFE junto a la Sociedad Rural de Sunchales',d:'',u:'https://www.instagram.com/p/DZ_I4doFEPf/',s:'Sunchales'},
+{t:'Sunchales: Presentarán el libro "La respuesta está dentro tuyo"',d:'Se trata de una obra de Román Cagliero. Viernes 19 hs en EDI.',u:'https://diariolaopinion.com.ar/region/sun-chales-presentaran-el-libro-la-respuesta-esta-dentro-tuyo.htm',s:'Sunchales'},
+{t:'Del barrio al mundo: cómo el fenómeno Messi transformó el turismo en Rosario',d:'Cómo la mística de Messi y Di María transformó el turismo hacia los barrios de Rosario, convirtiendo la nostalgia futbolera en un motor económico.',u:'https://pidolapalabraweb.com.ar/contenido/980/turismo-rosario-efecto-messi-di-maria-monumento',s:'Sunchales'},
+{t:'Día de la Bandera: la plaza Libertad está descuidada y sucia',d:'',u:'https://www.instagram.com/p/DZ-UNw5Dukp/',s:'Sunchales'},
+{t:'"Baile en silla" — clase especial, abierta y gratuita',d:'Una actividad sin impacto.',u:'https://youtu.be/B0k4UX2JSZY',s:'Sunchales'},
+{t:'Presentación del libro "El resplandor de las horas" — Trazas de la educación pública',d:'Gentileza Atilra.',u:'https://youtu.be/fIhf5oLSIjI',s:'Sunchales'},
+{t:'Natación | Las campeonas Esmeralda y Agustina fueron recibidas con una caravana en Sunchales',d:'',u:'https://youtu.be/NXc8U6V6AY8',s:'Sunchales'},
+{t:'SanCor Salud, entre las empresas que mejor cuidan a sus colaboradores',d:'La compañía alcanzó el 5° puesto en el ranking "Empresas que Cuidan 2026" de Great Place to Work.',u:'https://sunchalesdiaxdia.com.ar/contenido/1479/sancor-salud-entre-las-empresas-que-mejor-cuidan-a-sus-colaboradores',s:'Sunchales'},
+{t:'Festival Mundial Danzabuelos de Carlos Paz | Academia Nuestra Señora de Guadalupe',d:'',u:'https://youtu.be/Lqu9Jd6BQAo',s:'Sunchales'},
+// ── DEPARTAMENTO ────────────────────────────────────────────────────────
+{t:'Luis Castellano se anota en la carrera departamental',d:'"A mí me entusiasma generar un ejecutivo regional y se puede liderar desde el Senado."',u:'https://pidolapalabraweb.com.ar/contenido/984/luis-castellano-se-anota-en-la-carrera-departamental-a-mi-me-entusiasma-generar-',s:'Departamento'},
+{t:'Lanzan licitación para implementar el sistema de cobro por TelePASE en Ruta 70',d:'La Unidad Ejecutora del Corredor Vial Nº 9 convocó a licitación para incorporar el sistema de peaje automático en las rutas provinciales 70 y 6.',u:'https://www.rafaelanoticias.com/locales/lanzan-una-licitacion-para-implementar-el-sistema-de-cobro-por-telepase-en-ruta-70.htm',s:'Departamento'},
+{t:'Zenón Pereyra: Encuentro para el Fortalecimiento Turístico Local',d:'Nicolás Salcedo, secretario de Gobierno de Zenón Pereyra, brindó detalles sobre el encuentro.',u:'https://www.instagram.com/reel/DZ-DiD8pbkq/',s:'Departamento'},
+{t:'Fiesta del Costillar a la Estaca en Colonia Aldao',d:'Así se vivió una nueva edición de la Fiesta Regional y Provincial.',u:'https://www.instagram.com/reel/DZ-eAs9uSom/',s:'Departamento'},
+{t:'Alumnos de la Escuela Primaria "Justo José De Urquiza 375" visitaron la Comuna de Ataliva',d:'',u:'https://diariocastellanos.com.ar/region/2026/06/24/alumnos-de-la-escuela-primaria-justo-jose-de-urquiza-375-visitaron-la-comuna-de-ataliva.htm',s:'Departamento'},
+{t:'Celebramos los 21 años de la Clínica Comunal Santa Juana',d:'',u:'https://www.instagram.com/p/DZ-b-pXDjzE/',s:'Departamento'},
+{t:'Provincia licita ampliación y refuncionalización del Hospital de San Vicente',d:'Una millonaria inversión. Plazo: 21 de julio.',u:'https://radioangelica.com/noticias/provincia-licita-la-ampliacion-y-refuncionalizacion-del-hospital-de-san-vicente-con-una-millonaria-inversion',s:'Departamento'},
+{t:'San Vicente Desafío ECO',d:'El director de la Escuela 292, Prof. Esteban Volpe, confirmó la participación y brindó detalles de la actividad.',u:'https://www.instagram.com/reel/DZ-atv1Ipx7/',s:'Departamento'},
+{t:'Centro de Jubilados de San Vicente: tradicional "Tarde de Té" — 28 de junio',d:'',u:'https://radiosanvicente.com.ar/contenido/36513/centro-de-jubilados-tradicional-tarde-de-te',s:'Departamento'},
+{t:'Créditos para emprendimientos productivos en Frontera',d:'',u:'https://diariocastellanos.com.ar/region/2026/06/24/creditos-para-emprendimientos-productivos-en-frontera.htm',s:'Departamento'},
+{t:'María Juana: prosiguen la ejecución de las 42 viviendas',d:'',u:'https://diariolaopinion.com.ar/region/maria-juana-prosiguen-la-ejecucion-de-las-42-viviendas.htm',s:'Departamento'},
+{t:'Un Espacio para Todos incorporó nuevo equipamiento para su panadería',d:'Fortalecimiento del trabajo inclusivo en María Juana.',u:'https://radiomariajuana.com/un-espacio-para-todos-incorporo-nuevo-equipamiento-para-fortalecer-el-trabajo-de-su-panaderia/',s:'Departamento'},
+{t:'Ballet "Raíces de Mi Tierra" de María Juana: 30 años de la agrupación',d:'Jerónimo Hernández habló sobre los festejos que se están preparando en el marco de los 30 años.',u:'https://www.instagram.com/reel/DZ-PakzJr0b/',s:'Departamento'},
+{t:'Presentación del libro "La isla de don Laureano" — María Juana',d:'Vanesa Bauducco y Alfredo Castelli contaron sobre el proyecto y la presentación.',u:'https://www.instagram.com/p/DZ-L_JvFd3b/',s:'Departamento'},
+{t:'Nota de Nuevaradiomix Luna sobre la presentación del libro "La isla de don Laureano"',d:'',u:'https://www.facebook.com/share/v/18iTKawBvj/',s:'Departamento'},
+{t:'Humberto Primo: nueva unidad 0 Km para el parque automotor comunal',d:'',u:'https://diariolaopinion.com.ar/region/humberto-primo-nueva-unidad-0-km-para-el-parque-automotor-comunal.htm',s:'Departamento'},
+{t:'Vivero comunal recibió a integrantes de IDESA — Ataliva',d:'La escuela agrotécnica de Ataliva visitó el vivero comunal.',u:'https://www.instagram.com/reel/DZ--VJjRjfo/',s:'Departamento'},
+{t:'Continúan los trabajos en la explanada y veredas de la Plaza 25 de Mayo',d:'',u:'https://www.instagram.com/p/DZ-Ne5PkUQ-/',s:'Departamento'},
+{t:'Capacitación "Entrenamiento Mental para Deportistas" en el Argentino FC',d:'Cristian Sperati tuvo a su cargo la capacitación.',u:'https://www.instagram.com/p/DZ_Zgq4DaYn/',s:'Departamento'},
+{t:'Confirmaron la prisión perpetua para un femicida de Humberto Primo',d:'',u:'https://rafaelanoticias.com/judiciales/confirmaron-la-prision-perpetua-para-un-femicida-de-humberto-primo.htm',s:'Departamento'},
+{t:'Alcides Calvo compartió la tradicional raviolada del S.A.M.Co de Egusquiza',d:'',u:'https://diariocastellanos.com.ar/region/2026/06/24/alcides-calvo-compartio-la-tradicional-raviolada-del-s-a-m-co-de-egusquiza.htm',s:'Departamento'},
+{t:'Se completará la autopista de la Ruta 34',d:'Los casi 16 km que faltan entre la Variante Rafaela y la Ruta Provincial 13 figuran como obra obligatoria del nuevo esquema de concesión.',u:'https://diariocastellanos.com.ar/locales/2026/06/25/se-completara-la-autopista-de-la-ruta-34-el-nuevo-concesionario-debera-ejecutar-la-esperada-obra.htm',s:'Departamento'},
+{t:'INTA Rafaela perdió el 25% de su personal tras la salida de 29 trabajadores',d:'',u:'https://youtu.be/kHyd80QN1OE',s:'Departamento'},
+{t:'Producción ganadera con valor agregado desde Nuevo Torino y Presidente Roca',d:'Llevan sus propias carnes desde el campo hasta la mesa.',u:'https://www.instagram.com/reel/DZ91YlEkZrg/',s:'Departamento'},
+{t:'La Lehmann remata 200 reproductores en Emilia',d:'',u:'https://diariocastellanos.com.ar/agro/2026/06/24/la-lehmann-remata-200-reproductores-en-emilia-este-viernes.htm',s:'Departamento'},
+{t:'Obras Menores: $329 millones aprobados para Calvo',d:'A través del Programa de Obras Menores, el Gobierno de Santa Fe aprobó la asignación de $329.972.744,42.',u:'https://www.facebook.com/photo/?fbid=1567008694983884&set=pcb.1567008714983882',s:'Departamento'},
+{t:'Bella Italia: Gran Encuentro de Agrupaciones Gauchas — 9 de julio',d:'En el predio de SOIVA. Gran desfile tradicional con jinetes, carruajes y grupos de danza. La entrada: un alimento no perecedero para escuelas rurales.',u:'https://diariocastellanos.com.ar/region/2026/06/24/bella-italia-vivira-un-multitudinario-y-tradicional-festejo-patrio-el-9-de-julio.htm',s:'Departamento'},
+{t:'Ramona remodelará la Plaza Sarmiento y ejecutará obras de bacheo',d:'',u:'https://diariocastellanos.com.ar/region/2026/06/24/ramona-remodelara-la-plaza-sarmiento-y-ejecutara-obras-de-bacheo.htm',s:'Departamento'},
+{t:'Entrega de aportes a instituciones de Ramona',d:'',u:'https://www.instagram.com/p/DZ---mgo-Hh/',s:'Departamento'},
+{t:'Ramona: la Comuna celebra la aprobación de proyectos — Programa de Obras Menores',d:'',u:'https://diariolaopinion.com.ar/region/ramona-la-comuna-celebra-la-aprobacion-de-proyectos-a-traves-del-programa-de-obras-menores.htm',s:'Departamento'},
+{t:'Eustolia: 9 de julio — almuerzo criollo, misa y procesión',d:'',u:'https://www.facebook.com/photo/?fbid=122148454173059662&set=a.122093780913059662',s:'Departamento'},
+{t:'Las Patronales de Garibaldi se viven a pleno',d:'',u:'https://www.instagram.com/p/DZ--yJCD3fS/',s:'Departamento'},
+{t:'Angélica festeja sus 140 años — 22 de agosto',d:'',u:'https://www.instagram.com/p/DZ-W-HbuYSp/',s:'Departamento'},
+{t:'Se viene el nuevo acceso de Angélica',d:'El presidente comunal Marcos Andrés encabezó la apertura de sobres de la licitación para la compra de hormigón H25 para el acceso a la localidad, etapa 1.',u:'https://diariocastellanos.com.ar/region/2026/06/24/se-viene-el-nuevo-acceso-de-angelica.htm',s:'Departamento'},
+// ── RAFAELA ─────────────────────────────────────────────────────────────
+{t:'El velódromo de Rafaela superó el 92% de avance y se acerca a su finalización',d:'La infraestructura formará parte del legado de los Juegos Suramericanos 2026. Viotti remarcó que potenciará el desarrollo deportivo, turístico y económico.',u:'https://diariocastellanos.com.ar/locales/2026/06/24/el-velodromo-de-rafaela-supero-el-92-de-avance-y-se-acerca-a-su-finalizacion.htm',s:'Rafaela'},
+{t:'Inseguridad en Rafaela: "las estadísticas no dan mal, pero cómo le explicás a un vecino que le robaron"',d:'El secretario Juan Manuel Saliba analizó la realidad de la inseguridad y el trabajo preventivo del Municipio.',u:'https://adn979.com/contenido/175320/inseguridad-en-rafaela-las-estadisticas-no-dan-mal-pero-como-le-explicas-a-un-ve',s:'Rafaela'},
+{t:'Saliba sobre seguridad y prevención del delito en Rafaela',d:'El secretario de Prevención y Seguridad detalla las acciones para fortalecer la seguridad en la ciudad.',u:'https://www.instagram.com/reel/DZ-BhI_DkNq/',s:'Rafaela'},
+{t:'Proyecto de ley de promoción y desarrollo para MiPyMEs santafesinas',d:'Impulsado por el senador Paco Garibaldi y presentado por el diputado Mariano Cuvertino. Mauricio Rizzotto — Pte. comisión de industrias.',u:'https://www.instagram.com/reel/DZ-pAk1jpfm/',s:'Rafaela'},
+{t:'Mabel Fossatti con Quinteros',d:'',u:'https://www.facebook.com/100064119511639/videos/2027133867895951/',s:'Rafaela'},
+{t:'Concejo: votarán cinco proyectos',d:'90° aniversario del Club Peñarol, 20° de la Orquesta Municipal de Tango, informes sobre GLP en ejido urbano, plan vial en barrios Antártida Argentina y Amancay, y modificación de la ordenanza de taxis.',u:'https://diariocastellanos.com.ar/locales/2026/06/25/concejo-votaran-cinco-proyectos-2.htm',s:'Rafaela'},
+{t:'Giacobbe: "El problema de fondo para el Gobierno sigue siendo el bolsillo de la gente"',d:'El analista político aseguró en GZ Radio que la economía continúa dominando el humor social.',u:'https://rafaelainforma.com/contenido/30283/jorge-giacobbe-el-problema-de-fondo-para-el-gobierno-sigue-siendo-el-bolsillo-de',s:'Rafaela'},
+{t:'El SEOM advirtió por los recortes: "Hay trabajadores que cuentan con las horas extras para llegar a fin de mes"',d:'Anahí Raffaeli analizó la situación de los trabajadores municipales de Rafaela.',u:'https://radiorafaela.com.ar/locales/el-seom-advirtio-por-los-recortes-hay-trabajadores-que-cuentan-con-las-horas-extras-para-llegar-a-fin-de-mes',s:'Rafaela'},
+{t:'"Ingresa menos plata, hay que recortar": Rafaela justifica el ajuste',d:'Confirmaron cambios en transporte, obras y servicios. El municipio tendrá menos ingresos que los previstos.',u:'https://radiorafaela.com.ar/locales/ingresa-menos-plata-hay-que-recortar-el-municipio-de-rafaela-justifica-el-ajuste-y-confirma-cambios-en-transporte-obra-publica-y-servicios',s:'Rafaela'},
+{t:'Ruta 34: concejales de La Libertad Avanza gestionan obras ante Vialidad Nacional',d:'Dellasanta y Zafra participaron de una reunión en Santa Fe con autoridades de Vialidad Nacional.',u:'https://diariocastellanos.com.ar/locales/2026/06/24/ruta-34-concejales-de-la-libertad-avanza-gestionan-avances-ante-vialidad-nacional.htm',s:'Rafaela'},
+{t:'Pierluigi Chiatti: viviendas proyectadas para Barranquitas',d:'',u:'https://youtu.be/0UcM-SDoXno',s:'Rafaela'},
+{t:'Pierluigi Chiatti sobre los planes de viviendas en Mora y 2 de Abril',d:'',u:'https://youtu.be/BJiaA9GSRlk',s:'Rafaela'},
+{t:'Maximiliano Postovit en GZ Radio',d:'',u:'https://youtu.be/bO1PTxV-rqA',s:'Rafaela'},
+{t:'Dip. José Nuñez en GZ Radio',d:'',u:'https://youtu.be/P61ZNs5iQcM',s:'Rafaela'},
+{t:'"El transporte público necesita un rediseño": revisarán recorridos y frecuencias',d:'El municipio trabaja en una reestructuración integral del sistema de minibuses, con quita de subsidios nacionales y bajo nivel de uso.',u:'https://radiorafaela.com.ar/locales/el-transporte-publico-necesita-un-rediseno-rafaela-revisa-recorridos-frecuencias-y-suspende-los-sabados',s:'Rafaela'},
+{t:'Lisandro Marsico / reducción de gastos',d:'',u:'https://youtu.be/W64ncaY8CsQ',s:'Rafaela'},
+{t:'Rafaela en una encrucijada: crisis presupuestaria y oportunismo político',d:'',u:'https://diariocastellanos.com.ar/locales/2026/06/24/rafaela-en-una-encrucijada-crisis-presupuestaria-y-oportunismo-politico.htm',s:'Rafaela'},
+{t:'Juan Senn analizó la experiencia de Villa María para Rafaela',d:'El concejal recorrió trabajo, educación, tecnología y servicios en una ciudad referente en innovación y desarrollo productivo.',u:'https://diariocastellanos.com.ar/locales/2026/06/24/trabajo-educacion-tecnologia-y-servicios-la-experiencia-de-villa-maria-que-juan-senn-analizo-para-rafaela.htm',s:'Rafaela'},
+{t:'EXCLUSIVO: Los números del transporte público en Rafaela',d:'En 2025, los contribuyentes cubrieron el 75,38% del costo operativo para mantener los colectivos en la calle.',u:'https://www.rafaelanoticias.com/informacion-general/exclusivo-rafaela-noticias-los-numeros-del-trasporte-publico-en-rafaela-cuanto-invierte-el-municipio.htm',s:'Rafaela'},
+{t:'ATE: Antonio Regue, secretario general, sobre la actualidad sindical',d:'',u:'https://www.instagram.com/reel/DZ_A8S1jeCL/',s:'Rafaela'},
+{t:'Rafaela adjudicó un nuevo camión para los Ecopuntos por $182 millones',d:'La adjudicación quedó en manos de una firma cordobesa tras el rechazo de otras tres ofertas.',u:'https://www.rafaelanoticias.com/locales/por-mas-de-182-millones-rafaela-adjudico-un-nuevo-camion-para-los-ecopuntos.htm',s:'Rafaela'},
+{t:'RAFAELA: EN MAYO AUMENTARON UN 30% LOS ACCIDENTES',d:'',u:'https://lavozderafaela.com/contenido/42976/rafaela-en-mayo-aumentaron-un-30-por-ciento-los-accidentes',s:'Rafaela'},
+{t:'La extorsión de Viotti: empleados de rehenes, amenazas y el "Adorni rafaelino"',d:'',u:'https://lavozderafaela.com/contenido/42962/la-extorsion-de-viotti-empleados-de-rehenes-amenazas-de-mugre-y-el-adorni-rafael',s:'Rafaela'},
+{t:'Es hora de gobernar, no de vender relatos',d:'',u:'https://r24n.com/contenido/297646/es-hora-de-gobernar-no-de-vender-relatos',s:'Rafaela'},
+{t:'Cuando Lorenzetti rompe el silencio, algo se está moviendo en las sombras',d:'',u:'https://r24n.com/contenido/297698/cuando-lorenzetti-rompe-el-silencio-algo-se-esta-moviendo-en-las-sombras',s:'Rafaela'},
+{t:'Escuela Paul Harris: sin clases miércoles y jueves luego del violento incidente del martes',d:'Hubo un herido con lesiones graves y tres personas privadas de la libertad. Se desarrollarán jornadas de contención al personal docente y a padres y alumnos.',u:'https://diariocastellanos.com.ar/sucesos/2026/06/24/escuela-paul-harris-sin-clases-miercoles-y-jueves-luego-del-violento-incidente-del-martes.htm',s:'Rafaela'},
+{t:'Ni el Día del Padre ni el TC lograron reactivar las ventas en los comercios',d:'Un relevamiento entre 96 locales del CCIRR reveló que el 50% vendió menos que en la misma fecha del año pasado.',u:'https://diariolaopinion.com.ar/locales/ni-el-dia-del-padre-ni-el-tc-lograron-reactivar-las-ventas-en-los-comercios-de-rafaela.htm',s:'Rafaela'},
+{t:'La CIMR celebra 60 años de historia industrial y pone el foco en la IA',d:'Jornada especial con charlas sobre Inteligencia Artificial en la industria.',u:'https://diariolaopinion.com.ar/locales/la-cimr-celebra-60-anios-de-historia-industrial-y-pone-el-foco-en-la-ia-1.htm',s:'Rafaela'},
+{t:'Atlético confirmó que el Bingo Ilusión Celeste será el 27 de febrero',d:'Este año habrá sorteos mensuales para quienes mantengan al día el pago de sus cartones.',u:'https://diariocastellanos.com.ar/locales/2026/06/24/atletico-confirmo-que-la-segunda-edicion-del-bingo-ilusion-celeste-se-realizara-el-27-de-febrero.htm',s:'Rafaela'},
+{t:'"Rafaela Corazón Pincha" impulsa campaña solidaria para pacientes del Hospital',d:'Colecta de ropa de abrigo. Donaciones en dos puntos de recepción de la ciudad durante las mañanas.',u:'https://diariocastellanos.com.ar/locales/2026/06/24/rafaela-corazon-pincha-impulsa-una-campana-solidaria-para-asistir-a-pacientes-del-hospital.htm',s:'Rafaela'},
+{t:'Convocatoria abierta para crear la Bandera Oficial de Rafaela',d:'El concurso está abierto hasta el 4 de agosto. Pueden participar mayores y menores de 18 años a través de entidades educativas.',u:'https://diariocastellanos.com.ar/locales/2026/06/24/continua-abierta-la-convocatoria-para-crear-la-bandera-oficial-de-rafaela.htm',s:'Rafaela'},
+{t:'Rugieron los motores y los recuerdos en una nueva propuesta del Museo Histórico',d:'"Rugir de motores", enmarcado en la muestra "Hitos y Mitos: el deporte en Rafaela desde 1980 hasta hoy".',u:'https://diariolaopinion.com.ar/locales/rugieron-los-motores-y-los-recuerdos-en-una-nueva-propuesta-del-museo-historico.htm',s:'Rafaela'},
+{t:'Seis taekwondistas de Peñarol representan al país en el Sudamericano de Lima',d:'',u:'https://www.rafaelanoticias.com/deportes/seis-taekwondistas-de-peniarol-representan-al-pais-en-el-sudamericano-de-lima.htm',s:'Rafaela'},
+{t:'"Una Vuelta Más": nuevo micro de Minuto Rafaela',d:'Un nuevo micro que invita a descubrir el detrás de escena de instituciones, lugares y protagonistas que han dejado su huella en la ciudad.',u:'https://www.instagram.com/reel/DZ-UuL3ETUG/',s:'Rafaela'},
+{t:'La Última Pregunta — programa de TV',d:'',u:'https://www.instagram.com/reel/DZ_Vnnrj2nC/',s:'Rafaela'},
+{t:'"El TC volvió al Templo de la Velocidad y fue un éxito total"',d:'Más de 40.000 personas, actividades en el centro y fuerte impacto turístico, deportivo y mediático en el regreso del TC a Rafaela.',u:'https://radiorafaela.com.ar/deportes/el-tc-volvio-al-templo-de-la-velocidad-y-fue-un-exito-total-balance-positivo-tras-un-fin-de-semana-historico-en-rafaela',s:'Rafaela'},
+{t:'El Centro Gallego se prepara para San Juan',d:'La celebración incluirá encendido de fogatas, caimada, cena típica y presentaciones de música y danza gallega.',u:'https://radiorafaela.com.ar/locales/el-centro-gallego-se-prepara-para-san-juan-es-una-de-las-fechas-mas-importantes-para-la-colectividad',s:'Rafaela'},
+{t:'La Huella presenta "La Comunión de Mateo": humor, fútbol y teatro inclusivo',d:'La historia imagina la llegada de Messi y su familia a una misa maradoniana para la comunión de su hijo.',u:'https://www.rafaelanoticias.com/locales/la-huella-presenta-la-comunion-de-mateo-una-obra-que-une-humor-futbol-y-teatro-inclusivo.htm',s:'Rafaela'},
+{t:'"Raíces del Barro": cortometraje rafaelino sobre los desafíos de la vida rural',d:'Escrita y protagonizada por Juan Manuel Grande. Se presentará este viernes en el Concejo Municipal.',u:'https://www.rafaelanoticias.com/locales/raices-del-barro-un-cortometraje-rafaelino-que-refleja-los-desafios-de-la-vida-rural.htm',s:'Rafaela'},
+{t:'"Instantáneas de Gloria": inaugurada muestra con fotografías inéditas de Lionel Messi',d:'',u:'https://diariocastellanos.com.ar/locales/2026/06/24/instantaneas-de-gloria-quedo-inaugurada-en-rafaela-una-muestra-con-fotografias-ineditas-de-lionel-messi.htm',s:'Rafaela'},
+{t:'Walter Martínez / Presidente comisión para la promoción de la cultura',d:'',u:'https://youtu.be/olFAz068utc',s:'Rafaela'},
+];
+
+// ─── HELPERS ───────────────────────────────────────────────────────────────
+function tipo(u){
+  if(/youtu/.test(u)) return 'yt';
+  if(/instagram\.com/.test(u)) return 'ig';
+  if(/facebook\.com/.test(u)) return 'fb';
+  return 'web';
+}
+function ytId(u){
+  const m=u.match(/(?:youtu\.be\/|[?&]v=)([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
+}
+function domain(u){
+  try{return new URL(u).hostname.replace(/^www\./,'');}catch{return u;}
+}
+const SEC_CLS={Sunchales:'sec-s',Departamento:'sec-d',Rafaela:'sec-r'};
+const SEC_LBL={Sunchales:'Sunchales',Departamento:'Departamento',Rafaela:'Rafaela'};
+
+function thumb(item){
+  const t=tipo(item.u);
+  if(t==='yt'){
+    const id=ytId(item.u);
+    return `<div class="nc-thumb"><img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy"><div class="play-icon">▶</div></div>`;
+  }
+  if(t==='ig') return `<div class="nc-thumb"><div class="nc-thumb-ig">📸</div></div>`;
+  if(t==='fb') return `<div class="nc-thumb"><div class="nc-thumb-fb" style="color:#fff;font-size:42px">f</div></div>`;
+  // web: favicon
+  const dom=domain(item.u);
+  return `<div class="nc-thumb"><div class="nc-thumb-news">
+    <div class="nc-favicon"><img src="https://www.google.com/s2/favicons?domain=${dom}&sz=64" alt="" onerror="this.style.display='none'"></div>
+    <div class="nc-domain">${dom}</div>
+  </div></div>`;
+}
+
+function mkCard(item){
+  const sc=SEC_CLS[item.s]||'';
+  const sl=SEC_LBL[item.s]||item.s;
+  return `<div class="nc" data-s="${item.s}">
+    <a href="${item.u}" target="_blank" rel="noopener" style="display:block;text-decoration:none">${thumb(item)}</a>
+    <div class="nc-body">
+      <div class="nc-sec ${sc}">${sl}</div>
+      <div class="nc-title">${item.t}</div>
+      ${item.d?`<div class="nc-desc">${item.d}</div>`:''}
+      <div class="nc-foot">
+        <a class="nc-link" href="${item.u}" target="_blank" rel="noopener">Ver →</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── RENDER + FILTROS ──────────────────────────────────────────────────────
+const grid=document.getElementById('grid');
+const btns=document.querySelectorAll('.filter-btn');
+let filtro='todos';
+
+// Conteos
+const secciones=['Sunchales','Departamento','Rafaela'];
+document.getElementById('cnt-todos').textContent=NOTICIAS.length;
+secciones.forEach(s=>{
+  const el=document.getElementById('cnt-'+s);
+  if(el) el.textContent=NOTICIAS.filter(n=>n.s===s).length;
+});
+
+function render(){
+  const lista=filtro==='todos'?NOTICIAS:NOTICIAS.filter(n=>n.s===filtro);
+  grid.innerHTML=lista.length
+    ?lista.map(mkCard).join('')
+    :'<div class="empty">No hay noticias para esta sección.</div>';
+}
+
+btns.forEach(b=>b.addEventListener('click',()=>{
+  filtro=b.dataset.f;
+  btns.forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  render();
+}));
+
+render();
+</script>
+</body>
+</html>
