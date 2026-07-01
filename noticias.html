@@ -150,6 +150,7 @@ footer a{color:var(--muted);text-decoration:none}
   <button class="filter-btn ps-loc" data-f="Colonia Aldao">COL. ALDAO <span class="filter-count" id="cnt-Colonia Aldao"></span></button>
   <button class="filter-btn ps-loc" data-f="Col. Iturraspe">COL. ITURRASPE <span class="filter-count" id="cnt-Col. Iturraspe"></span></button>
   <button class="filter-btn ps-loc" data-f="Garibaldi">GARIBALDI <span class="filter-count" id="cnt-Garibaldi"></span></button>
+  <button class="filter-btn ps-loc" data-f="San Vicente">SAN VICENTE <span class="filter-count" id="cnt-San Vicente"></span></button>
   <button class="filter-btn" data-f="Departamento">DEPARTAMENTO <span class="filter-count" id="cnt-Departamento"></span></button>
 </div>
 
@@ -348,7 +349,7 @@ let filtro='todos';
 
 // Localidades PS — en el campo `loc` de cada item
 const PS_LOCS=['Sunchales','Rafaela','Col. Margarita','Colonia Raquel','Eusebia',
-               'Maúa','Zenón Pereyra','Colonia Aldao','Col. Iturraspe','Garibaldi','Departamento'];
+               'Maúa','Zenón Pereyra','Colonia Aldao','Col. Iturraspe','Garibaldi','San Vicente','Departamento'];
 
 // Matching: loc > s (fallback para items sin campo loc)
 function matchLoc(n,f){
@@ -472,11 +473,12 @@ function guessLocN(txt){
 }
 
 function parseNoticiasDoc(text){
-  // Mapeo de encabezados de sección
+  // Encabezados de sección — regex estrictos con $ para no confundir títulos de noticias
+  // "DEPARTAMENTO 1", "RAFAELA 2", etc. → match; "Rafaela suma obras" → no match
   const SEC_MAP=[
-    [/^sunchales/i,    {s:'Sunchales',   loc:'Sunchales'}],
-    [/^rafaela/i,      {s:'Rafaela',     loc:'Rafaela'}],
-    [/^departamento/i, {s:'Departamento',loc:''}],
+    [/^sunchales\s*\d*$/i,    {s:'Sunchales',   loc:'Sunchales'}],
+    [/^rafaela\s*\d*$/i,      {s:'Rafaela',     loc:'Rafaela'}],
+    [/^departamento\s*\d*$/i, {s:'Departamento',loc:''}],
   ];
 
   const items=[];
@@ -492,18 +494,20 @@ function parseNoticiasDoc(text){
     const lines=cleaned.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
     if(!lines.length) continue;
 
-    // ¿Es encabezado de sección?
-    let isSec=false;
+    // ¿Primera línea es encabezado de sección? (aunque esté pegada al primer ítem)
+    let foundSec=false;
     for(const [re,sec] of SEC_MAP){
-      if(re.test(lines[0]) && lines.length<=2){
-        curSec=sec; skip=false; isSec=true; break;
+      if(re.test(lines[0])){
+        curSec=sec; skip=false; foundSec=true;
+        lines.splice(0,1); // quitar la línea del encabezado
+        break;
       }
     }
-    // Sección PROVINCIA u otras → skip hasta próxima sección
-    if(!isSec && /^provincia/i.test(lines[0]) && lines.length<=2){
+    // Sección PROVINCIA → skip
+    if(!foundSec && /^provincia/i.test(lines[0])){
       skip=true; continue;
     }
-    if(isSec) continue;
+    if(foundSec && lines.length===0) continue; // header solo, sin contenido
     if(skip) continue;
 
     // Separar líneas con URL de líneas de texto
