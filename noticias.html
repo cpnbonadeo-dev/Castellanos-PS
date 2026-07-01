@@ -37,10 +37,26 @@ nav{background:var(--red);padding:10px 16px;display:flex;align-items:center;just
 
 /* FILTROS */
 .filter-bar{max-width:1140px;margin:20px auto 0;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap}
-.filter-btn{font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase}
+.filter-btn{font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase;white-space:nowrap}
 .filter-btn:hover{border-color:#2a3a5a;color:#fff}
 .filter-btn.on{background:var(--red);border-color:var(--red);color:#fff}
+.filter-btn.ps-loc{border-color:rgba(245,158,11,.3);color:var(--gold)}
+.filter-btn.ps-loc:hover{border-color:var(--gold)}
+.filter-btn.ps-loc.on{background:var(--gold);border-color:var(--gold);color:#000}
 .filter-count{font-size:10px;background:rgba(255,255,255,.12);padding:1px 6px;border-radius:8px;margin-left:4px}
+@media(max-width:700px){
+  .filter-bar{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+  .filter-bar::-webkit-scrollbar{display:none}
+}
+
+/* DESTACADAS */
+.dest-section{max-width:1140px;margin:20px auto 0;padding:0 20px}
+.dest-header{font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.dest-header::after{content:'';flex:1;height:1px;background:rgba(245,158,11,.2)}
+.dest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.nc.dest-card{border-color:rgba(245,158,11,.35);box-shadow:0 0 0 1px rgba(245,158,11,.15)}
+.dest-badge{position:absolute;top:7px;right:7px;background:var(--gold);color:#000;font-size:9px;font-weight:900;letter-spacing:1px;padding:3px 7px;border-radius:4px;z-index:3}
+@media(max-width:480px){.dest-grid{grid-template-columns:1fr}}
 
 /* GRID */
 .grid-wrap{max-width:1140px;margin:18px auto 60px;padding:0 20px}
@@ -53,11 +69,21 @@ nav{background:var(--red);padding:10px 16px;display:flex;align-items:center;just
 
 /* THUMBNAIL */
 .nc-thumb{width:100%;height:160px;overflow:hidden;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center;background:#0d1a2e}
-.nc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.nc-thumb .play-icon{position:absolute;width:44px;height:44px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
-.nc-thumb-ig{background:linear-gradient(135deg,#405de6,#5851db,#833ab4,#c13584,#e1306c,#fd1d1d);height:100%;width:100%;display:flex;align-items:center;justify-content:center;font-size:38px}
-.nc-thumb-fb{background:#1877F2;height:100%;width:100%;display:flex;align-items:center;justify-content:center;font-size:38px}
-.nc-thumb-news{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px}
+.nc-thumb img.main-img{width:100%;height:100%;object-fit:cover;display:block}
+.nc-thumb .play-icon{position:absolute;width:44px;height:44px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;pointer-events:none}
+/* skeleton shimmer mientras carga OG */
+.nc-thumb.og-load{background:linear-gradient(90deg,#111827 25%,#1e293b 50%,#111827 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* pill de fuente sobre imagen */
+.nc-src-pill{position:absolute;bottom:7px;left:7px;background:rgba(0,0,0,.68);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;color:#ccc;letter-spacing:.3px;display:flex;align-items:center;gap:5px;z-index:2}
+.nc-src-pill img{width:13px;height:13px;border-radius:2px}
+/* fallback cuando no hay imagen OG */
+.nc-fallback-ig{background:linear-gradient(135deg,#405de6,#833ab4,#fd1d1d);width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px}
+.nc-fallback-fb{background:#1877F2;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:56px;font-weight:900;color:#fff;line-height:1}
+.nc-fallback-web{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.nc-favicon{width:36px;height:36px;border-radius:8px;background:#1e293b;padding:4px;overflow:hidden}
+.nc-favicon img{width:100%;height:100%;object-fit:contain}
+.nc-domain{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.3px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nc-favicon{width:32px;height:32px;border-radius:6px;background:#1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .nc-favicon img{width:100%;height:100%;object-fit:contain}
 .nc-domain{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.5px;text-align:center;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -71,6 +97,13 @@ nav{background:var(--red);padding:10px 16px;display:flex;align-items:center;just
 .nc-foot{display:flex;align-items:center;justify-content:flex-end;margin-top:10px}
 .nc-link{font-size:11px;font-weight:700;color:var(--red);text-decoration:none;padding:5px 12px;border:1px solid rgba(230,57,70,.4);border-radius:6px;transition:all .15s}
 .nc-link:hover{background:var(--red);color:#fff}
+
+/* AGENDA THUMB (sin URL) */
+.nc-agenda-thumb{background:linear-gradient(135deg,#0d1a2e 0%,#1a2744 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.nc-agenda-cal{font-size:48px;opacity:.18;line-height:1}
+.nc-agenda-f{font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(255,255,255,.5);letter-spacing:2px;text-align:center;line-height:1.1}
+/* Fecha badge en card body */
+.nc-fecha{display:inline-block;font-size:10px;font-weight:800;letter-spacing:1px;color:var(--gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);padding:2px 9px;border-radius:10px;margin-bottom:6px}
 
 /* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px;grid-column:1/-1}
@@ -89,6 +122,7 @@ footer a{color:var(--muted);text-decoration:none}
     <a href="sumate.html">🌹 Participá</a>
     <a href="estado.html">📊 Cómo estamos</a>
     <a href="noticias.html" class="nav-hero active">📰 Noticias</a>
+    <a href="agenda.html">📅 Agenda</a>
     <span><a href="panel.html" class="nav-panel-link">🔐 Panel</a></span>
   </div>
 </nav>
@@ -98,6 +132,7 @@ footer a{color:var(--muted);text-decoration:none}
     <div>
       <h1>Noticias</h1>
       <div class="hero-sub">Departamento Castellanos · Santa Fe</div>
+      <div style="margin-top:8px;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.5px">📰 Noti Castellanos · <span style="font-weight:400;color:#94a3b8">por Iván Garbulsky</span></div>
     </div>
     <span class="date-badge" id="dateBadge">25 de junio de 2026</span>
   </div>
@@ -105,9 +140,23 @@ footer a{color:var(--muted);text-decoration:none}
 
 <div class="filter-bar">
   <button class="filter-btn on" data-f="todos">TODOS <span class="filter-count" id="cnt-todos"></span></button>
-  <button class="filter-btn" data-f="Sunchales">SUNCHALES <span class="filter-count" id="cnt-Sunchales"></span></button>
+  <button class="filter-btn ps-loc" data-f="Sunchales">SUNCHALES <span class="filter-count" id="cnt-Sunchales"></span></button>
+  <button class="filter-btn ps-loc" data-f="Rafaela">RAFAELA <span class="filter-count" id="cnt-Rafaela"></span></button>
+  <button class="filter-btn ps-loc" data-f="Col. Margarita">COL. MARGARITA <span class="filter-count" id="cnt-Col. Margarita"></span></button>
+  <button class="filter-btn ps-loc" data-f="Colonia Raquel">COL. RAQUEL <span class="filter-count" id="cnt-Colonia Raquel"></span></button>
+  <button class="filter-btn ps-loc" data-f="Eusebia">EUSEBIA <span class="filter-count" id="cnt-Eusebia"></span></button>
+  <button class="filter-btn ps-loc" data-f="Maúa">MAÚA <span class="filter-count" id="cnt-Maúa"></span></button>
+  <button class="filter-btn ps-loc" data-f="Zenón Pereyra">ZENÓN PEREYRA <span class="filter-count" id="cnt-Zenón Pereyra"></span></button>
+  <button class="filter-btn ps-loc" data-f="Colonia Aldao">COL. ALDAO <span class="filter-count" id="cnt-Colonia Aldao"></span></button>
+  <button class="filter-btn ps-loc" data-f="Col. Iturraspe">COL. ITURRASPE <span class="filter-count" id="cnt-Col. Iturraspe"></span></button>
+  <button class="filter-btn ps-loc" data-f="Garibaldi">GARIBALDI <span class="filter-count" id="cnt-Garibaldi"></span></button>
   <button class="filter-btn" data-f="Departamento">DEPARTAMENTO <span class="filter-count" id="cnt-Departamento"></span></button>
-  <button class="filter-btn" data-f="Rafaela">RAFAELA <span class="filter-count" id="cnt-Rafaela"></span></button>
+</div>
+
+<!-- DESTACADAS (siempre visibles, máx 5) -->
+<div class="dest-section" id="destSection" style="display:none">
+  <div class="dest-header">⭐ Destacadas</div>
+  <div class="dest-grid" id="destGrid"></div>
 </div>
 
 <div class="grid-wrap">
@@ -241,34 +290,53 @@ function domain(u){
 const SEC_CLS={Sunchales:'sec-s',Departamento:'sec-d',Rafaela:'sec-r'};
 const SEC_LBL={Sunchales:'Sunchales',Departamento:'Departamento',Rafaela:'Rafaela'};
 
+function fallback(item){
+  const t=tipo(item.u), dom=domain(item.u);
+  const pill=`<div class="nc-src-pill"><img src="https://www.google.com/s2/favicons?domain=${dom}&sz=32" alt="">${dom}</div>`;
+  if(t==='ig') return `<div class="nc-fallback-ig">📸</div>${pill}`;
+  if(t==='fb') return `<div class="nc-fallback-fb">f</div>${pill}`;
+  return `<div class="nc-fallback-web">
+    <div class="nc-favicon"><img src="https://www.google.com/s2/favicons?domain=${dom}&sz=64" alt=""></div>
+    <div class="nc-domain">${dom}</div>
+  </div>`;
+}
+
 function thumb(item){
+  // Sin URL: diseño de agenda
+  if(!item.u){
+    return `<div class="nc-thumb nc-agenda-thumb">
+      <div class="nc-agenda-cal">📅</div>
+      <div class="nc-agenda-f">${item.fecha||''}</div>
+    </div>`;
+  }
   const t=tipo(item.u);
+  // YouTube: thumbnail directo, sin API
   if(t==='yt'){
     const id=ytId(item.u);
-    return `<div class="nc-thumb"><img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy"><div class="play-icon">▶</div></div>`;
+    return `<div class="nc-thumb"><img class="main-img" src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy"><div class="play-icon">▶</div></div>`;
   }
-  if(t==='ig') return `<div class="nc-thumb"><div class="nc-thumb-ig">📸</div></div>`;
-  if(t==='fb') return `<div class="nc-thumb"><div class="nc-thumb-fb" style="color:#fff;font-size:42px">f</div></div>`;
-  // web: favicon
-  const dom=domain(item.u);
-  return `<div class="nc-thumb"><div class="nc-thumb-news">
-    <div class="nc-favicon"><img src="https://www.google.com/s2/favicons?domain=${dom}&sz=64" alt="" onerror="this.style.display='none'"></div>
-    <div class="nc-domain">${dom}</div>
-  </div></div>`;
+  // Todo lo demás: skeleton que carga la imagen OG vía microlink
+  const enc=encodeURIComponent(item.u);
+  return `<div class="nc-thumb og-load" data-url="${enc}" data-tipo="${t}" data-dom="${domain(item.u)}">${fallback(item)}</div>`;
 }
 
 function mkCard(item){
   const sc=SEC_CLS[item.s]||'';
-  const sl=SEC_LBL[item.s]||item.s;
+  const sl=item.loc||SEC_LBL[item.s]||item.s;
+  const thumbWrap=item.u
+    ?`<a href="${item.u}" target="_blank" rel="noopener" style="display:block;text-decoration:none">${thumb(item)}</a>`
+    :thumb(item);
+  const foot=item.u
+    ?`<div class="nc-foot"><a class="nc-link" href="${item.u}" target="_blank" rel="noopener">Ver →</a></div>`
+    :'';
   return `<div class="nc" data-s="${item.s}">
-    <a href="${item.u}" target="_blank" rel="noopener" style="display:block;text-decoration:none">${thumb(item)}</a>
+    ${thumbWrap}
     <div class="nc-body">
+      ${item.fecha?`<span class="nc-fecha">${item.fecha}</span>`:''}
       <div class="nc-sec ${sc}">${sl}</div>
       <div class="nc-title">${item.t}</div>
       ${item.d?`<div class="nc-desc">${item.d}</div>`:''}
-      <div class="nc-foot">
-        <a class="nc-link" href="${item.u}" target="_blank" rel="noopener">Ver →</a>
-      </div>
+      ${foot}
     </div>
   </div>`;
 }
@@ -278,19 +346,96 @@ const grid=document.getElementById('grid');
 const btns=document.querySelectorAll('.filter-btn');
 let filtro='todos';
 
+// Localidades PS — en el campo `loc` de cada item
+const PS_LOCS=['Sunchales','Rafaela','Col. Margarita','Colonia Raquel','Eusebia',
+               'Maúa','Zenón Pereyra','Colonia Aldao','Col. Iturraspe','Garibaldi','Departamento'];
+
+// Matching: loc > s (fallback para items sin campo loc)
+function matchLoc(n,f){
+  if(f==='todos') return true;
+  const loc=n.loc||n.s;
+  return loc===f;
+}
+
 // Conteos
-const secciones=['Sunchales','Departamento','Rafaela'];
 document.getElementById('cnt-todos').textContent=NOTICIAS.length;
-secciones.forEach(s=>{
+PS_LOCS.forEach(s=>{
   const el=document.getElementById('cnt-'+s);
-  if(el) el.textContent=NOTICIAS.filter(n=>n.s===s).length;
+  if(el) el.textContent=NOTICIAS.filter(n=>matchLoc(n,s)).length||'';
 });
 
+// ─── MICROLINK OG-IMAGE OBSERVER ──────────────────────────────────────────
+const ogObserver=new IntersectionObserver(async entries=>{
+  for(const entry of entries){
+    if(!entry.isIntersecting) continue;
+    const el=entry.target;
+    ogObserver.unobserve(el);
+    const url=decodeURIComponent(el.dataset.url);
+    try{
+      const r=await fetch('https://api.microlink.io?url='+encodeURIComponent(url));
+      const j=await r.json();
+      const img=j?.data?.image?.url||j?.data?.screenshot?.url;
+      if(img){
+        // Guardamos el pill antes de borrar todo
+        const pill=el.querySelector('.nc-src-pill');
+        el.classList.remove('og-load');
+        el.innerHTML='<img class="main-img" src="'+img+'" alt="" loading="lazy" onerror="this.parentElement.classList.remove(\'og-load\')">'
+          +(pill?pill.outerHTML:'');
+      } else {
+        el.classList.remove('og-load');
+      }
+    }catch(e){ el.classList.remove('og-load'); }
+  }
+},{rootMargin:'200px'});
+
+function attachObserver(){
+  document.querySelectorAll('.nc-thumb.og-load').forEach(el=>{
+    if(el._obs) return;
+    el._obs=true;
+    ogObserver.observe(el);
+  });
+}
+
+// ─── DESTACADAS ────────────────────────────────────────────────────────────
+const destSection=document.getElementById('destSection');
+const destGrid=document.getElementById('destGrid');
+
+function renderDest(){
+  const dest=NOTICIAS.filter(n=>n.dest).slice(0,5);
+  if(!dest.length){ destSection.style.display='none'; return; }
+  destSection.style.display='';
+  destGrid.innerHTML=dest.map(n=>{
+    // Inject badge into thumb via a wrapper trick
+    const card=mkCard(n);
+    // Add dest-card class and badge
+    return card
+      .replace('<div class="nc"','<div class="nc dest-card"')
+      .replace('<div class="nc-thumb','<div class="nc-thumb" style="position:relative"><span class="dest-badge">⭐ DESTACADA</span></div><div class="nc-thumb-inner" style="display:none"></div><div class="nc-thumb');
+  }).join('').replace(/<\/div><div class="nc-thumb-inner" style="display:none"><\/div>/g,'');
+  // Simpler: rebuild with badge inside thumb
+  destGrid.innerHTML=dest.map(n=>{
+    const raw=mkCard(n);
+    return raw
+      .replace('<div class="nc"','<div class="nc dest-card"')
+      .replace(/(class="nc-thumb[^"]*">)/,'$1<span class="dest-badge">⭐ DESTACADA</span>');
+  }).join('');
+  attachObserverIn(destGrid);
+}
+
+function attachObserverIn(container){
+  container.querySelectorAll('.nc-thumb.og-load').forEach(el=>{
+    if(el._obs) return;
+    el._obs=true;
+    ogObserver.observe(el);
+  });
+}
+
 function render(){
-  const lista=filtro==='todos'?NOTICIAS:NOTICIAS.filter(n=>n.s===filtro);
+  const lista=filtro==='todos'?NOTICIAS:NOTICIAS.filter(n=>matchLoc(n,filtro));
   grid.innerHTML=lista.length
     ?lista.map(mkCard).join('')
     :'<div class="empty">No hay noticias para esta sección.</div>';
+  attachObserver();
 }
 
 btns.forEach(b=>b.addEventListener('click',()=>{
@@ -300,6 +445,7 @@ btns.forEach(b=>b.addEventListener('click',()=>{
   render();
 }));
 
+renderDest();
 render();
 </script>
 </body>

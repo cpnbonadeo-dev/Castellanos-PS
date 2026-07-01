@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda — PS Castellanos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f1e;--card:#111827;--border:#1e2d45;--red:#e63946;--gold:#f59e0b;--blue:#3b82f6;--green:#22c55e;--purple:#a855f7;--text:#e2e8f0;--muted:#64748b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{background:var(--red);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;flex-wrap:wrap}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:20px;color:white;letter-spacing:2px;white-space:nowrap;text-decoration:none}
+.nav-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav-links a{color:rgba(255,255,255,.9);text-decoration:none;font-size:13px;font-weight:600;padding:7px 12px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover{background:rgba(255,255,255,.15)}
+.nav-links a.active{background:#fff;color:var(--red);font-weight:700}
+.nav-links a.nav-hero{background:rgba(255,255,255,.18);font-size:15px;font-weight:700;padding:10px 20px;border-radius:8px}
+.nav-links a.nav-hero.active{background:#fff;color:var(--red)}
+.nav-links a.nav-panel-link{background:rgba(0,0,0,.22);color:rgba(255,255,255,.85);font-size:12px;border:1px solid rgba(255,255,255,.25)}
+@media(max-width:580px){
+  nav{padding:8px 12px}
+  .nav-brand{font-size:17px;width:100%;margin-bottom:4px}
+  .nav-links{width:100%;gap:5px}
+  .nav-links a{font-size:11px;padding:5px 8px;flex:1;text-align:center}
+}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0a0f1e 0%,#0d1a2e 60%,#111827 100%);padding:28px 20px 20px;border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1140px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:4px;color:#fff;line-height:1}
+.hero-sub{font-size:13px;color:var(--muted);margin-top:4px}
+.hero-credit{margin-top:8px;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.5px}
+.hero-credit span{font-weight:400;color:#94a3b8}
+.year-badge{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);padding:6px 14px;border-radius:20px;white-space:nowrap}
+
+/* CONTROLES */
+.controls{max-width:1140px;margin:20px auto 0;padding:0 20px;display:flex;flex-direction:column;gap:12px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{font-size:11px;font-weight:700;letter-spacing:.8px;padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase;white-space:nowrap}
+.filter-btn:hover{border-color:#2a3a5a;color:#fff}
+.filter-btn.on{background:var(--red);border-color:var(--red);color:#fff}
+.filter-btn.ps-loc{border-color:rgba(245,158,11,.3);color:var(--gold)}
+.filter-btn.ps-loc.on{background:var(--gold);border-color:var(--gold);color:#000}
+.tipo-row{display:flex;gap:6px;flex-wrap:wrap}
+.tipo-btn{font-size:10px;font-weight:700;letter-spacing:.5px;padding:4px 10px;border-radius:10px;border:none;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.tipo-btn.on{opacity:1}
+.tipo-btn:not(.on){opacity:.4}
+@media(max-width:700px){
+  .filter-row,.tipo-row{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .filter-row::-webkit-scrollbar,.tipo-row::-webkit-scrollbar{display:none}
+}
+
+/* LAYOUT */
+.main{max-width:1140px;margin:24px auto 80px;padding:0 20px}
+
+/* MESES */
+.mes-bloque{margin-bottom:32px}
+.mes-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;cursor:pointer;user-select:none}
+.mes-nombre{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#fff;line-height:1}
+.mes-count{font-size:11px;font-weight:700;color:var(--muted);background:#1e2d45;padding:3px 10px;border-radius:10px}
+.mes-toggle{font-size:14px;color:var(--muted);margin-left:auto;transition:transform .2s}
+.mes-toggle.closed{transform:rotate(-90deg)}
+.mes-line{flex:1;height:1px;background:var(--border)}
+.mes-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.mes-body.hidden{display:none}
+@media(max-width:480px){.mes-body{grid-template-columns:1fr}}
+
+/* EVENTO CARD */
+.ev{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:border-color .2s,transform .15s;position:relative;overflow:hidden}
+.ev:hover{border-color:#2a3a5a;transform:translateY(-1px)}
+.ev::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px 0 0 2px}
+.ev[data-tipo="patronal"]::before{background:#f59e0b}
+.ev[data-tipo="cultural"]::before{background:#a855f7}
+.ev[data-tipo="deportivo"]::before{background:#3b82f6}
+.ev[data-tipo="politico"]::before{background:#e63946}
+.ev[data-tipo="social"]::before{background:#22c55e}
+.ev[data-tipo="feria"]::before{background:#f97316}
+.ev[data-tipo="educativo"]::before{background:#06b6d4}
+
+/* FECHA COLUMNA */
+.ev-fecha{min-width:42px;text-align:center;flex-shrink:0}
+.ev-dia{font-family:'Bebas Neue',sans-serif;font-size:30px;color:#fff;line-height:1}
+.ev-mes-mini{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+
+/* INFO */
+.ev-info{flex:1;min-width:0}
+.ev-loc{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.ev-title{font-size:13px;font-weight:700;color:#fff;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ev-link-ico{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* TIPO DOTS */
+.tipo-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:#111827;border:1px solid #1e2d45;border-radius:14px;max-width:480px;width:100%;padding:24px;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.modal-close:hover{color:#fff}
+.modal-tipo{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.modal-title{font-size:20px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:10px}
+.modal-fecha{font-size:13px;color:var(--muted);margin-bottom:8px}
+.modal-loc{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:10px;margin-bottom:14px}
+.modal-desc{font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:16px}
+.modal-cta{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;text-decoration:none;font-size:13px;font-weight:700;padding:10px 20px;border-radius:8px;transition:background .15s}
+.modal-cta:hover{background:#c1121f}
+
+/* EMPTY */
+.ag-empty{text-align:center;padding:40px;color:var(--muted);font-size:14px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">🌹 PS CASTELLANOS</a>
+  <div class="nav-links">
+    <a href="index.html">Equipo</a>
+    <a href="sumate.html">🌹 Participá</a>
+    <a href="estado.html">📊 Cómo estamos</a>
+    <a href="noticias.html">📰 Noticias</a>
+    <a href="agenda.html" class="nav-hero active">📅 Agenda</a>
+    <span><a href="panel.html" class="nav-panel-link">🔐 Panel</a></span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Agenda</h1>
+      <div class="hero-sub">Departamento Castellanos · Santa Fe</div>
+      <div class="hero-credit">📰 Noti Castellanos · <span>por Iván Garbulsky</span></div>
+    </div>
+    <span class="year-badge">2026 – 2027</span>
+  </div>
+</div>
+
+<div class="controls">
+  <!-- FILTRO LOCALIDAD -->
+  <div class="filter-row" id="locBtns">
+    <button class="filter-btn on" data-loc="todos">TODOS</button>
+    <button class="filter-btn ps-loc" data-loc="Sunchales">SUNCHALES</button>
+    <button class="filter-btn ps-loc" data-loc="Rafaela">RAFAELA</button>
+    <button class="filter-btn ps-loc" data-loc="Col. Margarita">COL. MARGARITA</button>
+    <button class="filter-btn ps-loc" data-loc="Colonia Raquel">COL. RAQUEL</button>
+    <button class="filter-btn ps-loc" data-loc="Eusebia">EUSEBIA</button>
+    <button class="filter-btn ps-loc" data-loc="Maúa">MAÚA</button>
+    <button class="filter-btn ps-loc" data-loc="Zenón Pereyra">ZENÓN PEREYRA</button>
+    <button class="filter-btn ps-loc" data-loc="Colonia Aldao">COL. ALDAO</button>
+    <button class="filter-btn ps-loc" data-loc="Col. Iturraspe">COL. ITURRASPE</button>
+    <button class="filter-btn ps-loc" data-loc="Garibaldi">GARIBALDI</button>
+    <button class="filter-btn" data-loc="otros">OTROS</button>
+  </div>
+  <!-- FILTRO TIPO -->
+  <div class="tipo-row" id="tipoBtns">
+    <button class="tipo-btn on" data-t="todos" style="background:#334155;color:#fff">TODOS</button>
+    <button class="tipo-btn on" data-t="patronal" style="background:#f59e0b;color:#000">PATRONAL</button>
+    <button class="tipo-btn on" data-t="cultural" style="background:#a855f7;color:#fff">CULTURAL</button>
+    <button class="tipo-btn on" data-t="deportivo" style="background:#3b82f6;color:#fff">DEPORTIVO</button>
+    <button class="tipo-btn on" data-t="social" style="background:#22c55e;color:#000">SOCIAL</button>
+    <button class="tipo-btn on" data-t="feria" style="background:#f97316;color:#fff">FERIA</button>
+    <button class="tipo-btn on" data-t="educativo" style="background:#06b6d4;color:#fff">EDUCATIVO</button>
+    <button class="tipo-btn on" data-t="politico" style="background:#e63946;color:#fff">POLÍTICO</button>
+  </div>
+</div>
+
+<div class="main" id="main"></div>
+
+<footer>
+  <a href="index.html">PS Castellanos</a> · Partido Socialista · Departamento Castellanos, Santa Fe
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-tipo" id="mTipo"></div>
+    <div class="modal-title" id="mTitle"></div>
+    <div class="modal-fecha" id="mFecha"></div>
+    <div class="modal-loc" id="mLoc"></div>
+    <div class="modal-desc" id="mDesc"></div>
+    <div id="mCta"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  AGENDA — Departamento Castellanos 2026/2027
+//  Fuente: Noti Castellanos de Iván Garbulsky
+//  Campos: t=título  d=descripción  u=URL  loc=localidad
+//          tipo=categoría  f=fecha ISO  fd=fecha display
+// ══════════════════════════════════════════════════════════════════════
+const AGENDA = [
+
+// ── JULIO 2026 ──────────────────────────────────────────────────────
+{f:'2026-07-01',fd:'1–5 jul',t:'Padel Rafaela — Torneo AJPP',d:'Los mejores jugadores del ranking argentino llegan a Rafaela. Organizador: Víctor Fuhr.',u:'https://radiorafaela.com.ar/locales/los-mejores-jugadores-del-ranking-argentino-van-a-estar-en-rafaela-organizador-del-torneo-victor-fuhr',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-07-02',fd:'2 jul',t:'Orquesta Municipal de Tango · 20° Aniversario — "Veinte años no es nada"',d:'Gala especial de aniversario.',u:'https://diariocastellanos.com.ar/locales/2026/06/27/la-orquesta-municipal-de-tango-celebra-su-20-aniversario-con-una-gala-especial-veinte-anos-no-es-nada.htm',loc:'Rafaela',tipo:'cultural'},
+{f:'2026-07-04',fd:'4 jul',t:'Jornada Histórica y Patrimonial — "Zenón Pereyra y sus Raíces Masónicas"',d:'',u:'https://www.instagram.com/reel/DaBk-J5Bweu/',loc:'Zenón Pereyra',tipo:'cultural'},
+{f:'2026-07-04',fd:'4 jul',t:'Rotary Sunchales — Encuentro Anual Solidario',d:'',u:'',loc:'Sunchales',tipo:'social'},
+{f:'2026-07-04',fd:'4 jul',t:'Cena 106° Aniversario Club Brown',d:'',u:'',loc:'San Vicente',tipo:'social'},
+{f:'2026-07-04',fd:'4 jul',t:'Cena Patronales Estación Saguier',d:'Misa y procesión 28 de junio.',u:'https://www.facebook.com/photo/?fbid=2023686628255052&set=a.326812081275857',loc:'Saguier',tipo:'patronal'},
+{f:'2026-07-04',fd:'4–5 jul',t:'29° Rally Nacional de Autos Clásicos y Antiguos',d:'',u:'',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-07-05',fd:'5 jul',t:'Dío Karma llega por primera vez a Rafaela',d:'El ritmo y la poesía del Dío Karma en Rafaela.',u:'https://diariocastellanos.com.ar/cultura/2026/06/27/el-ritmo-y-la-poesia-del-duo-karma-llegan-por-primera-vez-a-rafaela.htm',loc:'Rafaela',tipo:'cultural'},
+{f:'2026-07-05',fd:'5 jul',t:'Escuela 400 — Sorpresa en Colonia Margarita',d:'',u:'',loc:'Col. Margarita',tipo:'educativo'},
+{f:'2026-07-09',fd:'9 jul',t:'Feria de Artesanos — Castellanos',d:'',u:'',loc:'Castellanos',tipo:'feria'},
+{f:'2026-07-09',fd:'9 jul',t:'Bella Italia — Gran Encuentro de Agrupaciones Gauchas',d:'Multitudinario festejo patrio.',u:'https://diariocastellanos.com.ar/region/2026/06/24/bella-italia-vivira-un-multitudinario-y-tradicional-festejo-patrio-el-9-de-julio.htm',loc:'Bella Italia',tipo:'patronal'},
+{f:'2026-07-09',fd:'9 jul',t:'Eustolia — Fiesta Patria y Patronal, Almuerzo Tradicional',d:'',u:'',loc:'Eustolia',tipo:'patronal'},
+{f:'2026-07-09',fd:'9–13 jul',t:'Fútbol: Leoncito Club 9 de Julio',d:'Más de 250 equipos. Nueva edición del torneo rafaelino.',u:'https://www.rafaelanoticias.com/deportes/presentaron-una-nueva-edicion-del-leoncito-que-reunira-a-mas-de-250-equipos.htm',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-07-09',fd:'9 jul',t:'Gran Almuerzo Criollo — San Vicente',d:'',u:'https://radiosanvicente.com.ar/contenido/36495/9-de-julio-gran-almuerzo-criollo-en-san-vicente',loc:'San Vicente',tipo:'social'},
+{f:'2026-07-12',fd:'12 jul',t:'Desafío San Vicente 2026',d:'',u:'https://radiosanvicente.com.ar/contenido/36494/desafio-san-vicente-2026-conferencia-de-prensa',loc:'San Vicente',tipo:'deportivo'},
+{f:'2026-07-14',fd:'14 jul',t:'San Vicente — Licitación Ampliación Hospital',d:'La Provincia licita la ampliación y refuncionalización del hospital con millonaria inversión.',u:'https://radioangelica.com/noticias/provincia-licita-la-ampliacion-y-refuncionalizacion-del-hospital-de-san-vicente-con-una-millonaria-inversion',loc:'San Vicente',tipo:'politico'},
+{f:'2026-07-14',fd:'14–19 jul',t:'Festival de Teatro — Rafaela',d:'',u:'',loc:'Rafaela',tipo:'cultural'},
+{f:'2026-07-16',fd:'16 jul',t:'Rafaela — 90° Aniversario Club Atlético Peñarol',d:'',u:'',loc:'Rafaela',tipo:'social'},
+{f:'2026-07-16',fd:'16 jul',t:'Patronales en Castellanos',d:'',u:'https://www.facebook.com/photo/?fbid=1027826029773413&set=a.103152848907407',loc:'Castellanos',tipo:'patronal'},
+{f:'2026-07-18',fd:'18–19 jul',t:'Colonia Aldao — Fiestas Patronales 141° Aniversario',d:'Agenda completa. Con la llegada de julio la población está de fiesta.',u:'https://diariolaopinion.com.ar/region/colonia-aldao-con-la-llegada-de-julio-la-poblacion-esta-de-fiesta.htm',loc:'Colonia Aldao',tipo:'patronal'},
+{f:'2026-07-18',fd:'18 jul',t:'Cena y Baile Patronales — Castellanos',d:'',u:'https://www.facebook.com/photo/?fbid=1026215349934481&set=a.103152848907407',loc:'Castellanos',tipo:'patronal'},
+{f:'2026-07-19',fd:'19 jul',t:'50 años Escuela 406 Joaquín Prieto — Colonia Iturraspe',d:'',u:'https://www.facebook.com/comuna.coloniaiturraspe.7/posts/pfbid02e3SDn8rCRksfUqsqkM58R4xy9ZjsCTTRns1Wfz2f3PETbjgdmPLVtkZzZ2UmjZLl',loc:'Col. Iturraspe',tipo:'educativo'},
+{f:'2026-07-21',fd:'21 jul',t:'María Juana 1883 — Aprobación de la Traza',d:'',u:'',loc:'María Juana',tipo:'politico'},
+{f:'2026-07-25',fd:'25 jul',t:'TEDxSunchales',d:'',u:'',loc:'Sunchales',tipo:'cultural'},
+{f:'2026-07-25',fd:'25 jul',t:'Esmeralda — 1889 Aniversario',d:'',u:'',loc:'Esmeralda',tipo:'patronal'},
+{f:'2026-07-26',fd:'26 jul',t:'Humberto Primo — 36° Fiesta Provincial de la Bagna Cauda',d:'',u:'',loc:'Humberto Primo',tipo:'cultural'},
+{f:'2026-07-29',fd:'29 jul',t:'Seminario de Lechería — Rafaela',d:'',u:'',loc:'Rafaela',tipo:'feria'},
+{f:'2026-07-31',fd:'31 jul',t:'Patronales Hugentobler — San Ignacio de Loyola',d:'',u:'',loc:'Hugentobler',tipo:'patronal'},
+
+// ── AGOSTO 2026 ──────────────────────────────────────────────────────
+{f:'2026-08-11',fd:'11 ago',t:'Susana — 1881 Aniversario · Santa Susana',d:'',u:'',loc:'Susana',tipo:'patronal'},
+{f:'2026-08-12',fd:'12 ago',t:'Sta. Clara de Saguier — 1883 Aniversario · Santa Clara de Asís',d:'',u:'',loc:'Sta. Clara de Saguier',tipo:'patronal'},
+{f:'2026-08-15',fd:'15 ago',t:'Josefina — 1886 Aniversario · Virgen de la Asunción',d:'',u:'',loc:'Josefina',tipo:'patronal'},
+{f:'2026-08-15',fd:'15 ago',t:'Tacural — Fiesta Patronal · María de la Asunción',d:'',u:'',loc:'Tacural',tipo:'patronal'},
+{f:'2026-08-16',fd:'16 ago',t:'Ataliva — 1884 Aniversario · San Roque',d:'',u:'',loc:'Ataliva',tipo:'patronal'},
+{f:'2026-08-16',fd:'16 ago',t:'Presidente Roca — 1882 Aniversario · San Roque',d:'',u:'',loc:'Pte. Roca',tipo:'patronal'},
+{f:'2026-08-18',fd:'18 ago',t:'Colonia Iturraspe — San Roque',d:'',u:'',loc:'Col. Iturraspe',tipo:'patronal'},
+{f:'2026-08-19',fd:'19 ago',t:'Colonia Raquel — 1885 Aniversario · 141 años',d:'',u:'',loc:'Colonia Raquel',tipo:'patronal'},
+{f:'2026-08-21',fd:'21 ago',t:'María Juana — 1883 Aniversario · Santa Juana',d:'',u:'',loc:'María Juana',tipo:'patronal'},
+{f:'2026-08-22',fd:'22 ago',t:'Rafaela — Cena Asociación Civil Iniciativa Solidaria',d:'',u:'',loc:'Rafaela',tipo:'social'},
+{f:'2026-08-22',fd:'22 ago',t:'Angélica — Festejos 140 años',d:'',u:'https://www.instagram.com/p/DZ-W-HbuYSp/',loc:'Angélica',tipo:'patronal'},
+{f:'2026-08-23',fd:'23 ago',t:'Angélica — 1886 Aniversario',d:'',u:'',loc:'Angélica',tipo:'patronal'},
+{f:'2026-08-23',fd:'23 ago',t:'Fecha Puntable Rally de Regularidad — Autos Antiguos',d:'',u:'',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-08-27',fd:'27–30 ago',t:'Expo Rural Rafaela — 119° Edición',d:'Muestra que potencia las raíces productivas y el trabajo articulado.',u:'https://diariocastellanos.com.ar/locales/2026/06/29/se-presento-la-119-expo-rural-de-rafaela-una-muestra-que-potencia-las-raices-productivas-y-el-trabajo-articulado.htm',loc:'Rafaela',tipo:'feria'},
+{f:'2026-08-30',fd:'30 ago',t:'Colonia Cello — 1884 Aniversario · Santa Rosa de Lima',d:'',u:'',loc:'Col. Cello',tipo:'patronal'},
+{f:'2026-08-30',fd:'30 ago',t:'Galisteo — Santa Rosa de Lima',d:'',u:'',loc:'Galisteo',tipo:'patronal'},
+{f:'2026-08-31',fd:'31 ago',t:'Ramona — San Ramón Nonato',d:'',u:'',loc:'Ramona',tipo:'patronal'},
+
+// ── SEPTIEMBRE 2026 ──────────────────────────────────────────────────
+{f:'2026-09-02',fd:'2 sep',t:'Hugentobler — Fiestas Patronales · Centenario Comunal',d:'',u:'',loc:'Hugentobler',tipo:'patronal'},
+{f:'2026-09-07',fd:'7 sep',t:'Aurelia — 1881 Aniversario · San Grato',d:'',u:'',loc:'Aurelia',tipo:'patronal'},
+{f:'2026-09-08',fd:'8 sep',t:'Col. Fidela — 1886 Aniversario · Virgen María',d:'',u:'',loc:'Fidela',tipo:'patronal'},
+{f:'2026-09-08',fd:'8 sep',t:'Tacurales — 1894 Aniversario · María Auxiliadora',d:'',u:'',loc:'Tacurales',tipo:'patronal'},
+{f:'2026-09-08',fd:'8 sep',t:'Esmeralda — Natividad de María',d:'',u:'',loc:'Esmeralda',tipo:'patronal'},
+{f:'2026-09-08',fd:'8 sep',t:'Plaza Clucellas — 1885 Aniversario · Natividad María Santísima',d:'',u:'',loc:'Plaza Clucellas',tipo:'patronal'},
+{f:'2026-09-06',fd:'6–8 sep',t:'Fiestas Patronales de Clucellas',d:'',u:'',loc:'Est. Clucellas',tipo:'patronal'},
+{f:'2026-09-12',fd:'12–13 sep',t:'San Vicente — 28° FINACO',d:'',u:'',loc:'San Vicente',tipo:'feria'},
+{f:'2026-09-12',fd:'12 sep – 26 dic',t:'Juegos Panamericanos — Rafaela',d:'',u:'',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-09-24',fd:'24 sep',t:'Estación Clucellas — 1888 Aniversario · Nuestra Sra. de la Merced',d:'',u:'',loc:'Est. Clucellas',tipo:'patronal'},
+{f:'2026-09-24',fd:'24 sep',t:'Frontera — Nuestra Señora de la Merced',d:'',u:'',loc:'Frontera',tipo:'patronal'},
+{f:'2026-09-26',fd:'26 sep',t:'Zenón Pereyra — 1894 Aniversario · Santa Justina',d:'',u:'',loc:'Zenón Pereyra',tipo:'patronal'},
+{f:'2026-09-27',fd:'27 sep',t:'San Vicente — 1883 Aniversario · San Vicente de Paul',d:'',u:'',loc:'San Vicente',tipo:'patronal'},
+{f:'2026-09-29',fd:'29 sep',t:'Col. Bicha — 1894 Aniversario · San Miguel Arcángel',d:'',u:'',loc:'Col. Bicha',tipo:'patronal'},
+
+// ── OCTUBRE 2026 ─────────────────────────────────────────────────────
+{f:'2026-10-03',fd:'3–4 oct',t:'Angélica — Festival de Coplas, Jinetes y Potros',d:'',u:'',loc:'Angélica',tipo:'cultural'},
+{f:'2026-10-04',fd:'4 oct',t:'Bella Italia — 1881 Aniversario · San Francisco de Asís',d:'',u:'',loc:'Bella Italia',tipo:'patronal'},
+{f:'2026-10-07',fd:'7 oct',t:'Humberto Primo — 1884 Formación',d:'',u:'',loc:'Humberto Primo',tipo:'patronal'},
+{f:'2026-10-07',fd:'7 oct',t:'Colonia Raquel — Nuestra Señora del Rosario',d:'',u:'',loc:'Colonia Raquel',tipo:'patronal'},
+{f:'2026-10-12',fd:'12 oct',t:'Colonia Maúa — 1886 Aniversario · Nuestra Señora del Pilar',d:'',u:'',loc:'Maúa',tipo:'patronal'},
+{f:'2026-10-12',fd:'12 oct',t:'San Antonio — 1894 Aniversario',d:'',u:'',loc:'San Antonio',tipo:'patronal'},
+{f:'2026-10-14',fd:'14–16 oct',t:'Muestra Industrial «En el Centro de Todo»',d:'',u:'',loc:'Rafaela',tipo:'feria'},
+{f:'2026-10-15',fd:'15–18 oct',t:'Olimpiadas Rafaelinas — Club 9 de Julio',d:'',u:'',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-10-17',fd:'17 oct',t:'Est. Clucellas — 19° Fiesta Provincial Día del Inmigrante · Gran Noche Central',d:'',u:'',loc:'Est. Clucellas',tipo:'cultural'},
+{f:'2026-10-17',fd:'17 oct',t:'Eusebia — Fiesta Provincial del Ñoqui',d:'',u:'',loc:'Eusebia',tipo:'cultural'},
+{f:'2026-10-19',fd:'19 oct',t:'Sunchales — 1886 Tercera Fundación · 53 años como Ciudad',d:'',u:'',loc:'Sunchales',tipo:'patronal'},
+{f:'2026-10-24',fd:'24 oct',t:'Rafaela — 1881 Aniversario Formación',d:'',u:'',loc:'Rafaela',tipo:'patronal'},
+{f:'2026-10-29',fd:'29 oct',t:'Eusebia — 1899 Aniversario · Santa Eusebia',d:'',u:'',loc:'Eusebia',tipo:'patronal'},
+
+// ── NOVIEMBRE 2026 ───────────────────────────────────────────────────
+{f:'2026-11-01',fd:'1 nov',t:'Rafaela — Media Maratón 21K',d:'',u:'',loc:'Rafaela',tipo:'deportivo'},
+{f:'2026-11-04',fd:'4 nov',t:'Sunchales — San Carlos Borromeo',d:'',u:'',loc:'Sunchales',tipo:'patronal'},
+{f:'2026-11-04',fd:'4 nov',t:'Saguier — 1882 Aniversario · San Carlos Borromeo',d:'',u:'',loc:'Saguier',tipo:'patronal'},
+{f:'2026-11-04',fd:'4 nov',t:'Coronel Fraga — San Carlos Borromeo',d:'',u:'',loc:'Coronel Fraga',tipo:'patronal'},
+{f:'2026-11-16',fd:'16 nov',t:'Humberto Primo — Patronales Santa Margarita',d:'',u:'',loc:'Humberto Primo',tipo:'patronal'},
+
+// ── DICIEMBRE 2026 ───────────────────────────────────────────────────
+{f:'2026-12-05',fd:'5 dic',t:'Sunchales Non Stop 2026 — Ciclismo',d:'',u:'',loc:'Sunchales',tipo:'deportivo'},
+
+// ── 2027 ─────────────────────────────────────────────────────────────
+{f:'2027-01-16',fd:'16 ene',t:'Carnavales Clucelenses',d:'',u:'',loc:'Est. Clucellas',tipo:'cultural'},
+{f:'2027-02-27',fd:'27 feb',t:'2° Bingo Ilusión Celeste — Rafaela',d:'',u:'',loc:'Rafaela',tipo:'social'},
+];
+
+// ══ COLORES POR TIPO ══
+const TIPO_COLOR={patronal:'#f59e0b',cultural:'#a855f7',deportivo:'#3b82f6',social:'#22c55e',feria:'#f97316',educativo:'#06b6d4',politico:'#e63946'};
+const TIPO_LBL={patronal:'Patronal',cultural:'Cultural',deportivo:'Deportivo',social:'Social',feria:'Feria',educativo:'Educativo',politico:'Político'};
+
+// ══ LOCALIDADES PS (filtro dorado) ══
+const PS_LOCS_SET=new Set(['Sunchales','Rafaela','Col. Margarita','Colonia Raquel','Eusebia','Maúa','Zenón Pereyra','Colonia Aldao','Col. Iturraspe','Garibaldi']);
+
+// ══ MESES ══
+const MESES_FULL=['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function mesKey(f){return f.slice(0,7);}
+function mesFull(k){const[y,m]=k.split('-');return MESES_FULL[+m].toUpperCase()+' '+y;}
+function diaNum(f){return f.split('-')[2].replace(/^0/,'');}
+
+// ══ ESTADO FILTROS ══
+let filtroLoc='todos';
+let filtroTipos=new Set(['patronal','cultural','deportivo','social','feria','educativo','politico']);
+
+function matchEvent(ev){
+  if(filtroLoc==='todos') return filtroTipos.has(ev.tipo);
+  if(filtroLoc==='otros') return !PS_LOCS_SET.has(ev.loc) && filtroTipos.has(ev.tipo);
+  return ev.loc===filtroLoc && filtroTipos.has(ev.tipo);
+}
+
+// ══ RENDER ══
+function render(){
+  const main=document.getElementById('main');
+  const visible=AGENDA.filter(matchEvent);
+  if(!visible.length){main.innerHTML='<div class="ag-empty">No hay eventos para este filtro.</div>';return;}
+
+  // Agrupar por mes
+  const porMes={};
+  visible.forEach(ev=>{const k=mesKey(ev.f);if(!porMes[k])porMes[k]=[];porMes[k].push(ev);});
+
+  main.innerHTML=Object.keys(porMes).sort().map(k=>{
+    const evs=porMes[k];
+    return `<div class="mes-bloque">
+      <div class="mes-header" data-mes="${k}">
+        <div class="mes-nombre">${mesFull(k)}</div>
+        <span class="mes-count">${evs.length} evento${evs.length!==1?'s':''}</span>
+        <div class="mes-line"></div>
+        <span class="mes-toggle">▼</span>
+      </div>
+      <div class="mes-body" id="mes-${k}">
+        ${evs.map(ev=>evCard(ev)).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Click en card → modal
+  document.querySelectorAll('.ev').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const idx=+el.dataset.idx;
+      openModal(AGENDA.filter(matchEvent)[idx]);
+    });
+  });
+
+  // Toggle mes
+  document.querySelectorAll('.mes-header').forEach(h=>{
+    h.addEventListener('click',()=>{
+      const body=document.getElementById('mes-'+h.dataset.mes);
+      const tog=h.querySelector('.mes-toggle');
+      body.classList.toggle('hidden');
+      tog.classList.toggle('closed');
+    });
+  });
+}
+
+function evCard(ev,idx){
+  const col=TIPO_COLOR[ev.tipo]||'#64748b';
+  const dia=diaNum(ev.f);
+  const mesAbr=MESES_FULL[+ev.f.split('-')[1]].slice(0,3);
+  const psTag=PS_LOCS_SET.has(ev.loc)?`<span style="color:var(--gold);font-size:9px;margin-left:4px">🌹</span>`:'';
+  return `<div class="ev" data-tipo="${ev.tipo}" data-idx="${idx||0}">
+    <div class="ev-fecha">
+      <div class="ev-dia">${dia}</div>
+      <div class="ev-mes-mini">${mesAbr}</div>
+    </div>
+    <div class="ev-info">
+      <div class="ev-loc" style="color:${col}">${ev.loc}${psTag}</div>
+      <div class="ev-title">${ev.t}</div>
+      ${ev.u?'<div class="ev-link-ico">🔗 ver más</div>':''}
+    </div>
+    <div class="tipo-dot" style="background:${col}"></div>
+  </div>`;
+}
+
+// Reindex after filter
+function renderWithIndex(){
+  const main=document.getElementById('main');
+  const visible=AGENDA.filter(matchEvent);
+  if(!visible.length){main.innerHTML='<div class="ag-empty">No hay eventos para este filtro.</div>';return;}
+  const porMes={};
+  const idxMap=[];
+  visible.forEach((ev,i)=>{const k=mesKey(ev.f);if(!porMes[k])porMes[k]=[];porMes[k].push({ev,gi:i});});
+  main.innerHTML=Object.keys(porMes).sort().map(k=>{
+    const evs=porMes[k];
+    return `<div class="mes-bloque">
+      <div class="mes-header" data-mes="${k}">
+        <div class="mes-nombre">${mesFull(k)}</div>
+        <span class="mes-count">${evs.length} evento${evs.length!==1?'s':''}</span>
+        <div class="mes-line"></div>
+        <span class="mes-toggle">▼</span>
+      </div>
+      <div class="mes-body" id="mes-${k}">
+        ${evs.map(({ev,gi})=>evCard(ev,gi)).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.ev').forEach(el=>{
+    el.addEventListener('click',()=>{openModal(visible[+el.dataset.idx]);});
+  });
+  document.querySelectorAll('.mes-header').forEach(h=>{
+    h.addEventListener('click',()=>{
+      const body=document.getElementById('mes-'+h.dataset.mes);
+      const tog=h.querySelector('.mes-toggle');
+      body.classList.toggle('hidden');
+      tog.classList.toggle('closed');
+    });
+  });
+}
+
+// ══ MODAL ══
+function openModal(ev){
+  const col=TIPO_COLOR[ev.tipo]||'#64748b';
+  document.getElementById('mTipo').textContent=TIPO_LBL[ev.tipo]||ev.tipo;
+  document.getElementById('mTipo').style.color=col;
+  document.getElementById('mTitle').textContent=ev.t;
+  document.getElementById('mFecha').textContent='📅 '+ev.fd;
+  const locEl=document.getElementById('mLoc');
+  locEl.textContent=ev.loc;
+  locEl.style.background=col+'22';
+  locEl.style.color=col;
+  locEl.style.border='1px solid '+col+'44';
+  document.getElementById('mDesc').textContent=ev.d||'';
+  document.getElementById('mDesc').style.display=ev.d?'':'none';
+  document.getElementById('mCta').innerHTML=ev.u
+    ?`<a class="modal-cta" href="${ev.u}" target="_blank" rel="noopener">Ver más →</a>` :'';
+  document.getElementById('modalBg').classList.add('open');
+}
+document.getElementById('modalClose').addEventListener('click',()=>{document.getElementById('modalBg').classList.remove('open');});
+document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===document.getElementById('modalBg'))document.getElementById('modalBg').classList.remove('open');});
+
+// ══ FILTROS LOCALIDAD ══
+document.querySelectorAll('#locBtns .filter-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    filtroLoc=b.dataset.loc;
+    document.querySelectorAll('#locBtns .filter-btn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    renderWithIndex();
+  });
+});
+
+// ══ FILTROS TIPO (multi-toggle) ══
+document.querySelectorAll('#tipoBtns .tipo-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const t=b.dataset.t;
+    if(t==='todos'){
+      filtroTipos=new Set(['patronal','cultural','deportivo','social','feria','educativo','politico']);
+      document.querySelectorAll('#tipoBtns .tipo-btn').forEach(x=>x.classList.add('on'));
+    } else {
+      if(filtroTipos.has(t)){if(filtroTipos.size>1){filtroTipos.delete(t);b.classList.remove('on');}}
+      else{filtroTipos.add(t);b.classList.add('on');}
+      const allOn=filtroTipos.size===7;
+      document.querySelector('#tipoBtns .tipo-btn[data-t="todos"]').classList.toggle('on',allOn);
+    }
+    renderWithIndex();
+  });
+});
+
+renderWithIndex();
+</script>
+</body>
+</html>
