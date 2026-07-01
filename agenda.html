@@ -79,7 +79,7 @@ nav{background:var(--red);padding:10px 16px;display:flex;align-items:center;just
 .ev[data-tipo="politico"]::before{background:#e63946}
 .ev[data-tipo="social"]::before{background:#22c55e}
 .ev[data-tipo="feria"]::before{background:#f97316}
-.ev[data-tipo="educativo"]::before{background:#06b6d4}
+.ev[data-tipo="educativo"]::before{background:#ec4899}
 
 /* FECHA COLUMNA */
 .ev-fecha{min-width:42px;text-align:center;flex-shrink:0}
@@ -166,7 +166,7 @@ footer a{color:var(--muted);text-decoration:none}
     <button class="tipo-btn on" data-t="deportivo" style="background:#3b82f6;color:#fff">DEPORTIVO</button>
     <button class="tipo-btn on" data-t="social" style="background:#22c55e;color:#000">SOCIAL</button>
     <button class="tipo-btn on" data-t="feria" style="background:#f97316;color:#fff">FERIA</button>
-    <button class="tipo-btn on" data-t="educativo" style="background:#06b6d4;color:#fff">EDUCATIVO</button>
+    <button class="tipo-btn on" data-t="educativo" style="background:#ec4899;color:#fff">EDUCATIVO</button>
     <button class="tipo-btn on" data-t="politico" style="background:#e63946;color:#fff">POLÍTICO</button>
   </div>
 </div>
@@ -191,13 +191,14 @@ footer a{color:var(--muted);text-decoration:none}
 </div>
 
 <script>
+// ══ CONFIG — pegá aquí la URL del Apps Script una vez que lo deployés ══
+const SCRIPT_URL = ''; // agenda de eventos — doc separado
+// ═════════════════════════════════════════════════════════════════════
+
 // ══════════════════════════════════════════════════════════════════════
-//  AGENDA — Departamento Castellanos 2026/2027
-//  Fuente: Noti Castellanos de Iván Garbulsky
-//  Campos: t=título  d=descripción  u=URL  loc=localidad
-//          tipo=categoría  f=fecha ISO  fd=fecha display
+//  AGENDA FALLBACK — datos hardcodeados (se usan si no hay SCRIPT_URL)
 // ══════════════════════════════════════════════════════════════════════
-const AGENDA = [
+const AGENDA_FALLBACK = [
 
 // ── JULIO 2026 ──────────────────────────────────────────────────────
 {f:'2026-07-01',fd:'1–5 jul',t:'Padel Rafaela — Torneo AJPP',d:'Los mejores jugadores del ranking argentino llegan a Rafaela. Organizador: Víctor Fuhr.',u:'https://radiorafaela.com.ar/locales/los-mejores-jugadores-del-ranking-argentino-van-a-estar-en-rafaela-organizador-del-torneo-victor-fuhr',loc:'Rafaela',tipo:'deportivo'},
@@ -294,8 +295,110 @@ const AGENDA = [
 {f:'2027-02-27',fd:'27 feb',t:'2° Bingo Ilusión Celeste — Rafaela',d:'',u:'',loc:'Rafaela',tipo:'social'},
 ];
 
+// ══ PARSER DEL GOOGLE DOC ══
+const MMAP={'ENERO':'01','FEBRERO':'02','MARZO':'03','ABRIL':'04','MAYO':'05','JUNIO':'06',
+            'JULIO':'07','AGOSTO':'08','SEPTIEMBRE':'09','OCTUBRE':'10','NOVIEMBRE':'11','DICIEMBRE':'12'};
+const MABR=['','ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+const LOC_KW=[
+  ['Sunchales',['sunchales']],['Rafaela',['rafaela']],['Col. Margarita',['margarita']],
+  ['Colonia Raquel',['raquel']],['Eusebia',['eusebia']],['Maúa',['maua','maúa']],
+  ['Zenón Pereyra',['zenon','zenón']],['Colonia Aldao',['aldao']],
+  ['Col. Iturraspe',['iturraspe']],['Garibaldi',['garibaldi']],
+  ['Frontera',['frontera']],['San Vicente',['san vicente']],
+  ['María Juana',['m juana','maria juana','m.juana']],['Humberto Primo',['humberto']],
+  ['Susana',['susana']],['Ataliva',['ataliva']],['Bella Italia',['bella italia']],
+  ['Angélica',['angelica','angélica']],['Ramona',['ramona']],['Saguier',['saguier']],
+  ['Pte. Roca',['pte roca','presidente roca']],['Josefina',['josefina']],
+  ['Tacural',['tacural']],['Esmeralda',['esmeralda']],['Est. Clucellas',['clucellas','clucel']],
+  ['Eustolia',['eustolia']],['Col. Cello',['cello']],['Galisteo',['galisteo']],
+  ['Fidela',['fidela']],['Tacurales',['tacurales']],['Aurelia',['aurelia']],
+  ['Col. Bicha',['bicha']],['Hugentobler',['hughen','hugen']],
+  ['San Antonio',['san antonio']],['Coronel Fraga',['fraga']],
+  ['Castellanos',['castellanos']],
+];
+
+const TIPO_KW={
+  patronal:['aniversario','patronal','patronales','festejo','fiesta pcial','fiesta patria','fiesta provincia'],
+  cultural:['teatro','tango','ted','bagna','coplas','karma','concierto','cultural','orquesta','carnaval','bingo','jinetes'],
+  deportivo:['padel','futbol','fútbol','rally','maratón','olimpiadas','leoncito','ciclismo','desafio','desafío','finaco','atletismo'],
+  social:['cena','almuerzo','rotary','reunión','reunio','encuentro','celebra'],
+  feria:['expo','feria','muestra','seminario','artesanos'],
+  educativo:['escuela','colegio','educativo'],
+  politico:['licitación','licitacion','aprobación','hospital','traza','lanzamiento'],
+};
+
+function guessLoc(txt){
+  const low=txt.toLowerCase();
+  for(const[loc,kws]of LOC_KW) if(kws.some(k=>low.includes(k))) return loc;
+  return 'Departamento';
+}
+function guessTipo(txt){
+  const low=txt.toLowerCase();
+  for(const[t,kws]of Object.entries(TIPO_KW)) if(kws.some(k=>low.includes(k))) return t;
+  return 'patronal';
+}
+function cleanTitle(t){
+  return t.replace(/\s+/g,' ').replace(/^[-–,\s]+/,'').replace(/[-–,\s]+$/,'').trim();
+}
+
+function parseDocText(raw){
+  const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  const evs=[];
+  let year='2026', month='';
+  for(const line of lines){
+    const up=line.toUpperCase();
+    if(/^\d{4}$/.test(line)){year=line;continue;}
+    if(MMAP[up]){month=MMAP[up];continue;}
+    if(!month||!/^\d/.test(line)) continue;
+    // Extract URL
+    const urlM=line.match(/https?:\/\/\S+/);
+    const url=urlM?urlM[0].replace(/[,.)]+$/,''):'';
+    let rest=line.replace(url,'').replace(/\s+/g,' ').trim();
+    // Extract date(s)
+    const dM=rest.match(/^(\d{1,2})\s*(?:[AaYy][Ll]?\s+)?(\d{1,2})?\s/);
+    if(!dM) continue;
+    const d1=dM[1].padStart(2,'0');
+    const d2=dM[2]?dM[2].padStart(2,'0'):null;
+    rest=rest.slice(dM[0].length).trim();
+    const mNum=parseInt(month);
+    const fd=d2?`${+d1}–${+d2} ${MABR[mNum]}`:`${+d1} ${MABR[mNum]}`;
+    const f=`${year}-${month}-${d1}`;
+    const dest=/DESTACADO/i.test(rest);
+    const title=cleanTitle(rest.replace(/DESTACADO/gi,''));
+    const loc=guessLoc(title);
+    const tipo=guessTipo(title);
+    const ev={f,fd,t:title,u:url,loc,tipo};
+    if(dest) ev.dest=true;
+    evs.push(ev);
+  }
+  return evs.sort((a,b)=>a.f.localeCompare(b.f));
+}
+
+// ══ CARGA DE DATOS (doc en vivo o fallback) ══
+let AGENDA=AGENDA_FALLBACK;
+
+async function loadAgenda(){
+  if(!SCRIPT_URL){renderWithIndex();return;}
+  document.getElementById('main').innerHTML='<div class="ag-empty" style="padding:60px">⏳ Cargando agenda…</div>';
+  try{
+    const r=await fetch(SCRIPT_URL);
+    const j=await r.json();
+    if(j.ok && j.text){
+      const parsed=parseDocText(j.text);
+      if(parsed.length>0){
+        AGENDA=parsed;
+        // Actualizar badge
+        const badge=document.querySelector('.year-badge');
+        if(badge) badge.title='Actualizado: '+new Date(j.ts).toLocaleString('es-AR');
+      }
+    }
+  }catch(e){console.warn('Agenda: usando datos locales',e);}
+  renderWithIndex();
+}
+
 // ══ COLORES POR TIPO ══
-const TIPO_COLOR={patronal:'#f59e0b',cultural:'#a855f7',deportivo:'#3b82f6',social:'#22c55e',feria:'#f97316',educativo:'#06b6d4',politico:'#e63946'};
+const TIPO_COLOR={patronal:'#f59e0b',cultural:'#a855f7',deportivo:'#3b82f6',social:'#22c55e',feria:'#f97316',educativo:'#ec4899',politico:'#e63946'};
 const TIPO_LBL={patronal:'Patronal',cultural:'Cultural',deportivo:'Deportivo',social:'Social',feria:'Feria',educativo:'Educativo',politico:'Político'};
 
 // ══ LOCALIDADES PS (filtro dorado) ══
@@ -309,12 +412,13 @@ function diaNum(f){return f.split('-')[2].replace(/^0/,'');}
 
 // ══ ESTADO FILTROS ══
 let filtroLoc='todos';
-let filtroTipos=new Set(['patronal','cultural','deportivo','social','feria','educativo','politico']);
+let filtroTipo='todos'; // single-select
 
 function matchEvent(ev){
-  if(filtroLoc==='todos') return filtroTipos.has(ev.tipo);
-  if(filtroLoc==='otros') return !PS_LOCS_SET.has(ev.loc) && filtroTipos.has(ev.tipo);
-  return ev.loc===filtroLoc && filtroTipos.has(ev.tipo);
+  const tipoOk = filtroTipo==='todos' || ev.tipo===filtroTipo;
+  if(filtroLoc==='todos') return tipoOk;
+  if(filtroLoc==='otros') return !PS_LOCS_SET.has(ev.loc) && tipoOk;
+  return ev.loc===filtroLoc && tipoOk;
 }
 
 // ══ RENDER ══
@@ -447,24 +551,17 @@ document.querySelectorAll('#locBtns .filter-btn').forEach(b=>{
   });
 });
 
-// ══ FILTROS TIPO (multi-toggle) ══
+// ══ FILTROS TIPO (single-select) ══
 document.querySelectorAll('#tipoBtns .tipo-btn').forEach(b=>{
   b.addEventListener('click',()=>{
-    const t=b.dataset.t;
-    if(t==='todos'){
-      filtroTipos=new Set(['patronal','cultural','deportivo','social','feria','educativo','politico']);
-      document.querySelectorAll('#tipoBtns .tipo-btn').forEach(x=>x.classList.add('on'));
-    } else {
-      if(filtroTipos.has(t)){if(filtroTipos.size>1){filtroTipos.delete(t);b.classList.remove('on');}}
-      else{filtroTipos.add(t);b.classList.add('on');}
-      const allOn=filtroTipos.size===7;
-      document.querySelector('#tipoBtns .tipo-btn[data-t="todos"]').classList.toggle('on',allOn);
-    }
+    filtroTipo=b.dataset.t;
+    document.querySelectorAll('#tipoBtns .tipo-btn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
     renderWithIndex();
   });
 });
 
-renderWithIndex();
+loadAgenda();
 </script>
 </body>
 </html>

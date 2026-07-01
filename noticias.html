@@ -169,10 +169,10 @@ footer a{color:var(--muted);text-decoration:none}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
-//  DATOS — digest del 25/06/2026
-//  Campos: t=título  d=descripción  u=URL  s=sección
+//  DATOS — fallback estático (se reemplaza si el doc remoto carga bien)
+//  Campos: t=título  d=descripción  u=URL  s=sección  loc=localidad  dest=destacada
 // ═══════════════════════════════════════════════════════════════════════
-const NOTICIAS=[
+let NOTICIAS=[
 // ── SUNCHALES ──────────────────────────────────────────────────────────
 {t:'Reforma tributaria: Delmastro instó a transformar el diálogo en decisiones concretas',d:'',u:'https://www.instagram.com/p/DZ-p04jJiul/',s:'Sunchales'},
 {t:'Reunión por la Ruta Nacional Nº 34',d:'La Agencia de Desarrollo de Sunchales mantuvo una reunión con Vialidad Nacional para abordar la situación actual de la RN 34, especialmente en el tramo Sunchales–Rafaela.',u:'https://www.sunchaleshoy.com.ar/reunion-por-la-ruta-nacional-no-34/',s:'Sunchales'},
@@ -357,13 +357,6 @@ function matchLoc(n,f){
   return loc===f;
 }
 
-// Conteos
-document.getElementById('cnt-todos').textContent=NOTICIAS.length;
-PS_LOCS.forEach(s=>{
-  const el=document.getElementById('cnt-'+s);
-  if(el) el.textContent=NOTICIAS.filter(n=>matchLoc(n,s)).length||'';
-});
-
 // ─── MICROLINK OG-IMAGE OBSERVER ──────────────────────────────────────────
 const ogObserver=new IntersectionObserver(async entries=>{
   for(const entry of entries){
@@ -445,8 +438,146 @@ btns.forEach(b=>b.addEventListener('click',()=>{
   render();
 }));
 
-renderDest();
-render();
+// ─── AUTO-LOAD DESDE GOOGLE DOC ────────────────────────────────────────────
+const SCRIPT_URL_NOTICIAS='https://script.google.com/macros/s/AKfycbwmpSY0mT7oEx_Ya0sdmiUw0qb-7u6McS54f8qzmt9sShsCQ-xs92CTb6Fdln2xb3JY/exec';
+
+// Keywords de localidad para inferir `loc` en items de DEPARTAMENTO
+const LOC_KW_N=[
+  ['Sunchales',['sunchales']],
+  ['Rafaela',['rafaela']],
+  ['Col. Margarita',['col. margarita','colonia margarita']],
+  ['Colonia Raquel',['colonia raquel','col. raquel']],
+  ['Eusebia',['eusebia']],
+  ['Maúa',['maúa','maua']],
+  ['Zenón Pereyra',['zenón pereyra','zenon pereyra']],
+  ['Colonia Aldao',['colonia aldao','col. aldao','aldao']],
+  ['Col. Iturraspe',['iturraspe']],
+  ['Garibaldi',['garibaldi']],
+  ['Ataliva',['ataliva']],
+  ['San Vicente',['san vicente']],
+  ['María Juana',['maría juana','maria juana']],
+  ['Humberto Primo',['humberto primo']],
+  ['Bella Italia',['bella italia']],
+  ['Ramona',['ramona']],
+  ['Frontera',['frontera']],
+  ['Angélica',['angélica','angelica']],
+];
+
+function guessLocN(txt){
+  const lc=txt.toLowerCase();
+  for(const [loc,kws] of LOC_KW_N){
+    if(kws.some(k=>lc.includes(k))) return loc;
+  }
+  return '';
+}
+
+function parseNoticiasDoc(text){
+  // Mapeo de encabezados de sección
+  const SEC_MAP=[
+    [/^sunchales/i,    {s:'Sunchales',   loc:'Sunchales'}],
+    [/^rafaela/i,      {s:'Rafaela',     loc:'Rafaela'}],
+    [/^departamento/i, {s:'Departamento',loc:''}],
+  ];
+
+  const items=[];
+  let curSec={s:'Departamento',loc:''};
+  let skip=false;
+
+  // Dividir en párrafos (2+ saltos de línea)
+  const paras=text.split(/\n{2,}/).map(p=>p.trim()).filter(p=>p.length>0);
+
+  for(const para of paras){
+    // Limpiar asteriscos y guiones bajos (formato Google Docs bold/italic)
+    const cleaned=para.replace(/[*_]/g,'').trim();
+    const lines=cleaned.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    if(!lines.length) continue;
+
+    // ¿Es encabezado de sección?
+    let isSec=false;
+    for(const [re,sec] of SEC_MAP){
+      if(re.test(lines[0]) && lines.length<=2){
+        curSec=sec; skip=false; isSec=true; break;
+      }
+    }
+    // Sección PROVINCIA u otras → skip hasta próxima sección
+    if(!isSec && /^provincia/i.test(lines[0]) && lines.length<=2){
+      skip=true; continue;
+    }
+    if(isSec) continue;
+    if(skip) continue;
+
+    // Separar líneas con URL de líneas de texto
+    const urls=[];
+    const textLines=[];
+    for(const l of lines){
+      const m=l.match(/https?:\/\/\S+/);
+      if(m){
+        urls.push(m[0].replace(/[,.)\]>]+$/,''));
+        const before=l.slice(0,m.index).replace(/^video\s*/i,'').trim();
+        if(before) textLines.push(before);
+      } else {
+        textLines.push(l);
+      }
+    }
+
+    const mainUrl=urls[0]||'';
+    if(!textLines.length && !mainUrl) continue;
+
+    // Saltar si es solo un enlace a docs.google.com (tabla de contenidos)
+    if(!textLines.length && mainUrl.includes('docs.google.com')) continue;
+
+    // Detectar DESTACADO
+    const fullRaw=textLines.join(' ');
+    const dest=/DESTACADO/i.test(fullRaw);
+
+    const t=(textLines[0]||domain(mainUrl)||'').replace(/DESTACADO/gi,'').trim();
+    const d=textLines.slice(1).join(' ').replace(/\s+/g,' ').replace(/DESTACADO/gi,'').trim();
+    if(!t) continue;
+
+    const loc=curSec.loc||guessLocN(t+' '+d);
+    const item={t,d,u:mainUrl,s:curSec.s,loc};
+    if(dest) item.dest=true;
+    items.push(item);
+  }
+
+  return items;
+}
+
+function updateCounts(){
+  document.getElementById('cnt-todos').textContent=NOTICIAS.length;
+  PS_LOCS.forEach(s=>{
+    const el=document.getElementById('cnt-'+s);
+    if(el) el.textContent=NOTICIAS.filter(n=>matchLoc(n,s)).length||'';
+  });
+}
+
+async function init(){
+  // Render inmediato con datos de fallback (sin esperar al fetch)
+  updateCounts();
+  renderDest();
+  render();
+
+  if(!SCRIPT_URL_NOTICIAS) return;
+  try{
+    const r=await fetch(SCRIPT_URL_NOTICIAS);
+    const j=await r.json();
+    if(j.ok && j.text){
+      const parsed=parseNoticiasDoc(j.text);
+      if(parsed.length>=3){
+        NOTICIAS=parsed;
+        // Actualizar badge de fecha a hoy
+        const badge=document.getElementById('dateBadge');
+        if(badge) badge.textContent=new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+        // Re-render con datos frescos
+        updateCounts();
+        renderDest();
+        render();
+      }
+    }
+  }catch(e){ console.warn('Noticias: usando datos locales.',e); }
+}
+
+init();
 </script>
 </body>
 </html>
