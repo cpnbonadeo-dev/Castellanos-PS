@@ -113,6 +113,8 @@ html,body{height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#0
 /* ── VÍNCULO BTN ── */
 .vnc-add-btn{width:100%;padding:11px;border:1px dashed #2a3a5a;border-radius:8px;background:none;color:#60a5fa;font-size:13px;font-weight:700;cursor:pointer;margin:10px 14px 0;width:calc(100% - 28px)}
 .vnc-add-btn:hover{border-color:#e63946;color:#e63946;background:rgba(230,57,70,.04)}
+.vnc-add-btn-top{flex-shrink:0;padding:6px 12px;border:1px solid #2a3a5a;border-radius:16px;background:rgba(96,165,250,.08);color:#60a5fa;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.vnc-add-btn-top:hover{border-color:#60a5fa;background:rgba(96,165,250,.15)}
 
 /* ── NAV ── */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;flex-shrink:0;border-top:1px solid #1e2d45;background:#13182a}
@@ -487,8 +489,13 @@ function renderCard(){
   document.getElementById('cardArea').innerHTML=`
   <div class="card">
     <div class="card-top">
-      <div class="card-nombre">${esc(b.n)}</div>
-      <div class="card-tipo">${b.G?'Municipio':'Comuna'}</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div>
+          <div class="card-nombre">${esc(b.n)}</div>
+          <div class="card-tipo">${b.G?'Municipio':'Comuna'}</div>
+        </div>
+        <button class="vnc-add-btn-top" onclick="abrirModal('${b.id}','${esc(b.n)}')">+ Sumar info</button>
+      </div>
       <div class="card-tier-row">
         <span class="tier t-${tier}">${TIER_LBL[tier]}</span>
         <span class="card-gov">${esc(b.px)}</span>
@@ -515,7 +522,6 @@ function renderCard(){
     <div class="csec">
       <div class="csec-title">🔗 Vínculos registrados (${vncs.length})</div>
       ${vncsHtml}
-      <button class="vnc-add-btn" onclick="abrirModal('${b.id}','${esc(b.n)}')">+ Agregar contacto u oportunidad</button>
     </div>
 
     ${evalResumen||miEvalTxt?`<div class="csec">${evalResumen}${miEvalTxt}</div>`:''}
