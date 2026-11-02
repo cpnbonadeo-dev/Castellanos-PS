@@ -100,13 +100,12 @@ html,body{height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#0
 .eval-section{padding:12px 14px;border-bottom:1px solid #1e2d45}
 .eval-pregunta{font-size:12px;color:#778;margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .eval-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.eval-btn{padding:10px 6px;border-radius:8px;border:2px solid transparent;font-size:12px;font-weight:800;cursor:pointer;background:#0d1b2e;color:#aaa;border-color:#1e2d45;text-align:center;line-height:1.3;transition:all .15s}
-.eval-btn:hover{border-color:#e63946;color:#e63946}
+.eval-btn{padding:12px 6px;border-radius:8px;border:2px solid #1e2d45;font-size:11px;font-weight:800;cursor:pointer;background:#0d1b2e;color:#aaa;text-align:center;line-height:1.4;transition:all .15s}
+.eval-btn:hover{border-color:#e63946;color:#e63946;background:rgba(230,57,70,.06)}
 .eval-btn.sel-actuar{background:rgba(40,167,69,.2);border-color:#28a745;color:#28a745;box-shadow:0 0 0 3px rgba(40,167,69,.2)}
 .eval-btn.sel-intentar{background:rgba(245,158,11,.18);border-color:#f59e0b;color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2)}
 .eval-btn.sel-no{background:rgba(107,114,128,.15);border-color:#6b7280;color:#6b7280;box-shadow:0 0 0 3px rgba(107,114,128,.15)}
 .eval-btn.sel-no_se{background:rgba(96,165,250,.12);border-color:#60a5fa;color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.15)}
-.eval-btn.actuar{grid-column:1/-1}
 /* Flash al guardar */
 @keyframes cardFlash{0%{opacity:1}30%{opacity:.4}100%{opacity:1}}
 .card.flash{animation:cardFlash .5s ease}
@@ -279,12 +278,14 @@ const TIPO_LBL  = {persona:'👤 Persona',institucion:'🏛 Institución',club:'
 const ACCION_LBL= {contacto:'📞 Contacto',reunion:'🤝 Reunión',presentacion:'🎤 Presentación',visita:'🚗 Visita',actividad:'📅 Actividad',otra:'✏️ Otra'};
 const PRES_LBL  = {fuerte:'🟢 Fuerte',debil:'🟠 Débil',nula:'🔴 Sin presencia',sin_datos:'⚫ Sin datos'};
 const TIER_LBL  = {territorio:'TERRITORIO',presencia:'PRESENCIA',potencial:'POTENCIAL',vincular:'VINCULAR'};
-const EVAL_DEF  = {
-  actuar:  {ico:'✅', txt:'Vamos a hacer algo',   cls:'sel-actuar',  chip:'ec-actuar'},
-  intentar:{ico:'🔄', txt:'Habría que intentarlo', cls:'sel-intentar',chip:'ec-intentar'},
-  no:      {ico:'🚫', txt:'No conviene por ahora', cls:'sel-no',      chip:'ec-no'},
-  no_se:   {ico:'🤷', txt:'No lo sé',              cls:'sel-no_se',   chip:'ec-no_se'},
-};
+// Orden: positivo | dudoso arriba / negativo | sin datos abajo
+const EVAL_DEF  = [
+  {k:'actuar',  ico:'✅', txt:'Vamos a hacer algo',   cls:'sel-actuar',  chip:'ec-actuar'},
+  {k:'intentar',ico:'🔄', txt:'Habría que intentarlo', cls:'sel-intentar',chip:'ec-intentar'},
+  {k:'no',      ico:'🚫', txt:'No conviene por ahora', cls:'sel-no',      chip:'ec-no'},
+  {k:'no_se',   ico:'🤷', txt:'No lo sé',              cls:'sel-no_se',   chip:'ec-no_se'},
+];
+const EVAL_MAP = Object.fromEntries(EVAL_DEF.map(e=>[e.k,e]));
 
 // ── SUPABASE ───────────────────────────────────────────────────
 const supa=(path,opts={})=>{
@@ -443,10 +444,11 @@ function renderCard(){
   document.getElementById('btnPrev').disabled=curIdx===0;
   document.getElementById('btnNext').disabled=curIdx===lista.length-1;
 
-  // Evaluación buttons state
-  const evalBtns=Object.entries(EVAL_DEF).map(([k,v])=>`
-    <button class="eval-btn ${miEval?.evaluacion===k?v.cls:''}" onclick="evaluar('${b.id}','${b.n}','${k}')">
-      ${v.ico} ${v.txt}
+  // Evaluación buttons (2x2 grid)
+  const evalBtns=EVAL_DEF.map(v=>`
+    <button class="eval-btn ${miEval?.evaluacion===v.k?v.cls:''}" onclick="evaluar('${b.id}','${b.n}','${v.k}')">
+      <div style="font-size:18px;margin-bottom:3px">${v.ico}</div>
+      <div>${v.txt}</div>
     </button>`).join('');
 
   // Vínculos
@@ -468,7 +470,7 @@ function renderCard(){
       ${cnt.no?`<span class="eval-chip ec-no">🚫 ${cnt.no} no</span>`:''}
       ${cnt.no_se?`<span class="eval-chip ec-no_se">🤷 ${cnt.no_se} no sé</span>`:''}
     </div>`:'';
-  const miEvalTxt=miEval?`<div class="mi-eval">Tu evaluación: <strong>${EVAL_DEF[miEval.evaluacion]?.ico} ${EVAL_DEF[miEval.evaluacion]?.txt}</strong></div>`:'';
+  const miEvalTxt=miEval?`<div class="mi-eval">Tu evaluación: <strong>${EVAL_MAP[miEval.evaluacion]?.ico} ${EVAL_MAP[miEval.evaluacion]?.txt}</strong></div>`:'';
 
   document.getElementById('cardArea').innerHTML=`
   <div class="card">
@@ -528,7 +530,7 @@ async function evaluar(locId, locN, tipo){
   if(card){card.classList.add('flash');setTimeout(()=>card.classList.remove('flash'),500);}
 
   // Toast con el nombre de la localidad
-  const def=EVAL_DEF[tipo];
+  const def=EVAL_MAP[tipo];
   showToast(def.ico+' '+locN+': '+def.txt);
 
   // Avanza a la siguiente tarjeta después de un momento
