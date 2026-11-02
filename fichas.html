@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Fichas PS Castellanos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#0d1b2e;color:#e0e0e0}
+
+/* ── LOGIN ── */
+.login-screen{position:fixed;inset:0;background:#0d1b2e;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-box{background:#16213e;border-radius:14px;padding:30px 24px;width:100%;max-width:340px;border-top:4px solid #e63946}
+.login-box h2{color:#fff;font-size:19px;font-weight:800;margin-bottom:3px}
+.login-sub{color:#556;font-size:12px;margin-bottom:22px}
+.lbl{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#778;margin-bottom:3px;margin-top:14px}
+.linp{width:100%;padding:11px 12px;border-radius:7px;border:1px solid #2a3a5a;background:#0d1b2e;color:#fff;font-size:14px}
+.linp:focus{outline:2px solid #e63946;border-color:transparent}
+.lerr{color:#f55;font-size:12px;margin-top:8px;min-height:16px}
+.lbtn{width:100%;margin-top:16px;padding:12px;background:#e63946;color:#fff;border:none;border-radius:7px;font-size:15px;font-weight:800;cursor:pointer}
+.lbtn:hover{background:#c62828}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto}
+
+/* ── HEADER ── */
+.hdr{background:#e63946;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.hdr-left h1{color:#fff;font-size:15px;font-weight:800}
+.hdr-left .hsub{color:#ffcdd2;font-size:10px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.hdr-user{background:rgba(0,0,0,.3);border-radius:16px;padding:3px 10px 3px 6px;display:flex;align-items:center;gap:6px}
+.hdr-av{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.hdr-nm{font-size:11px;color:#fff;font-weight:700;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hdr-out{font-size:10px;color:#ffcdd2;background:none;border:none;cursor:pointer;text-decoration:underline}
+
+/* ── PROGRESS ── */
+.progress-bar{background:#13182a;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid #1e2d45}
+.prog-txt{font-size:12px;color:#556;font-weight:700}
+.prog-track{flex:1;height:4px;background:#1e2d45;border-radius:2px;margin:0 10px}
+.prog-fill{height:100%;background:#e63946;border-radius:2px;transition:width .3s}
+.prog-filter{font-size:11px;color:#445;cursor:pointer;background:none;border:none;text-decoration:underline}
+
+/* ── CARD AREA ── */
+.card-area{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+
+/* ── CARD ── */
+.card{background:#16213e;border-radius:12px;border:1px solid #1e2d45;overflow:hidden}
+
+.card-top{padding:14px 14px 12px;border-bottom:1px solid #1e2d45}
+.card-nombre{font-size:20px;font-weight:800;color:#fff;line-height:1.1}
+.card-tipo{font-size:10px;color:#778;margin-top:1px}
+.card-tier-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.tier{font-size:10px;font-weight:800;letter-spacing:.7px;padding:3px 9px;border-radius:4px}
+.t-territorio{background:rgba(230,57,70,.2);color:#e63946;border:1px solid rgba(230,57,70,.4)}
+.t-presencia{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+.t-potencial{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.25)}
+.t-vincular{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
+.card-gov{font-size:11px;color:#778;flex:1;line-height:1.3}
+
+/* SECCIONES INTERNAS */
+.csec{padding:10px 14px;border-bottom:1px solid #1e2d45}
+.csec-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#445;margin-bottom:7px}
+.kpis{display:flex;gap:8px;flex-wrap:wrap}
+.kpi{background:#0d1b2e;border-radius:6px;padding:7px 10px;flex:1;min-width:90px}
+.kpi-val{font-size:16px;font-weight:800;color:#fff}
+.kpi-lbl{font-size:10px;color:#445;margin-top:1px}
+.kpi-red .kpi-val{color:#e63946}
+.kpi-green .kpi-val{color:#4caf50}
+.kpi-blue .kpi-val{color:#60a5fa}
+
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #0d1b2e;font-size:12px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:#556;font-size:11px}
+.info-val{color:#e0e0e0;font-weight:600;text-align:right;max-width:60%}
+.val-fuerte{color:#4caf50}
+.val-debil{color:#fd7e14}
+.val-nula{color:#e63946}
+
+/* VÍNCULOS MINI */
+.vnc-mini{background:#0d1b2e;border-radius:6px;padding:8px 10px;margin-bottom:5px;border-left:3px solid #60a5fa;font-size:12px}
+.vnc-mini.persona{border-left-color:#e63946}
+.vnc-mini-nombre{font-weight:700;color:#e0e0e0}
+.vnc-mini-tipo{font-size:10px;color:#445}
+.vnc-mini-op{color:#4caf50;font-size:11px;margin-top:2px}
+.vnc-mini-meta{font-size:10px;color:#334;margin-top:3px}
+.no-vnc{color:#334;font-size:12px;font-style:italic}
+
+/* EVALUACIONES RESUMEN */
+.eval-resumen{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.eval-chip{font-size:11px;padding:3px 9px;border-radius:12px;font-weight:700}
+.ec-actuar{background:rgba(40,167,69,.15);color:#28a745;border:1px solid rgba(40,167,69,.3)}
+.ec-intentar{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25)}
+.ec-no{background:rgba(107,114,128,.1);color:#6b7280;border:1px solid rgba(107,114,128,.2)}
+.ec-no_se{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2)}
+.mi-eval{font-size:12px;color:#aaa;margin-bottom:8px;padding:8px 10px;background:#0d1b2e;border-radius:6px;border-left:3px solid #e63946}
+.mi-eval strong{color:#fff}
+
+/* ── EVALUACIÓN BUTTONS ── */
+.eval-section{padding:12px 14px;border-bottom:1px solid #1e2d45}
+.eval-pregunta{font-size:12px;color:#778;margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.eval-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.eval-btn{padding:10px 6px;border-radius:8px;border:2px solid transparent;font-size:12px;font-weight:800;cursor:pointer;background:#0d1b2e;color:#aaa;border-color:#1e2d45;text-align:center;line-height:1.3;transition:all .15s}
+.eval-btn:hover{border-color:#e63946;color:#e63946}
+.eval-btn.sel-actuar{background:rgba(40,167,69,.2);border-color:#28a745;color:#28a745;box-shadow:0 0 0 3px rgba(40,167,69,.2)}
+.eval-btn.sel-intentar{background:rgba(245,158,11,.18);border-color:#f59e0b;color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2)}
+.eval-btn.sel-no{background:rgba(107,114,128,.15);border-color:#6b7280;color:#6b7280;box-shadow:0 0 0 3px rgba(107,114,128,.15)}
+.eval-btn.sel-no_se{background:rgba(96,165,250,.12);border-color:#60a5fa;color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.15)}
+.eval-btn.actuar{grid-column:1/-1}
+/* Flash al guardar */
+@keyframes cardFlash{0%{opacity:1}30%{opacity:.4}100%{opacity:1}}
+.card.flash{animation:cardFlash .5s ease}
+
+/* ── VÍNCULO BTN ── */
+.vnc-add-btn{width:100%;padding:11px;border:1px dashed #2a3a5a;border-radius:8px;background:none;color:#60a5fa;font-size:13px;font-weight:700;cursor:pointer;margin:10px 14px 0;width:calc(100% - 28px)}
+.vnc-add-btn:hover{border-color:#e63946;color:#e63946;background:rgba(230,57,70,.04)}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;flex-shrink:0;border-top:1px solid #1e2d45;background:#13182a}
+.nav-btn{padding:10px 22px;border-radius:8px;border:1px solid #2a3a5a;background:#16213e;color:#aaa;font-size:13px;font-weight:700;cursor:pointer}
+.nav-btn:hover:not(:disabled){background:#1e3a5f;color:#fff}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.nav-pos{font-size:13px;color:#556;font-weight:700}
+
+/* ── MODAL VÍNCULO ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#16213e;border-radius:14px 14px 0 0;padding:20px 18px 32px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;border-top:4px solid #e63946}
+.modal-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
+.modal-loc{font-size:11px;color:#e63946;font-weight:700;margin-bottom:16px}
+.mrow{margin-bottom:11px}
+.mrow label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#778;margin-bottom:3px}
+.mrow input,.mrow select,.mrow textarea{width:100%;padding:9px 11px;border-radius:7px;border:1px solid #2a3a5a;background:#0d1b2e;color:#e0e0e0;font-size:13px;font-family:inherit}
+.mrow textarea{min-height:70px;resize:vertical;line-height:1.5}
+.mrow input:focus,.mrow select:focus,.mrow textarea:focus{outline:2px solid #e63946;border-color:transparent}
+.mrow input::placeholder,.mrow textarea::placeholder{color:#334}
+.req{color:#e63946}
+.merr{color:#f55;font-size:12px;min-height:16px;margin-bottom:4px}
+.macts{display:flex;gap:8px}
+.mbtn{flex:1;padding:11px;border-radius:7px;border:none;font-size:13px;font-weight:800;cursor:pointer}
+.mbtn-red{background:#e63946;color:#fff}
+.mbtn-red:hover{background:#c62828}
+.mbtn-red:disabled{background:#444;cursor:not-allowed}
+.mbtn-gray{background:#2a3a5a;color:#aaa}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:#28a745;color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;font-weight:700;opacity:0;transition:all .3s;z-index:900;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:#e63946}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h2>📋 Fichas PS Castellanos</h2>
+    <div class="login-sub">Identificate para poder registrar aportes</div>
+    <label class="lbl">Nombre y apellido</label>
+    <input class="linp" type="text" id="lNombre" placeholder="Nombre Apellido" autocomplete="name"
+      onkeydown="if(event.key==='Enter')document.getElementById('lDni').focus()">
+    <label class="lbl">DNI</label>
+    <input class="linp" type="text" id="lDni" placeholder="12345678" inputmode="numeric"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="lerr" id="lErr"></div>
+    <button class="lbtn" onclick="doLogin()">Entrar →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="appDiv" style="display:none">
+
+  <div class="hdr">
+    <div class="hdr-left">
+      <h1>📋 Fichas territoriales</h1>
+      <div class="hsub">PS Departamento Castellanos</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-user">
+        <div class="hdr-av" id="hdrAv">?</div>
+        <div class="hdr-nm" id="hdrNm"></div>
+        <button class="hdr-out" onclick="logout()">salir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <span class="prog-txt" id="progTxt">1 / 46</span>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:2%"></div></div>
+    <button class="prog-filter" onclick="toggleFiltros()">Filtrar ▾</button>
+  </div>
+
+  <!-- Filtros colapsables -->
+  <div id="filtrosDiv" style="display:none;background:#13182a;padding:8px 12px;border-bottom:1px solid #1e2d45;display:none">
+    <select id="filtTier" onchange="aplicarFiltro()" style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid #2a3a5a;background:#16213e;color:#e0e0e0;font-size:12px">
+      <option value="">Todos los niveles</option>
+      <option value="territorio">🔴 Territorio</option>
+      <option value="presencia">🟡 Presencia</option>
+      <option value="potencial">🔵 Potencial</option>
+      <option value="vincular">⚪ Vincular</option>
+    </select>
+  </div>
+
+  <div class="card-area" id="cardArea">
+    <div style="text-align:center;padding:40px;color:#334">Cargando...</div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btnPrev" onclick="irA(curIdx-1)" disabled>← Anterior</button>
+    <span class="nav-pos" id="navPos">1 / 46</span>
+    <button class="nav-btn" id="btnNext" onclick="irA(curIdx+1)">Siguiente →</button>
+  </div>
+
+</div>
+
+<!-- MODAL VÍNCULO -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)cerrarModal()">
+  <div class="modal">
+    <div class="modal-title">🔗 Registrar contacto u oportunidad</div>
+    <div class="modal-loc" id="mLoc">—</div>
+    <input type="hidden" id="mLocId">
+    <div class="mrow">
+      <label>Nombre <span class="req">*</span></label>
+      <input type="text" id="mNombre" placeholder="Persona, club, institución...">
+    </div>
+    <div class="mrow">
+      <label>Tipo</label>
+      <select id="mTipo">
+        <option value="persona">👤 Persona</option>
+        <option value="institucion">🏛 Institución</option>
+        <option value="club">🏟 Club u organización social</option>
+        <option value="escuela">🎓 Escuela o cooperadora</option>
+        <option value="iglesia">⛪ Iglesia u organización comunitaria</option>
+        <option value="comercio">🏪 Comercio o actividad productiva</option>
+        <option value="cultural">🎭 Espacio cultural o deportivo</option>
+        <option value="otro">📌 Otro</option>
+      </select>
+    </div>
+    <div class="mrow">
+      <label>¿Cómo me vinculo / cómo puedo acercarme? <span class="req">*</span></label>
+      <textarea id="mVinculo" placeholder="Ej: Lo conozco del club, es familiar..."></textarea>
+    </div>
+    <div class="mrow">
+      <label>¿Qué oportunidad veo?</label>
+      <textarea id="mOportunidad" placeholder="Ej: Podría organizar una reunión, tiene llegada a..."></textarea>
+    </div>
+    <div class="mrow">
+      <label>Acción posible</label>
+      <select id="mAccion">
+        <option value="contacto">📞 Contacto inicial</option>
+        <option value="reunion">🤝 Reunión</option>
+        <option value="presentacion">🎤 Presentación</option>
+        <option value="visita">🚗 Visita</option>
+        <option value="actividad">📅 Actividad</option>
+        <option value="otra">✏️ Otra</option>
+      </select>
+    </div>
+    <div class="mrow">
+      <label>Observaciones</label>
+      <textarea id="mObs" placeholder="Cualquier detalle adicional..."></textarea>
+    </div>
+    <div class="merr" id="mErr"></div>
+    <div class="macts">
+      <button class="mbtn mbtn-red" id="mBtn" onclick="guardarVinculo()">💾 Guardar</button>
+      <button class="mbtn mbtn-gray" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONSTANTES ─────────────────────────────────────────────────
+const SUPA_URL = "https://ikaadszatnbmzjrjvmkv.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrYWFkc3phdG5ibXpqcmp2bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mjc1ODMsImV4cCI6MjA5NzEwMzU4M30.QS4ClCaryH56pGAVc4ICS_eHC1LZmvQFrR4KNri3GSs";
+const LS_SESS  = "ps_fichas_sess";
+
+const TIPO_LBL  = {persona:'👤 Persona',institucion:'🏛 Institución',club:'🏟 Club',escuela:'🎓 Escuela',iglesia:'⛪ Comunitaria',comercio:'🏪 Comercio',cultural:'🎭 Cultural',otro:'📌 Otro'};
+const ACCION_LBL= {contacto:'📞 Contacto',reunion:'🤝 Reunión',presentacion:'🎤 Presentación',visita:'🚗 Visita',actividad:'📅 Actividad',otra:'✏️ Otra'};
+const PRES_LBL  = {fuerte:'🟢 Fuerte',debil:'🟠 Débil',nula:'🔴 Sin presencia',sin_datos:'⚫ Sin datos'};
+const TIER_LBL  = {territorio:'TERRITORIO',presencia:'PRESENCIA',potencial:'POTENCIAL',vincular:'VINCULAR'};
+const EVAL_DEF  = {
+  actuar:  {ico:'✅', txt:'Vamos a hacer algo',   cls:'sel-actuar',  chip:'ec-actuar'},
+  intentar:{ico:'🔄', txt:'Habría que intentarlo', cls:'sel-intentar',chip:'ec-intentar'},
+  no:      {ico:'🚫', txt:'No conviene por ahora', cls:'sel-no',      chip:'ec-no'},
+  no_se:   {ico:'🤷', txt:'No lo sé',              cls:'sel-no_se',   chip:'ec-no_se'},
+};
+
+// ── SUPABASE ───────────────────────────────────────────────────
+const supa=(path,opts={})=>{
+  const h={"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"Content-Type":"application/json"};
+  if(opts.prefer)h["Prefer"]=opts.prefer;
+  return fetch(SUPA_URL+"/rest/v1/"+path,{method:opts.method||"GET",headers:h,body:opts.body})
+    .then(async r=>{const t=await r.text();return t?JSON.parse(t):[];}).catch(()=>null);
+};
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const pct=(v,t)=>(!v||!t)?'—':(v/t*100).toFixed(1)+'%';
+const fmt=n=>n!=null?Number(n).toLocaleString('es-AR'):'—';
+const fmtF=s=>{try{return new Date(s).toLocaleDateString('es-AR',{day:'numeric',month:'short'})}catch(e){return ''}};
+
+// ── BASE LOCALIDADES ───────────────────────────────────────────
+const BASE=[
+  {id:"rafaela",n:"Rafaela",G:true,px:"Viotti Luis 'Leo' (UNIDOS)",pp:"UNIDOS",sc:"Concejales 2025: Solterman (MAS), Dellasanta (LLA), Scavino Brusa (UNIDOS)",el:83002,vg:41194,vg1:14651,p2:"LLA",v2:11808,pres:"debil",psref:"Gaspoz Santiago J.",centroPS:true,congresal:false,psEjec:false},
+  {id:"sunchales",n:"Sunchales",G:true,px:"Pinotti Pablo (PS)",pp:"PS",sc:"Intendente PS. Concejales PS: Delmastro, Astor, Torriri. Centro: Galli Funes J.A. Congresales: Ochat A. y Galli Funes J.A.",el:19552,vg:9343,vg1:2910,p2:"LLA",v2:2592,pres:"fuerte",psref:"Galli Funes Jose Augusto",centroPS:true,congresal:true,psEjec:true},
+  {id:"frontera",n:"Frontera",G:true,px:"Milanesio Fabio (UNIDOS)",pp:"UNIDOS",sc:"Centro: Perez Susana. Congresales: Perez Susana y Carlos",el:7243,vg:2558,vg1:1571,p2:"Más para SFE",v2:951,pres:"debil",psref:"Perez Susana",centroPS:true,congresal:true,psEjec:false},
+  {id:"san_vicente",n:"San Vicente",G:true,px:"Aira Gonzalo (UNIDOS)",pp:"UNIDOS",sc:"Concejal PS: Marchese Juan Carlos",el:5427,vg:3357,vg1:1711,p2:"Somos Vida y Lib.",v2:1076,pres:"debil",psref:"Marchese Juan Carlos",centroPS:false,congresal:false,psEjec:false},
+  {id:"humberto",n:"Humberto Primo",G:true,px:"Gilabert Mauro (UNIDOS)",pp:"UNIDOS",sc:"Centro Socialista activo",el:4677,vg:1903,vg1:1500,p2:null,v2:null,pres:"debil",psref:"Antonioli Matias G.",centroPS:true,congresal:false,psEjec:false},
+  {id:"maria_juana",n:"Maria Juana",G:true,px:"Maciel Zulma (UNIDOS)",pp:"UNIDOS",sc:"Centro: Luna Abelardo D. Congresal: Bazzoni Amadeo",el:4157,vg:2833,vg1:1306,p2:"Más para SFE",v2:1208,pres:"debil",psref:"Luna Abelardo D.",centroPS:true,congresal:true,psEjec:false},
+  {id:"col_aldao",n:"Colonia Aldao",G:false,px:"Eberhardt Lorena (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Eberhardt Lorena",el:1692,vg:1012,vg1:538,p2:"Más para SFE",v2:448,pres:"fuerte",psref:"Eberhardt Lorena",centroPS:false,congresal:false,psEjec:true},
+  {id:"angelica",n:"Angelica",G:false,px:"Andres Marcos (Más para SFE)",pp:"Más para SFE",sc:null,el:1201,vg:932,vg1:634,p2:"UNIDOS",v2:293,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"ataliva",n:"Ataliva",G:false,px:"Alvarez Jose Manuel (UNIDOS)",pp:"UNIDOS",sc:null,el:1777,vg:868,vg1:641,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"aurelia",n:"Aurelia",G:false,px:"Morel Roberto (Esfuerzo Vecinal)",pp:"Esfuerzo Vecinal",sc:null,el:138,vg:79,vg1:67,p2:null,v2:null,pres:"sin_datos",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"bauer_sigel",n:"Bauer y Sigel",G:false,px:"Serrani Franco (UNIDOS)",pp:"UNIDOS",sc:null,el:247,vg:146,vg1:117,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"bella_italia",n:"Bella Italia",G:false,px:"Perotti Hector (Más para SFE)",pp:"Más para SFE",sc:null,el:1499,vg:849,vg1:733,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_bicha",n:"Col. Bicha",G:false,px:"Alochis Miguel (UNIDOS)",pp:"UNIDOS",sc:null,el:179,vg:79,vg1:72,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_bigand",n:"Col. Bigand",G:false,px:"Oggero Adrian (Más para SFE)",pp:"Más para SFE",sc:null,el:51,vg:40,vg1:38,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"castellanos_c",n:"Castellanos",G:false,px:"Audino Diego (UNIDOS)",pp:"UNIDOS",sc:null,el:305,vg:168,vg1:138,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_cello",n:"Colonia Cello",G:false,px:"Heck Maria del Carmen (UNIDOS)",pp:"UNIDOS",sc:null,el:174,vg:104,vg1:87,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_iturraspe",n:"Col. Iturraspe",G:false,px:"Picco Dario (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Picco Dario",el:48,vg:31,vg1:24,p2:null,v2:null,pres:"fuerte",psref:"Picco Dario",centroPS:false,congresal:false,psEjec:true},
+  {id:"col_margarita",n:"Col. Margarita",G:false,px:"Muratore M. Soledad (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Muratore M. Soledad",el:313,vg:249,vg1:166,p2:"Más para SFE",v2:82,pres:"fuerte",psref:"Muratore Maria Soledad",centroPS:false,congresal:false,psEjec:true},
+  {id:"maua",n:"Maua",G:false,px:"Garbagnoli Ricardo (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Garbagnoli Ricardo",el:53,vg:23,vg1:23,p2:null,v2:null,pres:"fuerte",psref:"Garbagnoli Ricardo",centroPS:false,congresal:false,psEjec:true},
+  {id:"col_raquel",n:"Colonia Raquel",G:false,px:"Peter Luciana (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Peter Luciana. Centro: Airasca Alejandro. Congresal: Peter Luciana",el:305,vg:140,vg1:111,p2:null,v2:null,pres:"fuerte",psref:"Airasca Alejandro",centroPS:true,congresal:true,psEjec:true},
+  {id:"coronel_fraga",n:"Coronel Fraga",G:false,px:"Palacio Marisabel (UNIDOS)",pp:"UNIDOS",sc:null,el:283,vg:236,vg1:166,p2:"Más para SFE",v2:69,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"plaza_cluc",n:"Plaza Clucellas",G:false,px:"Bono Gabriel (UNIDOS)",pp:"UNIDOS",sc:null,el:1290,vg:602,vg1:403,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"egusquiza",n:"Egusquiza",G:false,px:"Celis M. Florencia (UNIDOS)",pp:"UNIDOS",sc:null,el:376,vg:223,vg1:196,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"esmeralda",n:"Esmeralda",G:false,px:"Berra Luis Alberto (UNIDOS)",pp:"UNIDOS",sc:null,el:514,vg:322,vg1:257,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"est_cluc",n:"Est. Clucellas",G:false,px:"Peretti Eduardo (UNIDOS)",pp:"UNIDOS",sc:null,el:778,vg:516,vg1:433,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"eusebia",n:"Eusebia y Carolina",G:false,px:"Gimenez Susana (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gimenez Susana",el:718,vg:319,vg1:274,p2:null,v2:null,pres:"fuerte",psref:"Gimenez Susana",centroPS:false,congresal:false,psEjec:true},
+  {id:"eustolia",n:"Eustolia",G:false,px:"Beltramo Juan M. (Más para SFE)",pp:"Más para SFE",sc:null,el:141,vg:121,vg1:77,p2:"UNIDOS",v2:42,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"fidela",n:"Fidela",G:false,px:"Ovena Jorge A. (UNIDOS)",pp:"UNIDOS",sc:null,el:88,vg:53,vg1:44,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"galisteo",n:"Galisteo",G:false,px:"Canavese Javier (UNIDOS)",pp:"UNIDOS",sc:null,el:159,vg:132,vg1:111,p2:"Más para SFE",v2:19,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"garibaldi",n:"Garibaldi",G:false,px:"Gamboa Maribel (Más para SFE)",pp:"Más para SFE",sc:"PS: Spilj Andres (minoría)",el:168,vg:138,vg1:80,p2:"UNIDOS",v2:58,pres:"debil",psref:"Spilj Andres",centroPS:false,congresal:false,psEjec:false},
+  {id:"hugentobler",n:"Hugentobler",G:false,px:"Milanesio Luciano (Más para SFE)",pp:"Más para SFE",sc:null,el:46,vg:33,vg1:32,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"josefina",n:"Josefina",G:false,px:"Sicardi Jorgelina (UNIDOS)",pp:"UNIDOS",sc:null,el:1659,vg:445,vg1:345,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"lehmann",n:"Lehmann",G:false,px:"Bett Marcelo (UNIDOS)",pp:"UNIDOS",sc:null,el:2649,vg:1213,vg1:922,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"pte_roca",n:"Presidente Roca",G:false,px:"Montenegro Jessica (Somos Vida)",pp:"Somos Vida y Lib.",sc:null,el:746,vg:528,vg1:282,p2:"UNIDOS",v2:235,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"pueblo_marini",n:"Pueblo Marini",G:false,px:"Ferrer Amalia (Más para SFE)",pp:"Más para SFE",sc:null,el:104,vg:60,vg1:55,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"ramona",n:"Ramona",G:false,px:"Barbero Jose A. (Union Vecinal)",pp:"Union Vecinal Ramona",sc:"Centro Socialista activo",el:1575,vg:1224,vg1:835,p2:"UNIDOS",v2:335,pres:"debil",psref:"Ardiles Hernan G.",centroPS:true,congresal:false,psEjec:false},
+  {id:"saguier",n:"Saguier",G:false,px:"Ramos Sergio (UNIDOS)",pp:"UNIDOS",sc:null,el:645,vg:310,vg1:247,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"san_antonio",n:"San Antonio",G:false,px:"Previotto Mauro (UNIDOS)",pp:"UNIDOS",sc:null,el:298,vg:146,vg1:111,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"sta_clara",n:"Sta. Clara de Saguier",G:false,px:"Tivano Sergio (Más para SFE)",pp:"Más para SFE",sc:null,el:1801,vg:1124,vg1:617,p2:"UNIDOS",v2:470,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"susana",n:"Susana",G:false,px:"Perino Jorge (UNIDOS)",pp:"UNIDOS",sc:"Centro: Tabin Duggo J.P. Congresal: Tabin Duggo J.P.",el:1303,vg:824,vg1:493,p2:"Más para SFE",v2:308,pres:"debil",psref:"Tabin Juan Pablo",centroPS:true,congresal:true,psEjec:false},
+  {id:"tacural",n:"Tacural",G:false,px:"Sola Adrian (Más para SFE)",pp:"Más para SFE",sc:null,el:1339,vg:678,vg1:483,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"tacurales",n:"Tacurales",G:false,px:"Chiappero Damian (UNIDOS)",pp:"UNIDOS",sc:null,el:162,vg:68,vg1:66,p2:null,v2:null,pres:"sin_datos",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"vila",n:"Vila",G:false,px:"Borgatello Ma. Leticia (UNIDOS)",pp:"UNIDOS",sc:null,el:1292,vg:1053,vg1:418,p2:"Más para SFE",v2:403,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"villa_san_jose",n:"Villa San Jose",G:false,px:"Forni Julio Cesar (UNIDOS)",pp:"UNIDOS",sc:null,el:346,vg:207,vg1:162,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"virginia",n:"Virginia",G:false,px:"Fraire Pedro (UNIDOS)",pp:"UNIDOS",sc:null,el:168,vg:106,vg1:94,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"zenon_pereyra",n:"Zenon Pereyra",G:false,px:"Gallo Veronica (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gallo Veronica. Centro: Dome Laura L. Congresal: Gallo Veronica J.",el:1460,vg:670,vg1:431,p2:null,v2:null,pres:"fuerte",psref:"Dome Laura Lorena",centroPS:true,congresal:true,psEjec:true},
+];
+
+function getTier(b){
+  if(b.psEjec) return 'territorio';
+  if(b.centroPS||b.congresal) return 'presencia';
+  if(b.pres==='fuerte'||b.pres==='debil') return 'potencial';
+  return 'vincular';
+}
+
+// ── ESTADO ─────────────────────────────────────────────────────
+let sess = JSON.parse(localStorage.getItem(LS_SESS)||"null");
+let DATOS={}, VNCS={}, EVALS={};
+let lista=[], curIdx=0;
+
+// ── LOGIN ──────────────────────────────────────────────────────
+function doLogin(){
+  const nombre=document.getElementById('lNombre').value.trim();
+  const dni=document.getElementById('lDni').value.trim().replace(/\D/g,'');
+  const err=document.getElementById('lErr');
+  if(!nombre){err.textContent='Escribí tu nombre.';return;}
+  if(!dni||dni.length<6){err.textContent='Ingresá tu DNI.';return;}
+  sess={nombre,dni};
+  localStorage.setItem(LS_SESS,JSON.stringify(sess));
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appDiv').style.display='flex';
+  document.getElementById('hdrAv').textContent=nombre[0].toUpperCase();
+  document.getElementById('hdrNm').textContent=nombre;
+  loadAll();
+}
+function logout(){
+  localStorage.removeItem(LS_SESS); sess=null;
+  document.getElementById('appDiv').style.display='none';
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('lNombre').value='';
+  document.getElementById('lDni').value='';
+}
+
+// ── CARGA DATOS ────────────────────────────────────────────────
+async function loadAll(){
+  const [datos,vncs,evals]=await Promise.all([
+    supa('datos?select=id,presencia,ref,tel,centro'),
+    supa('vinculos?order=created_at.desc&limit=2000&select=vid,localidad,nombre,tipo,vinculo,oportunidad,accion,autor,created_at'),
+    supa('evaluaciones?select=localidad_id,evaluacion,autor&limit=5000')
+  ]);
+  if(datos) datos.forEach(d=>{DATOS[d.id]=d;});
+  if(vncs)  vncs.forEach(v=>{if(!VNCS[v.localidad])VNCS[v.localidad]=[];VNCS[v.localidad].push(v);});
+  if(evals) evals.forEach(e=>{if(!EVALS[e.localidad_id])EVALS[e.localidad_id]=[];EVALS[e.localidad_id].push(e);});
+  aplicarFiltro();
+}
+
+// ── FILTROS ────────────────────────────────────────────────────
+function toggleFiltros(){
+  const d=document.getElementById('filtrosDiv');
+  d.style.display=d.style.display==='none'?'block':'none';
+}
+function aplicarFiltro(){
+  const tf=document.getElementById('filtTier')?.value||'';
+  lista=BASE.filter(b=>!tf||getTier(b)===tf);
+  curIdx=0;
+  renderCard();
+}
+
+// ── RENDER ─────────────────────────────────────────────────────
+function irA(idx){
+  if(idx<0||idx>=lista.length)return;
+  curIdx=idx;
+  renderCard();
+  document.getElementById('cardArea').scrollTop=0;
+}
+
+function renderCard(){
+  const total=lista.length;
+  const b=lista[curIdx];
+  if(!b){document.getElementById('cardArea').innerHTML='<div style="text-align:center;padding:40px;color:#334">Sin localidades</div>';return;}
+
+  const tier=getTier(b);
+  const d=DATOS[b.id]||{};
+  const pres=d.presencia||b.pres;
+  const ref=d.ref||b.psref;
+  const centro=d.centro==='si'||b.centroPS;
+  const vncs=VNCS[b.id]||[];
+  const evs=EVALS[b.id]||[];
+
+  // Conteo evaluaciones
+  const cnt={actuar:0,intentar:0,no:0,no_se:0};
+  evs.forEach(e=>{if(cnt[e.evaluacion]!==undefined)cnt[e.evaluacion]++;});
+  const totalEvs=cnt.actuar+cnt.intentar+cnt.no;
+  const miEval=evs.find(e=>e.autor===sess?.nombre);
+
+  // Progress
+  const pos=curIdx+1;
+  document.getElementById('progTxt').textContent=pos+' / '+total;
+  document.getElementById('navPos').textContent=pos+' / '+total;
+  document.getElementById('progFill').style.width=(pos/total*100).toFixed(1)+'%';
+  document.getElementById('btnPrev').disabled=curIdx===0;
+  document.getElementById('btnNext').disabled=curIdx===lista.length-1;
+
+  // Evaluación buttons state
+  const evalBtns=Object.entries(EVAL_DEF).map(([k,v])=>`
+    <button class="eval-btn ${miEval?.evaluacion===k?v.cls:''}" onclick="evaluar('${b.id}','${b.n}','${k}')">
+      ${v.ico} ${v.txt}
+    </button>`).join('');
+
+  // Vínculos
+  const vncsHtml=vncs.length
+    ?vncs.slice(0,3).map(v=>`
+      <div class="vnc-mini ${v.tipo==='persona'?'persona':''}">
+        <div class="vnc-mini-tipo">${TIPO_LBL[v.tipo]||v.tipo}</div>
+        <div class="vnc-mini-nombre">${esc(v.nombre)}</div>
+        ${v.oportunidad?`<div class="vnc-mini-op">💡 ${esc(v.oportunidad)}</div>`:''}
+        <div class="vnc-mini-meta">🙋 ${esc(v.autor||'—')} · ${fmtF(v.created_at)}</div>
+      </div>`).join('')+(vncs.length>3?`<div style="color:#334;font-size:11px;padding:3px 0">...y ${vncs.length-3} más</div>`:'')
+    :'<div class="no-vnc">Sin vínculos registrados</div>';
+
+  // Resumen evaluaciones
+  const evalResumen=totalEvs?`
+    <div class="eval-resumen">
+      ${cnt.actuar?`<span class="eval-chip ec-actuar">✅ ${cnt.actuar} van</span>`:''}
+      ${cnt.intentar?`<span class="eval-chip ec-intentar">🔄 ${cnt.intentar} intentar</span>`:''}
+      ${cnt.no?`<span class="eval-chip ec-no">🚫 ${cnt.no} no</span>`:''}
+      ${cnt.no_se?`<span class="eval-chip ec-no_se">🤷 ${cnt.no_se} no sé</span>`:''}
+    </div>`:'';
+  const miEvalTxt=miEval?`<div class="mi-eval">Tu evaluación: <strong>${EVAL_DEF[miEval.evaluacion]?.ico} ${EVAL_DEF[miEval.evaluacion]?.txt}</strong></div>`:'';
+
+  document.getElementById('cardArea').innerHTML=`
+  <div class="card">
+    <div class="card-top">
+      <div class="card-nombre">${esc(b.n)}</div>
+      <div class="card-tipo">${b.G?'Municipio':'Comuna'}</div>
+      <div class="card-tier-row">
+        <span class="tier t-${tier}">${TIER_LBL[tier]}</span>
+        <span class="card-gov">${esc(b.px)}</span>
+      </div>
+    </div>
+
+    <div class="csec">
+      <div class="csec-title">📊 Electoral 2025</div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-val">${fmt(b.el)}</div><div class="kpi-lbl">Electores</div></div>
+        <div class="kpi"><div class="kpi-val">${pct(b.vg1,b.vg)}</div><div class="kpi-lbl">UNIDOS 1°</div></div>
+        ${b.p2&&b.v2?`<div class="kpi"><div class="kpi-val" style="font-size:13px">${pct(b.v2,b.vg)}</div><div class="kpi-lbl">${esc(b.p2)} 2°</div></div>`:''}
+      </div>
+    </div>
+
+    <div class="csec">
+      <div class="csec-title">🔴 Partido Socialista</div>
+      <div class="info-row"><span class="info-lbl">Presencia</span><span class="info-val val-${pres}">${PRES_LBL[pres]||'—'}</span></div>
+      <div class="info-row"><span class="info-lbl">Referente/a</span><span class="info-val" style="color:#60a5fa">${ref?esc(ref):'—'}</span></div>
+      <div class="info-row"><span class="info-lbl">Centro Socialista</span><span class="info-val" style="${centro?'color:#4caf50':'color:#334'}">${centro?'✅ Sí':'—'}</span></div>
+      ${b.sc?`<div class="info-row" style="flex-direction:column;gap:3px"><span class="info-lbl">Notas</span><span style="font-size:11px;color:#aaa;margin-top:2px;line-height:1.5">${esc(b.sc)}</span></div>`:''}
+    </div>
+
+    <div class="csec">
+      <div class="csec-title">🔗 Vínculos registrados (${vncs.length})</div>
+      ${vncsHtml}
+      <button class="vnc-add-btn" onclick="abrirModal('${b.id}','${esc(b.n)}')">+ Agregar contacto u oportunidad</button>
+    </div>
+
+    <div class="eval-section">
+      <div class="eval-pregunta">¿Qué hacemos en esta localidad?</div>
+      ${evalResumen}
+      ${miEvalTxt}
+      <div class="eval-btns">${evalBtns}</div>
+    </div>
+  </div>`;
+}
+
+// ── EVALUACIÓN ─────────────────────────────────────────────────
+async function evaluar(locId, locN, tipo){
+  if(!sess){showToast('Iniciá sesión primero',true);return;}
+  // Optimistic update local
+  if(!EVALS[locId])EVALS[locId]=[];
+  const idx=EVALS[locId].findIndex(e=>e.autor===sess.nombre);
+  const entry={localidad_id:locId,evaluacion:tipo,autor:sess.nombre};
+  if(idx>=0) EVALS[locId][idx]=entry; else EVALS[locId].push(entry);
+  renderCard();
+
+  // Flash visual de confirmación
+  const card=document.querySelector('.card');
+  if(card){card.classList.add('flash');setTimeout(()=>card.classList.remove('flash'),500);}
+
+  // Toast con el nombre de la localidad
+  const def=EVAL_DEF[tipo];
+  showToast(def.ico+' '+locN+': '+def.txt);
+
+  // Avanza a la siguiente tarjeta después de un momento
+  if(curIdx < lista.length-1){
+    setTimeout(()=>irA(curIdx+1), 900);
+  }
+
+  // Guardar en Supabase (upsert: si ya existe para este dni+localidad, actualiza)
+  supa('evaluaciones',{
+    method:'POST',
+    body:JSON.stringify({localidad_id:locId,localidad_n:locN,evaluacion:tipo,autor:sess.nombre,autor_dni:sess.dni}),
+    prefer:'return=minimal,resolution=merge-duplicates'
+  }).then(res=>{
+    if(res===null) showToast('⚠️ No se pudo guardar',true);
+  });
+}
+
+// ── MODAL VÍNCULO ──────────────────────────────────────────────
+function abrirModal(locId,locN){
+  document.getElementById('mLocId').value=locId;
+  document.getElementById('mLoc').textContent='📍 '+locN;
+  ['mNombre','mVinculo','mOportunidad','mObs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mTipo').value='persona';
+  document.getElementById('mAccion').value='contacto';
+  document.getElementById('mErr').textContent='';
+  document.getElementById('mBtn').disabled=false;
+  document.getElementById('mBtn').textContent='💾 Guardar';
+  document.getElementById('modalBg').classList.add('open');
+  setTimeout(()=>document.getElementById('mNombre').focus(),80);
+}
+function cerrarModal(){document.getElementById('modalBg').classList.remove('open');}
+
+async function guardarVinculo(){
+  const locId=document.getElementById('mLocId').value;
+  const locN=document.getElementById('mLoc').textContent.replace('📍 ','');
+  const nombre=document.getElementById('mNombre').value.trim();
+  const vinculo=document.getElementById('mVinculo').value.trim();
+  const err=document.getElementById('mErr');
+  const btn=document.getElementById('mBtn');
+  if(!nombre){err.textContent='El nombre es obligatorio.';return;}
+  if(!vinculo){err.textContent='Completá cómo te vinculás.';return;}
+  err.textContent=''; btn.disabled=true; btn.textContent='Guardando...';
+  const payload={
+    autor:sess?.nombre||'anónimo', autor_id:sess?.dni||'',
+    localidad:locId, localidad_n:locN, nombre,
+    tipo:document.getElementById('mTipo').value,
+    vinculo,
+    oportunidad:document.getElementById('mOportunidad').value.trim()||null,
+    accion:document.getElementById('mAccion').value,
+    obs:document.getElementById('mObs').value.trim()||null,
+    estado:'activo'
+  };
+  const res=await supa('vinculos',{method:'POST',body:JSON.stringify(payload),prefer:'return=representation'});
+  btn.disabled=false; btn.textContent='💾 Guardar';
+  if(res!==null){
+    if(!VNCS[locId])VNCS[locId]=[];
+    VNCS[locId].unshift(res[0]||payload);
+    cerrarModal(); renderCard();
+    showToast('¡Vínculo guardado!');
+  } else {
+    err.textContent='No se pudo guardar. Intentá de nuevo.';
+  }
+}
+
+// ── UTILS ──────────────────────────────────────────────────────
+function showToast(msg,isErr=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(isErr?' err':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// Swipe soporte móvil
+let touchX=0;
+document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchX;
+  if(Math.abs(dx)>60&&!document.getElementById('modalBg').classList.contains('open')){
+    if(dx<0) irA(curIdx+1); else irA(curIdx-1);
+  }
+},{passive:true});
+
+// ── INIT ───────────────────────────────────────────────────────
+if(sess){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appDiv').style.display='flex';
+  document.getElementById('hdrAv').textContent=sess.nombre[0].toUpperCase();
+  document.getElementById('hdrNm').textContent=sess.nombre;
+  loadAll();
+}
+</script>
+</body>
+</html>
