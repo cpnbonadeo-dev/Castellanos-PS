@@ -209,7 +209,7 @@ html,body{height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#0
   <!-- EVALUACIÓN FIJA: siempre visible, fuera del scroll -->
   <div class="eval-fixed" id="evalFixed">
     <div class="eval-pregunta">
-      <span>¿Qué hacemos en esta localidad?</span>
+      <span>¿Cuál es tu mirada sobre esta localidad?</span>
       <span id="evalMiLabel" style="color:#e63946;font-size:10px"></span>
     </div>
     <div class="eval-btns" id="evalBtnsEl"></div>
@@ -291,10 +291,10 @@ const PRES_LBL  = {fuerte:'🟢 Fuerte',debil:'🟠 Débil',nula:'🔴 Sin prese
 const TIER_LBL  = {territorio:'TERRITORIO',presencia:'PRESENCIA',potencial:'POTENCIAL',vincular:'VINCULAR'};
 // Orden: positivo | dudoso arriba / negativo | sin datos abajo
 const EVAL_DEF  = [
-  {k:'actuar',  ico:'✅', txt:'Vamos a hacer algo',   cls:'sel-actuar',  chip:'ec-actuar'},
-  {k:'intentar',ico:'🔄', txt:'Habría que intentarlo', cls:'sel-intentar',chip:'ec-intentar'},
-  {k:'no',      ico:'🚫', txt:'No conviene por ahora', cls:'sel-no',      chip:'ec-no'},
-  {k:'no_se',   ico:'🤷', txt:'No lo sé',              cls:'sel-no_se',   chip:'ec-no_se'},
+  {k:'actuar',  ico:'✅', txt:'Tenemos oportunidades de ganar',   cls:'sel-actuar',  chip:'ec-actuar'},
+  {k:'intentar',ico:'🔄', txt:'Hay que intentarlo, podríamos sorprender', cls:'sel-intentar',chip:'ec-intentar'},
+  {k:'no',      ico:'🚫', txt:'No conviene hacer nada ahora', cls:'sel-no',      chip:'ec-no'},
+  {k:'no_se',   ico:'🤷', txt:'No tengo conocimiento de esta localidad', cls:'sel-no_se',   chip:'ec-no_se'},
 ];
 const EVAL_MAP = Object.fromEntries(EVAL_DEF.map(e=>[e.k,e]));
 
@@ -312,52 +312,52 @@ const fmtF=s=>{try{return new Date(s).toLocaleDateString('es-AR',{day:'numeric',
 
 // ── BASE LOCALIDADES ───────────────────────────────────────────
 const BASE=[
-  {id:"rafaela",n:"Rafaela",G:true,px:"Viotti Luis 'Leo' (UNIDOS)",pp:"UNIDOS",sc:"Concejales 2025: Solterman (MAS), Dellasanta (LLA), Scavino Brusa (UNIDOS)",el:83002,vg:41194,vg1:14651,p2:"LLA",v2:11808,pres:"debil",psref:"Gaspoz Santiago J.",centroPS:true,congresal:false,psEjec:false},
-  {id:"sunchales",n:"Sunchales",G:true,px:"Pinotti Pablo (PS)",pp:"PS",sc:"Intendente PS. Concejales PS: Delmastro, Astor, Torriri. Centro: Galli Funes J.A. Congresales: Ochat A. y Galli Funes J.A.",el:19552,vg:9343,vg1:2910,p2:"LLA",v2:2592,pres:"fuerte",psref:"Galli Funes Jose Augusto",centroPS:true,congresal:true,psEjec:true},
-  {id:"frontera",n:"Frontera",G:true,px:"Milanesio Fabio (UNIDOS)",pp:"UNIDOS",sc:"Centro: Perez Susana. Congresales: Perez Susana y Carlos",el:7243,vg:2558,vg1:1571,p2:"Más para SFE",v2:951,pres:"debil",psref:"Perez Susana",centroPS:true,congresal:true,psEjec:false},
-  {id:"san_vicente",n:"San Vicente",G:true,px:"Aira Gonzalo (UNIDOS)",pp:"UNIDOS",sc:"Concejal PS: Marchese Juan Carlos",el:5427,vg:3357,vg1:1711,p2:"Somos Vida y Lib.",v2:1076,pres:"debil",psref:"Marchese Juan Carlos",centroPS:false,congresal:false,psEjec:false},
-  {id:"humberto",n:"Humberto Primo",G:true,px:"Gilabert Mauro (UNIDOS)",pp:"UNIDOS",sc:"Centro Socialista activo",el:4677,vg:1903,vg1:1500,p2:null,v2:null,pres:"debil",psref:"Antonioli Matias G.",centroPS:true,congresal:false,psEjec:false},
-  {id:"maria_juana",n:"Maria Juana",G:true,px:"Maciel Zulma (UNIDOS)",pp:"UNIDOS",sc:"Centro: Luna Abelardo D. Congresal: Bazzoni Amadeo",el:4157,vg:2833,vg1:1306,p2:"Más para SFE",v2:1208,pres:"debil",psref:"Luna Abelardo D.",centroPS:true,congresal:true,psEjec:false},
-  {id:"col_aldao",n:"Colonia Aldao",G:false,px:"Eberhardt Lorena (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Eberhardt Lorena",el:1692,vg:1012,vg1:538,p2:"Más para SFE",v2:448,pres:"fuerte",psref:"Eberhardt Lorena",centroPS:false,congresal:false,psEjec:true},
-  {id:"angelica",n:"Angelica",G:false,px:"Andres Marcos (Más para SFE)",pp:"Más para SFE",sc:null,el:1201,vg:932,vg1:634,p2:"UNIDOS",v2:293,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"ataliva",n:"Ataliva",G:false,px:"Alvarez Jose Manuel (UNIDOS)",pp:"UNIDOS",sc:null,el:1777,vg:868,vg1:641,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"aurelia",n:"Aurelia",G:false,px:"Morel Roberto (Esfuerzo Vecinal)",pp:"Esfuerzo Vecinal",sc:null,el:138,vg:79,vg1:67,p2:null,v2:null,pres:"sin_datos",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"bauer_sigel",n:"Bauer y Sigel",G:false,px:"Serrani Franco (UNIDOS)",pp:"UNIDOS",sc:null,el:247,vg:146,vg1:117,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"bella_italia",n:"Bella Italia",G:false,px:"Perotti Hector (Más para SFE)",pp:"Más para SFE",sc:null,el:1499,vg:849,vg1:733,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"col_bicha",n:"Col. Bicha",G:false,px:"Alochis Miguel (UNIDOS)",pp:"UNIDOS",sc:null,el:179,vg:79,vg1:72,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"col_bigand",n:"Col. Bigand",G:false,px:"Oggero Adrian (Más para SFE)",pp:"Más para SFE",sc:null,el:51,vg:40,vg1:38,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"castellanos_c",n:"Castellanos",G:false,px:"Audino Diego (UNIDOS)",pp:"UNIDOS",sc:null,el:305,vg:168,vg1:138,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"col_cello",n:"Colonia Cello",G:false,px:"Heck Maria del Carmen (UNIDOS)",pp:"UNIDOS",sc:null,el:174,vg:104,vg1:87,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"col_iturraspe",n:"Col. Iturraspe",G:false,px:"Picco Dario (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Picco Dario",el:48,vg:31,vg1:24,p2:null,v2:null,pres:"fuerte",psref:"Picco Dario",centroPS:false,congresal:false,psEjec:true},
-  {id:"col_margarita",n:"Col. Margarita",G:false,px:"Muratore M. Soledad (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Muratore M. Soledad",el:313,vg:249,vg1:166,p2:"Más para SFE",v2:82,pres:"fuerte",psref:"Muratore Maria Soledad",centroPS:false,congresal:false,psEjec:true},
-  {id:"maua",n:"Maua",G:false,px:"Garbagnoli Ricardo (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Garbagnoli Ricardo",el:53,vg:23,vg1:23,p2:null,v2:null,pres:"fuerte",psref:"Garbagnoli Ricardo",centroPS:false,congresal:false,psEjec:true},
-  {id:"col_raquel",n:"Colonia Raquel",G:false,px:"Peter Luciana (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Peter Luciana. Centro: Airasca Alejandro. Congresal: Peter Luciana",el:305,vg:140,vg1:111,p2:null,v2:null,pres:"fuerte",psref:"Airasca Alejandro",centroPS:true,congresal:true,psEjec:true},
-  {id:"coronel_fraga",n:"Coronel Fraga",G:false,px:"Palacio Marisabel (UNIDOS)",pp:"UNIDOS",sc:null,el:283,vg:236,vg1:166,p2:"Más para SFE",v2:69,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"plaza_cluc",n:"Plaza Clucellas",G:false,px:"Bono Gabriel (UNIDOS)",pp:"UNIDOS",sc:null,el:1290,vg:602,vg1:403,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"egusquiza",n:"Egusquiza",G:false,px:"Celis M. Florencia (UNIDOS)",pp:"UNIDOS",sc:null,el:376,vg:223,vg1:196,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"esmeralda",n:"Esmeralda",G:false,px:"Berra Luis Alberto (UNIDOS)",pp:"UNIDOS",sc:null,el:514,vg:322,vg1:257,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"est_cluc",n:"Est. Clucellas",G:false,px:"Peretti Eduardo (UNIDOS)",pp:"UNIDOS",sc:null,el:778,vg:516,vg1:433,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"eusebia",n:"Eusebia y Carolina",G:false,px:"Gimenez Susana (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gimenez Susana",el:718,vg:319,vg1:274,p2:null,v2:null,pres:"fuerte",psref:"Gimenez Susana",centroPS:false,congresal:false,psEjec:true},
-  {id:"eustolia",n:"Eustolia",G:false,px:"Beltramo Juan M. (Más para SFE)",pp:"Más para SFE",sc:null,el:141,vg:121,vg1:77,p2:"UNIDOS",v2:42,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"fidela",n:"Fidela",G:false,px:"Ovena Jorge A. (UNIDOS)",pp:"UNIDOS",sc:null,el:88,vg:53,vg1:44,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"galisteo",n:"Galisteo",G:false,px:"Canavese Javier (UNIDOS)",pp:"UNIDOS",sc:null,el:159,vg:132,vg1:111,p2:"Más para SFE",v2:19,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"garibaldi",n:"Garibaldi",G:false,px:"Gamboa Maribel (Más para SFE)",pp:"Más para SFE",sc:"PS: Spilj Andres (minoría)",el:168,vg:138,vg1:80,p2:"UNIDOS",v2:58,pres:"debil",psref:"Spilj Andres",centroPS:false,congresal:false,psEjec:false},
-  {id:"hugentobler",n:"Hugentobler",G:false,px:"Milanesio Luciano (Más para SFE)",pp:"Más para SFE",sc:null,el:46,vg:33,vg1:32,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"josefina",n:"Josefina",G:false,px:"Sicardi Jorgelina (UNIDOS)",pp:"UNIDOS",sc:null,el:1659,vg:445,vg1:345,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"lehmann",n:"Lehmann",G:false,px:"Bett Marcelo (UNIDOS)",pp:"UNIDOS",sc:null,el:2649,vg:1213,vg1:922,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"pte_roca",n:"Presidente Roca",G:false,px:"Montenegro Jessica (Somos Vida)",pp:"Somos Vida y Lib.",sc:null,el:746,vg:528,vg1:282,p2:"UNIDOS",v2:235,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"pueblo_marini",n:"Pueblo Marini",G:false,px:"Ferrer Amalia (Más para SFE)",pp:"Más para SFE",sc:null,el:104,vg:60,vg1:55,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"ramona",n:"Ramona",G:false,px:"Barbero Jose A. (Union Vecinal)",pp:"Union Vecinal Ramona",sc:"Centro Socialista activo",el:1575,vg:1224,vg1:835,p2:"UNIDOS",v2:335,pres:"debil",psref:"Ardiles Hernan G.",centroPS:true,congresal:false,psEjec:false},
-  {id:"saguier",n:"Saguier",G:false,px:"Ramos Sergio (UNIDOS)",pp:"UNIDOS",sc:null,el:645,vg:310,vg1:247,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"san_antonio",n:"San Antonio",G:false,px:"Previotto Mauro (UNIDOS)",pp:"UNIDOS",sc:null,el:298,vg:146,vg1:111,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"sta_clara",n:"Sta. Clara de Saguier",G:false,px:"Tivano Sergio (Más para SFE)",pp:"Más para SFE",sc:null,el:1801,vg:1124,vg1:617,p2:"UNIDOS",v2:470,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"susana",n:"Susana",G:false,px:"Perino Jorge (UNIDOS)",pp:"UNIDOS",sc:"Centro: Tabin Duggo J.P. Congresal: Tabin Duggo J.P.",el:1303,vg:824,vg1:493,p2:"Más para SFE",v2:308,pres:"debil",psref:"Tabin Juan Pablo",centroPS:true,congresal:true,psEjec:false},
-  {id:"tacural",n:"Tacural",G:false,px:"Sola Adrian (Más para SFE)",pp:"Más para SFE",sc:null,el:1339,vg:678,vg1:483,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"tacurales",n:"Tacurales",G:false,px:"Chiappero Damian (UNIDOS)",pp:"UNIDOS",sc:null,el:162,vg:68,vg1:66,p2:null,v2:null,pres:"sin_datos",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"vila",n:"Vila",G:false,px:"Borgatello Ma. Leticia (UNIDOS)",pp:"UNIDOS",sc:null,el:1292,vg:1053,vg1:418,p2:"Más para SFE",v2:403,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"villa_san_jose",n:"Villa San Jose",G:false,px:"Forni Julio Cesar (UNIDOS)",pp:"UNIDOS",sc:null,el:346,vg:207,vg1:162,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"virginia",n:"Virginia",G:false,px:"Fraire Pedro (UNIDOS)",pp:"UNIDOS",sc:null,el:168,vg:106,vg1:94,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
-  {id:"zenon_pereyra",n:"Zenon Pereyra",G:false,px:"Gallo Veronica (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gallo Veronica. Centro: Dome Laura L. Congresal: Gallo Veronica J.",el:1460,vg:670,vg1:431,p2:null,v2:null,pres:"fuerte",psref:"Dome Laura Lorena",centroPS:true,congresal:true,psEjec:true},
+  {id:"rafaela",n:"Rafaela",G:true,hab:101733,px:"Viotti Luis 'Leo' (UNIDOS)",pp:"UNIDOS",sc:"Concejales 2025: Solterman (MAS), Dellasanta (LLA), Scavino Brusa (UNIDOS)",el:83002,vg:41194,vg1:14651,p2:"LLA",v2:11808,pres:"debil",psref:"Gaspoz Santiago J.",centroPS:true,congresal:false,psEjec:false},
+  {id:"sunchales",n:"Sunchales",G:true,hab:23416,px:"Pinotti Pablo (PS)",pp:"PS",sc:"Intendente PS. Concejales PS: Delmastro, Astor, Torriri. Centro: Galli Funes J.A. Congresales: Ochat A. y Galli Funes J.A.",el:19552,vg:9343,vg1:2910,p2:"LLA",v2:2592,pres:"fuerte",psref:"Galli Funes Jose Augusto",centroPS:true,congresal:true,psEjec:true},
+  {id:"frontera",n:"Frontera",G:true,hab:9787,px:"Milanesio Fabio (UNIDOS)",pp:"UNIDOS",sc:"Centro: Perez Susana. Congresales: Perez Susana y Carlos",el:7243,vg:2558,vg1:1571,p2:"Más para SFE",v2:951,pres:"debil",psref:"Perez Susana",centroPS:true,congresal:true,psEjec:false},
+  {id:"san_vicente",n:"San Vicente",G:true,hab:null,px:"Aira Gonzalo (UNIDOS)",pp:"UNIDOS",sc:"Concejal PS: Marchese Juan Carlos",el:5427,vg:3357,vg1:1711,p2:"Somos Vida y Lib.",v2:1076,pres:"debil",psref:"Marchese Juan Carlos",centroPS:false,congresal:false,psEjec:false},
+  {id:"humberto",n:"Humberto Primo",G:true,hab:5379,px:"Gilabert Mauro (UNIDOS)",pp:"UNIDOS",sc:"Centro Socialista activo",el:4677,vg:1903,vg1:1500,p2:null,v2:null,pres:"debil",psref:"Antonioli Matias G.",centroPS:true,congresal:false,psEjec:false},
+  {id:"maria_juana",n:"Maria Juana",G:true,hab:4740,px:"Maciel Zulma (UNIDOS)",pp:"UNIDOS",sc:"Centro: Luna Abelardo D. Congresal: Bazzoni Amadeo",el:4157,vg:2833,vg1:1306,p2:"Más para SFE",v2:1208,pres:"debil",psref:"Luna Abelardo D.",centroPS:true,congresal:true,psEjec:false},
+  {id:"col_aldao",n:"Colonia Aldao",G:false,hab:null,px:"Eberhardt Lorena (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Eberhardt Lorena",el:1692,vg:1012,vg1:538,p2:"Más para SFE",v2:448,pres:"fuerte",psref:"Eberhardt Lorena",centroPS:false,congresal:false,psEjec:true},
+  {id:"angelica",n:"Angelica",G:false,hab:null,px:"Andres Marcos (Más para SFE)",pp:"Más para SFE",sc:null,el:1201,vg:932,vg1:634,p2:"UNIDOS",v2:293,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"ataliva",n:"Ataliva",G:false,hab:null,px:"Alvarez Jose Manuel (UNIDOS)",pp:"UNIDOS",sc:null,el:1777,vg:868,vg1:641,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"aurelia",n:"Aurelia",G:false,hab:77,px:"Morel Roberto (Esfuerzo Vecinal)",pp:"Esfuerzo Vecinal",sc:null,el:138,vg:79,vg1:67,p2:null,v2:null,pres:"sin_datos",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"bauer_sigel",n:"Bauer y Sigel",G:false,hab:null,px:"Serrani Franco (UNIDOS)",pp:"UNIDOS",sc:null,el:247,vg:146,vg1:117,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"bella_italia",n:"Bella Italia",G:false,hab:null,px:"Perotti Hector (Más para SFE)",pp:"Más para SFE",sc:null,el:1499,vg:849,vg1:733,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_bicha",n:"Col. Bicha",G:false,hab:null,px:"Alochis Miguel (UNIDOS)",pp:"UNIDOS",sc:null,el:179,vg:79,vg1:72,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_bigand",n:"Col. Bigand",G:false,hab:null,px:"Oggero Adrian (Más para SFE)",pp:"Más para SFE",sc:null,el:51,vg:40,vg1:38,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"castellanos_c",n:"Castellanos",G:false,hab:211,px:"Audino Diego (UNIDOS)",pp:"UNIDOS",sc:null,el:305,vg:168,vg1:138,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_cello",n:"Colonia Cello",G:false,hab:null,px:"Heck Maria del Carmen (UNIDOS)",pp:"UNIDOS",sc:null,el:174,vg:104,vg1:87,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"col_iturraspe",n:"Col. Iturraspe",G:false,hab:null,px:"Picco Dario (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Picco Dario",el:48,vg:31,vg1:24,p2:null,v2:null,pres:"fuerte",psref:"Picco Dario",centroPS:false,congresal:false,psEjec:true},
+  {id:"col_margarita",n:"Col. Margarita",G:false,hab:null,px:"Muratore M. Soledad (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Muratore M. Soledad",el:313,vg:249,vg1:166,p2:"Más para SFE",v2:82,pres:"fuerte",psref:"Muratore Maria Soledad",centroPS:false,congresal:false,psEjec:true},
+  {id:"maua",n:"Maua",G:false,hab:null,px:"Garbagnoli Ricardo (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Garbagnoli Ricardo",el:53,vg:23,vg1:23,p2:null,v2:null,pres:"fuerte",psref:"Garbagnoli Ricardo",centroPS:false,congresal:false,psEjec:true},
+  {id:"col_raquel",n:"Colonia Raquel",G:false,hab:null,px:"Peter Luciana (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Peter Luciana. Centro: Airasca Alejandro. Congresal: Peter Luciana",el:305,vg:140,vg1:111,p2:null,v2:null,pres:"fuerte",psref:"Airasca Alejandro",centroPS:true,congresal:true,psEjec:true},
+  {id:"coronel_fraga",n:"Coronel Fraga",G:false,hab:null,px:"Palacio Marisabel (UNIDOS)",pp:"UNIDOS",sc:null,el:283,vg:236,vg1:166,p2:"Más para SFE",v2:69,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"plaza_cluc",n:"Plaza Clucellas",G:false,hab:null,px:"Bono Gabriel (UNIDOS)",pp:"UNIDOS",sc:null,el:1290,vg:602,vg1:403,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"egusquiza",n:"Egusquiza",G:false,hab:357,px:"Celis M. Florencia (UNIDOS)",pp:"UNIDOS",sc:null,el:376,vg:223,vg1:196,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"esmeralda",n:"Esmeralda",G:false,hab:590,px:"Berra Luis Alberto (UNIDOS)",pp:"UNIDOS",sc:null,el:514,vg:322,vg1:257,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"est_cluc",n:"Est. Clucellas",G:false,hab:null,px:"Peretti Eduardo (UNIDOS)",pp:"UNIDOS",sc:null,el:778,vg:516,vg1:433,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"eusebia",n:"Eusebia y Carolina",G:false,hab:null,px:"Gimenez Susana (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gimenez Susana",el:718,vg:319,vg1:274,p2:null,v2:null,pres:"fuerte",psref:"Gimenez Susana",centroPS:false,congresal:false,psEjec:true},
+  {id:"eustolia",n:"Eustolia",G:false,hab:17,px:"Beltramo Juan M. (Más para SFE)",pp:"Más para SFE",sc:null,el:141,vg:121,vg1:77,p2:"UNIDOS",v2:42,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"fidela",n:"Fidela",G:false,hab:null,px:"Ovena Jorge A. (UNIDOS)",pp:"UNIDOS",sc:null,el:88,vg:53,vg1:44,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"galisteo",n:"Galisteo",G:false,hab:null,px:"Canavese Javier (UNIDOS)",pp:"UNIDOS",sc:null,el:159,vg:132,vg1:111,p2:"Más para SFE",v2:19,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"garibaldi",n:"Garibaldi",G:false,hab:169,px:"Gamboa Maribel (Más para SFE)",pp:"Más para SFE",sc:"PS: Spilj Andres (minoría)",el:168,vg:138,vg1:80,p2:"UNIDOS",v2:58,pres:"debil",psref:"Spilj Andres",centroPS:false,congresal:false,psEjec:false},
+  {id:"hugentobler",n:"Hugentobler",G:false,hab:null,px:"Milanesio Luciano (Más para SFE)",pp:"Más para SFE",sc:null,el:46,vg:33,vg1:32,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"josefina",n:"Josefina",G:false,hab:915,px:"Sicardi Jorgelina (UNIDOS)",pp:"UNIDOS",sc:null,el:1659,vg:445,vg1:345,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"lehmann",n:"Lehmann",G:false,hab:3102,px:"Bett Marcelo (UNIDOS)",pp:"UNIDOS",sc:null,el:2649,vg:1213,vg1:922,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"pte_roca",n:"Presidente Roca",G:false,hab:null,px:"Montenegro Jessica (Somos Vida)",pp:"Somos Vida y Lib.",sc:null,el:746,vg:528,vg1:282,p2:"UNIDOS",v2:235,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"pueblo_marini",n:"Pueblo Marini",G:false,hab:null,px:"Ferrer Amalia (Más para SFE)",pp:"Más para SFE",sc:null,el:104,vg:60,vg1:55,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"ramona",n:"Ramona",G:false,hab:null,px:"Barbero Jose A. (Union Vecinal)",pp:"Union Vecinal Ramona",sc:"Centro Socialista activo",el:1575,vg:1224,vg1:835,p2:"UNIDOS",v2:335,pres:"debil",psref:"Ardiles Hernan G.",centroPS:true,congresal:false,psEjec:false},
+  {id:"saguier",n:"Saguier",G:false,hab:null,px:"Ramos Sergio (UNIDOS)",pp:"UNIDOS",sc:null,el:645,vg:310,vg1:247,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"san_antonio",n:"San Antonio",G:false,hab:null,px:"Previotto Mauro (UNIDOS)",pp:"UNIDOS",sc:null,el:298,vg:146,vg1:111,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"sta_clara",n:"Sta. Clara de Saguier",G:false,hab:1990,px:"Tivano Sergio (Más para SFE)",pp:"Más para SFE",sc:null,el:1801,vg:1124,vg1:617,p2:"UNIDOS",v2:470,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"susana",n:"Susana",G:false,hab:null,px:"Perino Jorge (UNIDOS)",pp:"UNIDOS",sc:"Centro: Tabin Duggo J.P. Congresal: Tabin Duggo J.P.",el:1303,vg:824,vg1:493,p2:"Más para SFE",v2:308,pres:"debil",psref:"Tabin Juan Pablo",centroPS:true,congresal:true,psEjec:false},
+  {id:"tacural",n:"Tacural",G:false,hab:null,px:"Sola Adrian (Más para SFE)",pp:"Más para SFE",sc:null,el:1339,vg:678,vg1:483,p2:null,v2:null,pres:"nula",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"tacurales",n:"Tacurales",G:false,hab:null,px:"Chiappero Damian (UNIDOS)",pp:"UNIDOS",sc:null,el:162,vg:68,vg1:66,p2:null,v2:null,pres:"sin_datos",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"vila",n:"Vila",G:false,hab:1408,px:"Borgatello Ma. Leticia (UNIDOS)",pp:"UNIDOS",sc:null,el:1292,vg:1053,vg1:418,p2:"Más para SFE",v2:403,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"villa_san_jose",n:"Villa San Jose",G:false,hab:null,px:"Forni Julio Cesar (UNIDOS)",pp:"UNIDOS",sc:null,el:346,vg:207,vg1:162,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"virginia",n:"Virginia",G:false,hab:null,px:"Fraire Pedro (UNIDOS)",pp:"UNIDOS",sc:null,el:168,vg:106,vg1:94,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
+  {id:"zenon_pereyra",n:"Zenon Pereyra",G:false,hab:null,px:"Gallo Veronica (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gallo Veronica. Centro: Dome Laura L. Congresal: Gallo Veronica J.",el:1460,vg:670,vg1:431,p2:null,v2:null,pres:"fuerte",psref:"Dome Laura Lorena",centroPS:true,congresal:true,psEjec:true},
 ];
 
 function getTier(b){
@@ -505,10 +505,12 @@ function renderCard(){
     <div class="csec">
       <div class="csec-title">📊 Electoral 2025</div>
       <div class="kpis">
+        ${b.hab?`<div class="kpi kpi-blue"><div class="kpi-val">${fmt(b.hab)}</div><div class="kpi-lbl">Hab. Censo '22</div></div>`:''}
         <div class="kpi"><div class="kpi-val">${fmt(b.el)}</div><div class="kpi-lbl">Electores</div></div>
         <div class="kpi"><div class="kpi-val">${pct(b.vg1,b.vg)}</div><div class="kpi-lbl">UNIDOS 1°</div></div>
         ${b.p2&&b.v2?`<div class="kpi"><div class="kpi-val" style="font-size:13px">${pct(b.v2,b.vg)}</div><div class="kpi-lbl">${esc(b.p2)} 2°</div></div>`:''}
       </div>
+      ${b.hab?`<div style="font-size:9px;color:#334;margin-top:5px">Fuente pob.: <a href="https://censo.gob.ar/index.php/datos_definitivos/" target="_blank" style="color:#445;text-decoration:underline">INDEC Censo 2022</a></div>`:''}
     </div>
 
     <div class="csec">
@@ -546,9 +548,11 @@ async function evaluar(locId, locN, tipo){
   const def=EVAL_MAP[tipo];
   showToast(def.ico+' '+locN+': '+def.txt);
 
-  // Avanza a la siguiente tarjeta después de un momento
-  if(curIdx < lista.length-1){
-    setTimeout(()=>irA(curIdx+1), 900);
+  // Si no tiene conocimiento → avanza directo. Si tiene opinión → abre formulario para sumar info.
+  if(tipo === 'no_se'){
+    if(curIdx < lista.length-1){ setTimeout(()=>irA(curIdx+1), 900); }
+  } else {
+    setTimeout(()=>abrirModal(locId, locN), 700);
   }
 
   // Guardar en Supabase (upsert: si ya existe para este dni+localidad, actualiza)
@@ -574,7 +578,9 @@ function abrirModal(locId,locN){
   document.getElementById('modalBg').classList.add('open');
   setTimeout(()=>document.getElementById('mNombre').focus(),80);
 }
-function cerrarModal(){document.getElementById('modalBg').classList.remove('open');}
+function cerrarModal(){
+  document.getElementById('modalBg').classList.remove('open');
+}
 
 async function guardarVinculo(){
   const locId=document.getElementById('mLocId').value;
@@ -602,7 +608,8 @@ async function guardarVinculo(){
     if(!VNCS[locId])VNCS[locId]=[];
     VNCS[locId].unshift(res[0]||payload);
     cerrarModal(); renderCard();
-    showToast('¡Vínculo guardado!');
+    showToast('¡Info guardada! ✅');
+    if(curIdx < lista.length-1){ setTimeout(()=>irA(curIdx+1), 1000); }
   } else {
     err.textContent='No se pudo guardar. Intentá de nuevo.';
   }
