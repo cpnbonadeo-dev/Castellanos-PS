@@ -541,18 +541,24 @@ function renderCard(){
       <div class="kpis">
         ${b.hab?`<div class="kpi kpi-blue"><div class="kpi-val">${fmt(b.hab)}</div><div class="kpi-lbl">Hab. Censo '22</div></div>`:''}
         <div class="kpi"><div class="kpi-val">${fmt(b.el)}</div><div class="kpi-lbl">Electores</div></div>
-        <div class="kpi"><div class="kpi-val">${pct(b.vg1,b.vg)}</div><div class="kpi-lbl">UNIDOS 1°</div></div>
+        <div class="kpi"><div class="kpi-val">${Math.round(b.vg/b.el*100)}%</div><div class="kpi-lbl">Participación</div></div>
+        <div class="kpi kpi-${b.vg1/b.vg>=0.35?'green':'red'}"><div class="kpi-val">${pct(b.vg1,b.vg)}</div><div class="kpi-lbl">UNIDOS 1° (${fmt(b.vg1)} v.)</div></div>
         ${b.p2&&b.v2?`<div class="kpi"><div class="kpi-val" style="font-size:13px">${pct(b.v2,b.vg)}</div><div class="kpi-lbl">${esc(b.p2)} 2°</div></div>`:''}
       </div>
-      ${b.hab?`<div style="font-size:9px;color:#334;margin-top:5px">Fuente pob.: <a href="https://censo.gob.ar/index.php/datos_definitivos/" target="_blank" style="color:#445;text-decoration:underline">INDEC Censo 2022</a></div>`:''}
+      ${b.p2&&b.v2?`<div style="font-size:11px;margin-top:7px;padding:5px 8px;border-radius:6px;background:${b.vg1>b.v2?'#e8f5e9':'#fce4ec'};color:${b.vg1>b.v2?'#2e7d32':'#c62828'};font-weight:700">
+        ${b.vg1>b.v2?'▲ UNIDOS gana por':'▼ UNIDOS pierde por'} ${Math.round(Math.abs(b.vg1-b.v2)/b.vg*100)}% (${fmt(Math.abs(b.vg1-b.v2))} votos) vs ${esc(b.p2)}
+      </div>`:''}
+      ${b.hab?`<div style="font-size:9px;color:#aaa;margin-top:5px">Fuente pob.: <a href="https://censo.gob.ar/index.php/datos_definitivos/" target="_blank" style="color:#888;text-decoration:underline">INDEC Censo 2022</a></div>`:''}
     </div>
 
     <div class="csec">
       <div class="csec-title">🔴 Partido Socialista</div>
       <div class="info-row"><span class="info-lbl">Presencia</span><span class="info-val val-${pres}">${PRES_LBL[pres]||'—'}</span></div>
-      <div class="info-row"><span class="info-lbl">Referente/a</span><span class="info-val" style="color:#60a5fa">${ref?esc(ref):'—'}</span></div>
-      <div class="info-row"><span class="info-lbl">Centro Socialista</span><span class="info-val" style="${centro?'color:#4caf50':'color:#334'}">${centro?'✅ Sí':'—'}</span></div>
-      ${b.sc?`<div class="info-row" style="flex-direction:column;gap:3px"><span class="info-lbl">Notas</span><span style="font-size:11px;color:#aaa;margin-top:2px;line-height:1.5">${esc(b.sc)}</span></div>`:''}
+      <div class="info-row"><span class="info-lbl">Referente/a</span><span class="info-val" style="color:#1565c0;font-weight:700">${ref?esc(ref):'—'}</span></div>
+      <div class="info-row"><span class="info-lbl">Centro Socialista</span><span class="info-val" style="${centro?'color:#2e7d32':'color:#bbb'}">${centro?'✅ Sí':'—'}</span></div>
+      <div class="info-row"><span class="info-lbl">PS en ejecutivo</span><span class="info-val" style="${b.psEjec?'color:#2e7d32':'color:#bbb'}">${b.psEjec?'✅ Gobierna':'—'}</span></div>
+      <div class="info-row"><span class="info-lbl">Congresales PS</span><span class="info-val" style="${b.congresal?'color:#2e7d32':'color:#bbb'}">${b.congresal?'✅ Sí':'—'}</span></div>
+      ${b.sc?`<div class="info-row" style="flex-direction:column;gap:3px"><span class="info-lbl">Notas</span><span style="font-size:11px;color:#555;margin-top:2px;line-height:1.5">${esc(b.sc)}</span></div>`:''}
     </div>
 
     <div class="csec">
