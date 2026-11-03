@@ -61,6 +61,11 @@ html,body{height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#0
 /* SECCIONES INTERNAS */
 .csec{padding:10px 14px;border-bottom:1px solid #1e2d45}
 .csec-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#445;margin-bottom:7px}
+.afil-list{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.afil-item{font-size:11px;color:#8899bb;padding:1px 0;line-height:1.4}
+.afil-toggle{background:none;border:1px solid #2a3a5a;border-radius:10px;color:#60a5fa;font-size:10px;font-weight:700;padding:2px 8px;cursor:pointer;margin-top:4px;display:inline-block}
+.afil-toggle:hover{border-color:#60a5fa;background:rgba(96,165,250,.1)}
+.afil-count-badge{display:inline-block;background:rgba(96,165,250,.15);color:#60a5fa;font-size:10px;font-weight:700;border-radius:8px;padding:1px 7px;margin-left:4px}
 .kpis{display:flex;gap:8px;flex-wrap:wrap}
 .kpi{background:#0d1b2e;border-radius:6px;padding:7px 10px;flex:1;min-width:90px}
 .kpi-val{font-size:16px;font-weight:800;color:#fff}
@@ -223,6 +228,19 @@ html,body{height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#0
 
 </div>
 
+<!-- MODAL ¿OTRO VÍNCULO? -->
+<div class="modal-bg" id="otroBg" style="display:none" onclick="if(event.target===this)noMasVinculo()">
+  <div class="modal" style="padding:24px 20px;text-align:center;max-width:300px">
+    <div style="font-size:22px;margin-bottom:8px">✅</div>
+    <div style="font-size:13px;color:#ccd;margin-bottom:4px">¡Vínculo guardado!</div>
+    <div style="font-size:12px;color:#889;margin-bottom:18px">¿Querés agregar otro en <b id="otroLocN" style="color:#60a5fa"></b>?</div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button onclick="otroVinculo()" style="padding:8px 18px;background:rgba(96,165,250,.15);border:1px solid #60a5fa;border-radius:16px;color:#60a5fa;font-size:12px;font-weight:700;cursor:pointer">➕ Otro vínculo</button>
+      <button onclick="noMasVinculo()" style="padding:8px 18px;background:rgba(255,255,255,.05);border:1px solid #2a3a5a;border-radius:16px;color:#889;font-size:12px;font-weight:700;cursor:pointer">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL VÍNCULO -->
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)cerrarModal()">
   <div class="modal">
@@ -359,6 +377,37 @@ const BASE=[
   {id:"virginia",n:"Virginia",G:false,hab:null,px:"Fraire Pedro (UNIDOS)",pp:"UNIDOS",sc:null,el:168,vg:106,vg1:94,p2:null,v2:null,pres:"debil",psref:null,centroPS:false,congresal:false,psEjec:false},
   {id:"zenon_pereyra",n:"Zenon Pereyra",G:false,hab:null,px:"Gallo Veronica (UNIDOS)",pp:"UNIDOS",sc:"PS: Pres. Comunal Gallo Veronica. Centro: Dome Laura L. Congresal: Gallo Veronica J.",el:1460,vg:670,vg1:431,p2:null,v2:null,pres:"fuerte",psref:"Dome Laura Lorena",centroPS:true,congresal:true,psEjec:true},
 ];
+
+// ── AFILIADOS (solo nombres, sin DNI ni datos sensibles) ────────
+const AFIL_NAMES = {
+  "angelica": ["Sanchez Lucia Beatriz"],
+  "ataliva": ["Gonzalez Luis Alberto","Montenegro Luisa Eva","Seen Hugo Eduardo"],
+  "bauer_sigel": ["Platini Emiliano Luis"],
+  "col_aldao": ["Astudillo Sandra Andrea","Bianco Maria Soledad","Bonafede Maria Ines","Culasso Luciana Vanesa","Davila Monica Liliana","Forni Hernan Ariel","Genovesio Alejandrina","Iturre Juan Jose","Lehmann Marcelo Nasif Moises","Ramirez Fernando Raul","Tamagnone Eduardo","Tamagnone Juan Miguel","Terraf Maria Eugenia","Vallejos Paola Andrea"],
+  "col_margarita": ["Alanda Diego Luis","Bonini Natalia","Imhoff Ricardo Emilio","Mingori Ricardo Luis","Muratore Maria Soledad","Vince Joana Paola","Vince Nahuel Luciano","Vince Ulises Edgardo"],
+  "col_raquel": ["Airasca Alejandro Cesar","Allochis Omar Arcadio","Bazan Noelia","Bonhome Silvana Romina","Chamorro Jorge Luis","Gilli Luciana Maria","Manganelli Pablo Luis","Perusia Franco Paulo","Perusia Perez Victor Hugo","Peter Luciana Marisabel"],
+  "esmeralda": ["Androvetto Sandra Raquel","Berra Luis Alberto"],
+  "eusebia": ["Barone German Emanuel","Comba Ivan","Gauna Adriana Beatriz","Gimenez Susana Mercedes","Lopez Mauricio Sebastian","Moietta Caterina Nail","Pratti Elsa Rosa","Sola Sergio Alberto","Toscana Cintia Norma","Volano Mariana Del Valle"],
+  "eustolia": ["Bordon Luis Miguel"],
+  "fidela": ["Arnaudo Irene Juana","Longoni Gustavo Daniel"],
+  "frontera": ["Bermudez Flavia Ayelen","Carrel Alexis Ruben","Contrera Marcela Alejandra","Contreras Liliana Elizabeth","Duran Ceferino Javier","Garcia Anabela Carina","Gonzalez Josefa Adriana","Laria Hector Hugo","Lopez Hector Ariel","Peralta Nicolas Jesus","Perez Carlos Raul","Perez Susana Graciela","Ribodino Julian Victor","Vanega Viviana Maricel","Villarreal Silvia Gloria","Zurvera Jorge Luis"],
+  "galisteo": ["Arce Carina Guadalupe"],
+  "humberto": ["Ackermann Susana Maria Estela","Aguinaga Nelida Regina","Allegrini Miguel Angel","Andradi Edita Isabel","Antonioli Matias Gonzalo","Antonioli Natali Yudith","Aranda Marta Raquel","Banderel Gustavo Maria","Barberan Elsa Monica","Barreto Fernando Marcelo","Basano Maria Del Carmen","Bejarano Alejandro Daniel","Benavidez Ruben Alcides","Bonhome Delia Marta","Bonhome Oscar Horacio","Bonhome Rodrigo Ezequiel","Bonhome Vanina Andrea","Botto Elisabet Del Lujan","Bussinello Miguel Angel","Capellino Elva Margarita","Cardo Clelia Rita","Chiapero Claudia Ana Olivia","Cillario Emanuel Alejandro","Colombo Juliana Sofia","Cordoba Julio Daniel","De Giovanni Maria Laura","Diaz Valeria Raquel","Garbagnoli Nanci Guadalupe","Garbagnoli Talia Anahi","Gilabert Pablo Francisco","Gramaglia Milena Carina","Herrera Facundo","Mondino Maria Eugenia","Monje Vanina Fernanda Milagros","Montini Americo Ezequiel","Nieva Claudio Joel","Nieva Raul Ricardo","Osuna Ernesto Carlos","Presser Jesus Rafael","Schaab Angel Matias","Tapia Maria Dolores","Tapia Teresa Mabel","Trutali Luis Humberto","Welchen Candelaria","Witz Aurelio Crecencio","Zehnder Eduardo Gustavo"],
+  "josefina": ["Duran Alberto Fabian","Gutierrez Maria Clides"],
+  "lehmann": ["Gallegos Omar Francisco","Lobaisa Mariela Beatriz","Salas Dominga","Varela Griselda Beatriz"],
+  "maria_juana": ["Albera Olga Noemi","Aranda Juan Carlos","Astudillo Carolina Andrea","Astudillo Rita Ramona","Avalo Patricia Alejandra","Avaro Jose Luis","Badino Marisa Graciela","Bailone Esteban Luis","Bailone Luis Florentino","Balbi Daniel Jesus","Bauducco Einar Luis","Bazzoni Amadeo Emilio C","Bazzoni Gonzalo Matias","Bazzoni Lucia","Bazzoni Sofia","Bender Raul Eduardo","Benedetto Beatriz Elena","Benitez Antonia Emerenciana","Bertone Maria Cristina","Bertone Mario Ramon","Bertone Sergio Hilario","Blatter Marta Rita","Bonino Anibal Luis","Borgeat Alicia Josefina","Bregy Oscar Alberto","Bustamante Juan Carlos","Cabrera Jose Maria Manuel","Ceballos Adriana Cristina","Ceballos Diego Nicolas","Chavez Gladys Griselda","Colnaghi Osmar Rodolfo Carlos","Dallia Miguel Oscar","Dallias Raquel Beatriz","Dalmasso Ceballos Agustin Orlando","Dalmasso Ceballos Maria Julia","Dalmasso Luis Domingo","Dalmasso Maria Ester","Dominguez Romina Alejandra","Dominighini Maria Cristina","Ferrando Rosana Beatriz","Ferrato Juan Jose","Francone Antonio Luis","Francone Juan Jose","Gallo Maria De Los Angeles","Gordillo Luis Alberto","Grosso Juan Carlos","Jasson Sonia Maria","Jimenez Graciela Rosa","Kautz Veronica Haidee","Lobos Leonardo Sebastian","Lopez Mario Ruben","Luna Abelardo Damian Esteban","Luna Felisa Mariel","Mariotta Elida Magdalena","Minetti Lidia Lucia","Missan Dalmasso Guillermo Nelson","Missan Jorge Luis","Missan Nelson Raul","Mondino Raul Carlos","Mosso Daniel Hernan","Nunez Alfredo Raul","Nunez Rita Maria","Rehling Liliana Beatriz","Rinero Victor Eleuterio","Roggero Jose Alberto","Rosetto Oscar Jose Emilio","Rossetto Maria Del Carmen","Sanabria Dora Teresita","Suarez Fabian Ricardo","Suarez Liliana Beatriz","Suarez Noemi Rita","Ternavasio Euclides Segundo","Tortolo Juan Manuel","Valdez Daniela Maria","Valdez Matias Jose","Vallejos Analia Cecilia","Varayoud Dana","Varayoud Ignacio","Varayoud Nicolas","Vidal Juan Manuel","Vidal Lilia Ana Rita","Vidal Marta Maria","Wengger Juliana Belen"],
+  "maua": ["Garbagnoli Ricardo Delpidio"],
+  "rafaela": ["Acastello Agostina","Acosta Elva","Acosta Luciano Gabriel","Acuna Sandra Judith","Adorati Lorena Paola","Aguirre Miguel Oscar","Alesio Jose Luis","Almeira Miguel Angel","Alujes Eduardo Carlos","Alvarez Delia Viviana","Alvarez Graciela Del Valle","Alvarez Stella Maris","Ambort Alejandro Jose","Ambrogi Sergio Luis","Aragoni Diego Enrique","Ardiles Williams Uriel","Arias Eusebio Martin","Audagna Osvaldo Elmo","Ayala Lucas Matias","Aybar Noemi Gladys Ramona","Balbin Nancy Raquel","Barberis Raul Alberto","Barbero Monica Graciela","Barello Sebastian Omar","Basualdo Silvia Graciela","Becerra Rodolfo Adrian","Bejarano Maria Dolores","Benegas Ricardo Martin","Beninca Jorge Alberto","Beninca Miguel Angel","Berardi Beatriz Maria","Bertero Juan Jose","Bittel Sebastian Carlos","Blesio Alberto Cristian","Boiero Imwinkelried Lucila Rita","Bonomelli Miguel Angel","Borgogno Natalia Guadalupe","Bortolotto Maria Eugenia","Bottassi Rosita Clara Teresa","Breckes Hugo Alberto","Cabral Mauro Alejandro","Cagliero Mirtha Magdalena","Camusso Lucas Alberto","Capella Patricia Norma","Carrizo Valeria Ana","Ceraglioli Norma Catalina","Cerniak Matias Deltor","Cervellini Carlos Gabriel","Chaves Emanuel Jesus","Chessa Alicia Albina","Chiabrando Elena Margarita","Cometto Orlando Elvio","Comtesse Pablo Emilio","Contrera Diego Antonio","Contrera Lescano Fabiana Noemi","Coronel Gladiz Ester","Cravero Laura Margarita Dominga","Diaz Gustavo German","Duarte Celica Rosana","Duran Franco Alexis","Enrico Natalia","Escobar Garcia Fabiana Noemi","Falconi Natacha Celia","Falconi Valeria","Faria Pedro Miguel","Farias Emma Margarita","Farias Marisa","Farias Paola Lucrecia","Favre Francisco Jose","Fernandez Diego Jose","Ferrero Maria Cecilia","Fontanet Gonzalo","Foulkes Evelyn","Fourcade Juan Jose","Frautschi Carlos Ernesto","Fruto Brian Ezequiel","Furlong Leticia","Galiani Daniel Rodrigo","Gallardo Audelina De Jesus","Gallardo Raul Elpidio","Gallego Gloria Alejandra","Gallegos Maria Cristina","Garcia Alberto Antonio","Gaspoz Baltazar","Gaspoz Salvador","Gaspoz Santiago Javier","Gerez Julio Cesar","Ghione Fabian Hector","Gigon Eduardo Alberto","Gigon Perez Mariano Lisandro","Giordano Adriana Isabel","Giorgetti Ruben Oscar","Giovanniello Jesica Soledad","Giovanniello Joel Alexander","Giraudo Camila","Godoy Juan Carlos","Godoy Zunilda Teresita","Gomez Diaz Cristina Ines","Gomez Diaz Nicolas","Gomez Silverio Ramon","Gongora Agustin David","Gonzalez Carlos Alberto","Gornati Omar Antonio","Gorosito Luciano Alejandro","Grella Roberto Andres","Gretter Mirian Graciela","Gutierrez Domingo Oscar","Guzman Viviana Guadalupe","Heit Natalia Soledad","Herrera Jose Mercedes","Herrera Nelida Cristina","Herzog Hernan Ariel","Hevia Guillermo Bernardino","Hevia Maria De Los Milagros","Hevia Sandra De Las Mercedes","Iaroz Susana Beatriz","Imfeld Raul Mario","Invinkelried Elena Del Carmen","Jacki Julian Gabriel","Jaimez Rosa Mercedes","Jimenez Marta Susana","Klein Dario Raul","Kloster Marcela Maria","Lascano Edgardo Rene","Latino Maria Belen","Ledesma Mansilla Daniel Oscar","Lemos Walter Adrian","Lizarraga Rosa Alejandra","Lobaisa Nestor Omar","Lobaisa Ricardo Hector","Long Federico","Lopez Beguelin Adrian Edgardo","Lorente Camila Jazmin","Luque Natalia Gisela","Machado Oscar Roberto","Maldonado Margarita Beatriz","Maldonado Vanesa","Manchado Juan Jose","Martinez Araceli Mariana","Martinez Fabiana Yolanda","Martinez Guillermo Dario","Martinez Hernan Dario","Martinez Jeremias Hernan","Martinez Maria Victoria","Martinez Saliba Juan Manuel","Martinez Sella Matias Ezequiel","Martinez Sella Pablo Agustin","Marzioni Maria Susana","Marzioni Prioni Analia Laura","Marzioni Silvia Regina","Matoli Rocio Natalia","Mena Norma Susana","Mendoza Cresencio Gregorio","Mendoza Daniel Mario","Mendoza Mario Andres","Micheli Franco Mateo","Monjes Marta Maria Del Valle","Monjes Viviana Elisabet","Montenegro Claudia Alejandra","Montenegro Fernando David","Monti Fabian Andres","Moya Patricia Adriana","Muga Jorge Omar","Munoz Claudio Andres","Munoz Pamela Aylen Julia","Navarro Gaston Eduardo","Navarro Marcela Ines","Nieva Roberto Ceferino","Nieva Silvina Lorena","Orellano Emanuel Matias","Orellano Estefania Belen","Ortiz Roberto","Ovena Atenas Anahel","Paitubi Edda Ines","Palavecino Claudio Cesar","Palmero Matias Daniel","Palmero Rodrigo Norberto","Pecile Augusto","Pecile Lisandro","Peirotti Claudio Mario Alejandro","Pelegry Carolina Andrea","Peralta Juan Gustavo","Perez Carlos Alberto","Perez Lidia Mirta","Perez Marta Noemi","Perrig Maria Del Milagro Ester","Piumetti Joaquin Andres","Piumetti Lara Maria","Piuzzi Sebastian","Ponce Florencia Micaela","Prono Maria Clementina","Ramirez Diego Nicolas","Ramirez Franco David","Rastelli Marcelo Oscar","Raviolo Florencia","Rios Juan Lucas","Rios Rosa Elisa","Rodriguez Daniel Dario","Rodriguez Mirta Isabel","Roldan Edith Roxana","Roldan Irma Nilda","Ronco Santiago Ezequiel","Rossi Juan Carlos","Ruiz Diaz Alejandro Martin","Ruiz Diaz Alfonsina Lucia","Ruiz Diaz Martin Edmundo","Ruiz Melisa Rita","Ruppen Martina","Saban Claudio Marcelo","Sanabria Graciela Monica","Sanabria Romina Soledad","Sanchez Carlos Abel","Sanchez Jazmin Rocio","Santillan Veronesse Susana Angela","Santucci Ana Maria","Schaberger Andres Sebastian","Schatzle Norma Alicia","Segovia Jorge","Segovia Maria Esther","Sella Griselda Ester","Seluy Daniel Alberto","Seno Ali Marta Monica","Sidades Liliana Elida","Silva Rosa Del Carmen","Socin Ignacio Jesus","Soria Elba Esther","Sosa Manuela Petrona","Sosa Nicole Giseh","Tobke Romina Liliana","Tolosa Daniel Horacio","Tortolo Juana Rosa","Tosello Mirta Maria","Ursprung Jorge Alberto","Uviedo Elias Maximiliano","Valiente Toloza Olga Estela","Vazzano German Dario","Velazquez Noemi Erminda","Velazquez Sergio Ruben","Velez Moreyra Julio Cesar","Vigroux Victoria","Villalba Karen Rocio","Villarreal Roberto Andres Luis","Vivas Margarita Elena","Vouilloz Selene Alejandra","Yoffe Rogelia Lucinda","Zanella Joaquin Gabriel","Zapata Carlos Javier","Zenklusen Cristian Martin","Zerda Victor Martin"],
+  "ramona": ["Ardiles Claudio Damian","Ardiles Hernan Gustavo","Berrino German Nicolas","Costa Lucrecia","Costa Santiago","Cuvertino Roberto Bautista Antonio","Feroglio Carlos","Olmo Mirta Ana","Pagliero Doris Maria","Pagliero Nerina","Pinotti Ayelen Mirian","Pinotti Marcela","Rickert Claudio Andres","Salusso Pablo Alberto","Tesio Marcela Maria","Zampar Amilcar Rafael"],
+  "san_antonio": ["Villalba Luis Angel"],
+  "san_vicente": ["Luna Leonardo Arian","Marchese Juan Carlos","Strumia Martin Gaston"],
+  "sta_clara": ["Aranda Veronica Beatriz","Enrico Sonia Ivone","Luna Jorgelina Isabel","Menardi Oscar Ramon","Ricci Selvina Margarita","Sejas Maria Isabel"],
+  "sunchales": ["Acosta Fernando Daniel","Amicucci Ivana Guadalupe","Armando Martin Damian","Armatti Maria Adriana","Astor Juan Ignacio","Astor Ramiro Pablo","Astor Ruben Cesar Jose","Ballari Sabrina Ivon","Baumann Eva Maria","Bernini Ana Paula","Bernini Daniel Riquelme","Bernini Josefina","Bernini Lorenzo Octavio","Bernini Magdalena","Bossio Micaela Beatriz","Botto Mariela Beatriz","Brusco Vilma Rosa","Calamari Fernando Herminio","Calamari German Daniel","Carignano Facundo Santiago","Carlacchiani Jorge Carlos","Cauda Nelda Beatriz","Cerri Rene Eduardo","Chamorro Fernando Gabriel","Clausen Gustavo Carlos","Covarrubias Marcela Veronica","Croce Moreyra Roman Matias","Croce Moreyra Romina Evelyn","Culasso Andrea Maria","Culasso Antonella Florencia","Degani Mariela Fernanda","Delfino Hernan Jorge","Delrivo Maria Angelica Del Valle","Diaz Sandra Soraya","Doning Mariano Guillermo","Druetto Valentina","Druetto Victoria","Fassi Leandro","Fenoglio Alejandra Mariana","Ferrero Lara","Franchino Daniela Maria","Franchino Elisabet Maria","Furlotti Adriana Beatriz","Galli Funes Jose Augusto","Gandini Maria Susana","Gandino Mariela Leticia Catalina","Gandino Marisa Del Valle","Gauchat Sergio Daniel","Geninatti Veronica Silvia","Gonzalez Cesar Virginio","Gorosito Felipe Antonio","Gorosito Noelia Soledad","Hernandez Alejandra Rosa","Hernandez Gonzalo Andres","Ibanez Sara Maria Isabel","Iturre Rosana Soledad","Juarez Patricio Ricardo","Kisielewsky Laura Yasmin","Linares Weggener Leandro Fabian","Maccario Marcos Alberto","Marquinez Jose Heriberto","Marti Juan Cruz","Martinez Margarita Graciela","Martinez Omar Angel","Massaceci Laura Ines","Mendoza Gonzalo Fabian","Mendoza Soledad","Mondino Jorge Alfredo","Montenegro Garetto Franco Emanuel","Moreyra Maria Luisa","Navarro Alfredo Florencio","Noseda Maria Alejandra","Ochat Andrea Ivana","Oggero Claudio Italo","Ortiz Vanesa De Los Milagros","Palacios Pablo Eliseo","Palacios Santiago Eliseo","Paredes Luciana Laura","Pavetti Diego Fabian","Pinotti Alejandro Daniel","Pinotti Andres Sebastian","Pinotti Guillermo Andres","Pinotti Pablo Adrian","Pinotti Santiago","Pinotti Tomas Alejandro","Pirola Hector Andres","Ponte Mariana Soledad","Re Veronica Cecilia","Robledo Fernando Diego","Romero Clara Ramona","Romero Maria Belen","Saavedra Ezequiel Andres","Saavedra Lucas Daniel","Sandoval Carlos Sebastian","Scalzo Rolando Martin","Schaberger Jesica Elizabet","Schueris Ruben Alcides","Seguel Maria Alejandra","Sola Clerici Francisco","Somaglia Emilia","Varela Georgia Carolina","Velazquez Nanci Beatriz","Vizgarra Luciana Soledad","Wasinger Pablo Damian","Werger Marcelo German","Willener Ado","Woscoff Gerardo","Yacomosky Lilia"],
+  "susana": ["Ambort Rocio Lujan","Beltramino Nora Laura","Fuhr Raquel Dominga","Garcia Rodrigo","Henzenn Balario Lorena Guadalupe","Mildenberger Lisandro Jose","Morandini Franco Andres","Morel Oggier Adriana Ester","Navarro Susana Guadalupe","Ramos Caparros Isabel Maria","Santagostino Julieta Susana","Schenfeld Angel Roberto","Tabin Duggo Juan Pablo","Valsagna Diego Carlos","Zbrun Maximiliano Mendrado"],
+  "tacural": ["Bussi Yanina Alejandra","Duarte Erica Beatriz","Enrici Omar Luis Juan","Mendoza Jose Luis","Minetti Norberto Jose","Re Alejandra Vanesa","Reynoso Gisela Beatriz","Ribotta Arsenio Jose"],
+  "virginia": ["Tenorio Hector Hugo"],
+  "zenon_pereyra": ["Amherdt Luzmila Lujan","Arguello Liliana Adriana","Baravalle Mabel Del Carmen","Dome Laura Lorena","Dreiling Hugo Ernesto","Gallo Veronica Jesica","Romitto Nerina Celeste","Schalbetter German Jose","Schenfelt Rosalia Ester"],
+};
 
 function getTier(b){
   if(b.psEjec) return 'territorio';
@@ -526,6 +575,17 @@ function renderCard(){
       ${vncsHtml}
     </div>
 
+    ${(()=>{
+      const afils=AFIL_NAMES[b.id];
+      if(!afils||afils.length===0) return '';
+      const toggleId='afil-'+b.id;
+      const listHtml=afils.map(n=>`<div class="afil-item">${esc(n)}</div>`).join('');
+      return `<div class="csec">
+        <div class="csec-title">👥 Afiliados/as<span class="afil-count-badge">${afils.length}</span></div>
+        <div id="${toggleId}" class="afil-list" style="display:none">${listHtml}</div>
+        <button class="afil-toggle" onclick="(function(btn){var el=document.getElementById('${toggleId}');var open=el.style.display!=='none';el.style.display=open?'none':'block';btn.textContent=open?'Ver lista ▼':'Ocultar ▲'})(this)">Ver lista ▼</button>
+      </div>`;
+    })()}
     ${evalResumen||miEvalTxt?`<div class="csec">${evalResumen}${miEvalTxt}</div>`:''}
   </div>`;
 }
@@ -608,11 +668,23 @@ async function guardarVinculo(){
     if(!VNCS[locId])VNCS[locId]=[];
     VNCS[locId].unshift(res[0]||payload);
     cerrarModal(); renderCard();
-    showToast('¡Info guardada! ✅');
-    if(curIdx < lista.length-1){ setTimeout(()=>irA(curIdx+1), 1000); }
+    // Preguntar si quiere agregar otro vínculo en la misma localidad
+    document.getElementById('otroLocN').textContent = locN;
+    document.getElementById('otroBg').style.display = 'flex';
+    window._otroLocId = locId; window._otroLocN = locN;
   } else {
     err.textContent='No se pudo guardar. Intentá de nuevo.';
   }
+}
+
+// ── OTRO VÍNCULO ───────────────────────────────────────────────
+function otroVinculo(){
+  document.getElementById('otroBg').style.display='none';
+  abrirModal(window._otroLocId, window._otroLocN);
+}
+function noMasVinculo(){
+  document.getElementById('otroBg').style.display='none';
+  if(curIdx < lista.length-1){ irA(curIdx+1); }
 }
 
 // ── UTILS ──────────────────────────────────────────────────────
