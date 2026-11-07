@@ -5,27 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>¿Dónde Estamos?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Editorial / data-journalism — informe territorial. Display serif (Fraunces) + Archivo para datos. Acento rojo PS. */
+/* Identidad PS Castellanos — fondo oscuro rojizo, Bebas Neue + Barlow. Acento rojo PS + dorado. Tema único. */
 :root{
-  --bg:#f4f1ea; --surface:#fffdf8; --ink:#1a1714; --ink-soft:#6b6459; --line:#e3ddd0;
-  --accent:#c1121f; --accent-soft:#f3d9db;
-  --verde:#2d7d46; --verde-bg:#e4f0e5; --amar:#b87503; --amar-bg:#f8ecd4; --rojo:#c1121f; --rojo-bg:#f6dcde; --gris:#8a8373; --gris-bg:#eceae3;
-  --disp:'Fraunces',Georgia,serif; --body:'Archivo',system-ui,sans-serif;
-}
-:root[data-theme="dark"]{
-  --bg:#14120f; --surface:#1d1a16; --ink:#f0ece3; --ink-soft:#a39b8c; --line:#2e2a24;
-  --accent:#f0576a; --accent-soft:#3a1c20;
-  --verde:#5cc97a; --verde-bg:#1a2e20; --amar:#e0a63a; --amar-bg:#2e2512; --rojo:#f0576a; --rojo-bg:#2e171a; --gris:#9a9casdf; --gris:#8a8373; --gris-bg:#26231d;
+  --bg:#211c1a; --surface:#2b2420; --surface2:#251e1b; --ink:#f3ede9; --ink-soft:#b6a39c; --line:#473630;
+  --accent:#e63946; --accent2:#f0c040; --gold:#f0c040;
+  --verde:#5cc97a; --verde-bg:#1d3324; --amar:#f0c040; --amar-bg:#362b16; --rojo:#ff5a66; --rojo-bg:#3a2024; --gris:#9a8982; --gris-bg:#2e211d;
+  --disp:'Bebas Neue',Impact,sans-serif; --body:'Barlow Condensed','Barlow',sans-serif;
   color-scheme:dark;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#14120f; --surface:#1d1a16; --ink:#f0ece3; --ink-soft:#a39b8c; --line:#2e2a24;
-  --accent:#f0576a; --accent-soft:#3a1c20;
-  --verde:#5cc97a; --verde-bg:#1a2e20; --amar:#e0a63a; --amar-bg:#2e2512; --rojo:#f0576a; --rojo-bg:#2e171a; --gris:#8a8373; --gris-bg:#26231d;
-  color-scheme:dark;
-}}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
@@ -44,6 +33,39 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1
 .stat-n{font-family:var(--disp);font-size:40px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .stat-l{font-size:10px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.8px;margin-top:5px;font-weight:600}
 .n-verde{color:var(--verde)}.n-amar{color:var(--amar)}.n-accent{color:var(--accent)}.n-ink{color:var(--ink)}
+/* Análisis estratégico */
+.anal{margin-bottom:6px}
+.anal-lectura{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);padding:16px 20px;margin-bottom:14px}
+.al-tag{font-family:var(--body);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+.al-list{list-style:none;display:grid;gap:9px}
+.al-list li{font-family:var(--disp);font-size:15px;line-height:1.45;padding-left:18px;position:relative;color:var(--ink)}
+.al-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-family:var(--body);font-weight:700}
+.al-list b{font-weight:600}
+.anal-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.anal-cols{grid-template-columns:1fr}}
+.anal-card{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+.ac-t{font-family:var(--disp);font-size:17px;font-weight:600;letter-spacing:-.01em}
+.ac-sub{font-size:11px;color:var(--ink-soft);font-style:italic;font-family:var(--disp);margin-bottom:12px}
+.ac-empty{font-size:13px;color:var(--ink-soft);font-style:italic;font-family:var(--disp);padding:10px 0}
+/* ranking */
+.rank{display:flex;flex-direction:column;gap:7px}
+.rk-row{display:flex;align-items:center;gap:9px;cursor:pointer;padding:3px 0}
+.rk-row:hover .rk-name{color:var(--accent)}
+.rk-pos{font-family:var(--disp);font-size:15px;font-weight:600;color:var(--ink-soft);width:16px;text-align:center;font-variant-numeric:tabular-nums;align-self:flex-start;margin-top:1px}
+.rk-name{font-size:13px;font-weight:600;width:120px;flex-shrink:0;line-height:1.15}
+.rk-bar{align-self:center}
+.rk-bar{flex:1;height:8px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.rk-fill{height:100%;background:var(--accent)}
+.rk-meta{font-size:11px;color:var(--ink-soft);width:46px;text-align:right;font-weight:600}
+/* cat chart */
+.catchart{display:flex;flex-direction:column;gap:6px}
+.cc-row{display:flex;align-items:center;gap:8px}
+.cc-ico{font-size:14px;width:18px;text-align:center}
+.cc-name{font-size:12px;width:92px;flex-shrink:0;color:var(--ink)}
+.cc-track{flex:1;height:16px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.cc-fill{height:100%;background:var(--verde)}
+.cc-fill.zero{background:transparent}
+.cc-n{font-family:var(--disp);font-size:14px;font-weight:600;width:22px;text-align:right;font-variant-numeric:tabular-nums}
 /* Section headers editoriales */
 .sec{margin:34px 0 14px;display:flex;align-items:baseline;gap:12px}
 .sec-num{font-family:var(--disp);font-size:14px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
@@ -116,6 +138,11 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1
 .vd-n{font-weight:600;font-size:14px}
 .vd-c{font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .vd-d{font-size:13px;color:var(--ink-soft);margin-top:1px}
+.vd-by{font-size:11px;color:var(--accent2);margin-top:3px;font-weight:600;font-family:var(--body);letter-spacing:.2px}
+.vd-by::before{content:'✎ ';opacity:.7}
+.m-autores{font-size:11px;color:var(--ink-soft);margin-top:9px;font-family:var(--disp);font-style:italic;line-height:1.5}
+.m-autores b{color:var(--accent2);font-style:normal;font-weight:600}
+.rk-by{font-size:10px;color:var(--ink-soft);font-style:italic;font-family:var(--disp);display:block;margin-top:1px}
 /* mapa */
 .mapwrap-outer{background:var(--surface);border:1px solid var(--line);padding:18px}
 .map-wrap{position:relative;width:100%;max-width:560px;margin:0 auto}
@@ -166,11 +193,13 @@ let DATA={byLoc:{},evals:[],vncs:[]};
 async function supa(path){const r=await fetch(SUPA_URL+"/rest/v1/"+path,{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}});return r.json();}
 function consenso(evals){const c={actuar:0,intentar:0,no:0};evals.forEach(e=>{if(e.evaluacion!=='no_se')c[e.evaluacion]=(c[e.evaluacion]||0)+1;});const tot=c.actuar+c.intentar+c.no;if(tot===0)return{tipo:null,c,tot};let max='actuar',mv=c.actuar;if(c.intentar>mv){max='intentar';mv=c.intentar;}if(c.no>mv){max='no';mv=c.no;}return{tipo:max,c,tot};}
 function incidencia(p){if(p>=40)return{lbl:'Alta',cls:'i-alta'};if(p>=20)return{lbl:'Media',cls:'i-media'};if(p>0)return{lbl:'Baja',cls:'i-baja'};return{lbl:'—',cls:'i-cero'};}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function fmtAutor(a){a=(a==null?'':String(a)).trim();if(!a||a.toLowerCase()==='null')return 'equipo';if(/^\d{6,}$/.test(a))return 'equipo';return esc(a);}
 async function loadData(){
   document.getElementById('lastUpdate').textContent='Actualizando…';
   let evals,vncs;
   try{
-    const res=await Promise.all([supa('evaluaciones?select=localidad_id,localidad_n,evaluacion,autor'),supa('vinculos?select=localidad,localidad_n,nombre,tipo,vinculo,oportunidad')]);
+    const res=await Promise.all([supa('evaluaciones?select=localidad_id,localidad_n,evaluacion,autor'),supa('vinculos?select=localidad,localidad_n,nombre,tipo,vinculo,oportunidad,autor')]);
     evals=res[0];vncs=res[1];
     if(!Array.isArray(evals)||evals.length===0) throw 0;
   }catch(e){ evals=(typeof EMBED_EVALS!=='undefined')?EMBED_EVALS:[]; vncs=(typeof EMBED_VNCS!=='undefined')?EMBED_VNCS:[]; }
@@ -186,6 +215,62 @@ async function loadData(){
   document.getElementById('lastUpdate').textContent=utiles+' opiniones · '+part+' participantes · '+vncsClean.length+' vínculos · '+now;
   render();
 }
+function buildAnalisis(T,A,N,F){
+  const {byLoc,evals,vncs}=DATA;
+  const totV=vncs.length;
+  const totE=evals.filter(e=>e.evaluacion!=='no_se').length;
+  const conSenal=T.length+A.length+N.length;
+  // Ranking de localidades por fuerza de red (vínculos + consenso)
+  const rank=BASEDATA.map(b=>{
+    const nv=byLoc[b.id].vncs.length;
+    const c=byLoc[b.id].cons;
+    const score=nv*2 + (c.tipo==='actuar'?c.tot*2:c.tipo==='intentar'?c.tot:0);
+    const autores=[...new Set([...byLoc[b.id].vncs.map(v=>fmtAutor(v.autor)),...byLoc[b.id].evals.filter(e=>e.evaluacion!=='no_se').map(e=>fmtAutor(e.autor))])].filter(a=>a!=='equipo');
+    return {n:b.n,id:b.id,nv,cons:c.tipo,ctot:c.tot,score,autores};
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
+  // Vínculos por categoría (departamento)
+  const porCat={}; CATS.forEach(c=>porCat[c.id]=0);
+  vncs.forEach(v=>{ if(porCat[v.tipo]!==undefined)porCat[v.tipo]++; else porCat.otro++; });
+  const catsOrden=CATS.map(c=>({...c,n:porCat[c.id],pct:totV>0?Math.round(porCat[c.id]/totV*100):0})).sort((a,b)=>b.n-a.n);
+  const maxCat=Math.max(1,...catsOrden.map(c=>c.n));
+  // Categorías ausentes (en cero) — hallazgo
+  const ausentes=catsOrden.filter(c=>c.n===0).map(c=>c.name);
+  // Lectura estratégica (texto generado)
+  const topLoc=rank[0];
+  const catTop=catsOrden[0];
+  const insights=[];
+  if(topLoc) insights.push('<b>'+topLoc.n+'</b> es hoy la localidad con la red más desarrollada'+(topLoc.nv>0?' ('+topLoc.nv+' vínculo'+(topLoc.nv>1?'s':'')+' cargado'+(topLoc.nv>1?'s':'')+')':'')+'. Es la plaza donde más terreno tenemos recorrido.');
+  if(catTop&&catTop.n>0) insights.push('La red que estamos mapeando es sobre todo de <b>'+catTop.name.toLowerCase()+'</b> ('+catTop.pct+'% de los vínculos). Es por donde más llegada tiene el equipo.');
+  if(T.length>0) insights.push('Ya hay <b>'+T.length+' localidad'+(T.length>1?'es':'')+' con consenso para trabajar</b>'+(T.length<=4?': '+T.map(b=>b.n).join(', '):'')+'. Ahí el equipo ve oportunidad clara.');
+  if(ausentes.length>0&&ausentes.length<CATS.length) insights.push('Todavía no aparecen vínculos de <b>'+ausentes.slice(0,3).join(', ').toLowerCase()+'</b>. Son dimensiones a reforzar en el relevamiento.');
+  if(F.length>0) insights.push('Quedan <b>'+F.length+' localidades sin lectura</b>. Necesitamos sumar las miradas de quienes las conocen para completar el mapa.');
+
+  let h='<div class="anal">';
+  // Lectura estratégica
+  h+='<div class="anal-lectura"><div class="al-tag">Lectura estratégica</div><ul class="al-list">'+insights.map(i=>'<li>'+i+'</li>').join('')+'</ul></div>';
+  // Dos columnas: ranking + gráfico categorías
+  h+='<div class="anal-cols">';
+  // Ranking fuerza de red
+  h+='<div class="anal-card"><div class="ac-t">Fuerza de red por localidad</div><div class="ac-sub">Vínculos cargados + consenso del equipo</div><div class="rank">';
+  if(rank.length){
+    const maxS=rank[0].score;
+    rank.forEach((r,i)=>{
+      const by=r.autores.length?'<span class="rk-by">'+r.autores.join(', ')+'</span>':'';
+      h+='<div class="rk-row" onclick="showFicha(\''+r.id+'\')"><span class="rk-pos">'+(i+1)+'</span><span class="rk-name">'+r.n+by+'</span><div class="rk-bar"><div class="rk-fill" style="width:'+Math.round(r.score/maxS*100)+'%"></div></div><span class="rk-meta">'+(r.nv>0?r.nv+'🔗':'')+(r.cons==='actuar'?' ●':'')+'</span></div>';
+    });
+  } else h+='<div class="ac-empty">Todavía sin datos suficientes</div>';
+  h+='</div></div>';
+  // Gráfico barras por categoría
+  h+='<div class="anal-card"><div class="ac-t">¿Dónde está nuestra fuerza?</div><div class="ac-sub">Vínculos por tipo en todo el departamento</div><div class="catchart">';
+  catsOrden.forEach(c=>{
+    const w=Math.round(c.n/maxCat*100);
+    h+='<div class="cc-row"><span class="cc-ico">'+c.ico+'</span><span class="cc-name">'+c.name+'</span><div class="cc-track"><div class="cc-fill'+(c.n===0?' zero':'')+'" style="width:'+(c.n>0?Math.max(w,4):0)+'%"></div></div><span class="cc-n">'+c.n+'</span></div>';
+  });
+  h+='</div></div>';
+  h+='</div></div>';
+  return h;
+}
+
 function render(){
   const {byLoc,evals,vncs}=DATA;
   const utiles=evals.filter(e=>e.evaluacion!=='no_se');
@@ -209,6 +294,8 @@ function render(){
   html+='<div class="sec"><span class="sec-num">03</span><span class="sec-t">El territorio</span><span class="sec-line"></span><span class="sec-note">respaldo visual</span></div>';
   html+='<div class="mapwrap-outer"><div class="map-wrap" id="mapWrap"><img id="mapaBg" src="mapa_castellanos.png" alt="Mapa" onerror="this.style.display=\'none\'"><svg id="mapSvg" viewBox="0 0 775 1004" xmlns="http://www.w3.org/2000/svg"></svg></div>'
     +'<div class="map-leg"><span class="ml"><span class="ml-d" style="background:var(--verde)"></span>Trabajar</span><span class="ml"><span class="ml-d" style="background:var(--amar)"></span>Avanzar</span><span class="ml"><span class="ml-d" style="background:var(--rojo)"></span>No priorizar</span><span class="ml"><span class="ml-d" style="background:var(--gris)"></span>Falta relevar</span></div></div>';
+  html+='<div class="sec"><span class="sec-num">04</span><span class="sec-t">Lectura del equipo</span><span class="sec-line"></span><span class="sec-note">análisis de lo que fuimos cargando</span></div>';
+  html+=buildAnalisis(T,A,N,F);
   document.getElementById('main').innerHTML=html;
   drawMap();
 }
@@ -235,6 +322,9 @@ function showFicha(id){
     const pa=Math.round(c.c.actuar/c.tot*100),pi=Math.round(c.c.intentar/c.tot*100),pn=Math.round(c.c.no/c.tot*100);
     const row=(l,p,cl)=>p>0?'<div class="mrow"><span class="m-l">'+l+'</span><div class="m-track"><div class="m-fill '+cl+'" style="width:'+p+'%">'+(p>=12?p+'%':'')+'</div></div><span class="m-pct">'+p+'%</span></div>':'';
     mirada+=row('Oportunidad',pa,'mf-v')+row('Intentarlo',pi,'mf-a')+row('Profundizar',pn,'mf-r')+'<div class="m-base">Sobre '+c.tot+' opinión'+(c.tot>1?'es':'')+' del equipo</div>';
+    const quienes=ld.evals.filter(e=>e.evaluacion!=='no_se').map(e=>fmtAutor(e.autor));
+    const uniq=[...new Set(quienes)];
+    if(uniq.length) mirada+='<div class="m-autores">Opinaron: '+uniq.map(n=>'<b>'+n+'</b>').join(', ')+'</div>';
   }else{mirada+='<div style="font-size:13px;color:var(--ink-soft);font-style:italic;font-family:var(--disp)">Todavía nadie con conocimiento evaluó esta localidad.</div>';}
   mirada+='</div>';
   const totV=ld.vncs.length;const porCat={};CATS.forEach(x=>porCat[x.id]=0);
@@ -244,7 +334,7 @@ function showFicha(id){
     cats+='<div class="cat'+(n===0?' vacia':'')+'"><div class="c-top"><span class="c-ico">'+cat.ico+'</span><span class="c-name">'+cat.name+'</span><span class="c-n">'+n+'</span></div><div class="c-bar"><div class="c-fill" style="width:'+p+'%;background:'+(p>=40?'var(--verde)':p>=20?'var(--amar)':p>0?'var(--gris)':'transparent')+'"></div></div><div class="c-foot"><span class="c-pct">'+p+'%</span><span class="c-inc '+inc.cls+'">'+inc.lbl+'</span></div></div>';
   });
   cats+='</div>';
-  if(totV>0){cats+='<div class="vdet">';ld.vncs.forEach(v=>{const cat=CATMAP[v.tipo]||{ico:'📌',name:v.tipo};cats+='<div class="vd"><span class="vd-ico">'+cat.ico+'</span><div><div class="vd-n">'+v.nombre+' <span class="vd-c">· '+cat.name+'</span></div>'+(v.vinculo?'<div class="vd-d">'+v.vinculo+'</div>':'')+'</div></div>';});cats+='</div>';}
+  if(totV>0){cats+='<div class="vdet">';ld.vncs.forEach(v=>{const cat=CATMAP[v.tipo]||{ico:'📌',name:v.tipo};cats+='<div class="vd"><span class="vd-ico">'+cat.ico+'</span><div><div class="vd-n">'+esc(v.nombre)+' <span class="vd-c">· '+cat.name+'</span></div>'+(v.vinculo?'<div class="vd-d">'+esc(v.vinculo)+'</div>':'')+'<div class="vd-by">Cargó: '+fmtAutor(v.autor)+'</div></div></div>';});cats+='</div>';}
   cats+='</div>';
   box.innerHTML='<div class="fh"><div><div class="fh-loc">'+bd.n+'</div><div class="fh-sub">Departamento Castellanos</div></div><div class="fh-badge '+bcls+'">'+badge+'</div></div><div class="fbody">'+datos+mirada+cats+'</div>';
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
