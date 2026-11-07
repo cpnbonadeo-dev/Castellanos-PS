@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados — PS Castellanos</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Barlow',Arial,sans-serif;background:#0e1420;color:#f0f0f0}
+.hdr{background:linear-gradient(135deg,#8b0000,#c62828);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hdr-title{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:.5px;text-transform:uppercase}
+.hdr-sub{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px}
+.reload-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:'Oswald',sans-serif;font-weight:600}
+.reload-btn:hover{background:rgba(255,255,255,.25)}
+.hdr-stripe{height:5px;background:repeating-linear-gradient(90deg,#8b0000 0,#8b0000 30px,#c62828 30px,#c62828 60px)}
+.container{max-width:1280px;margin:0 auto;padding:22px 18px 60px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.kpi-box{background:#1a2234;border:1px solid #2a3349;border-radius:10px;padding:16px;text-align:center}
+.kpi-val{font-family:'Oswald',sans-serif;font-size:36px;font-weight:700;line-height:1}
+.kpi-lbl{font-size:10px;color:#8b97ab;margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
+.v-verde{color:#4ade80}.v-amar{color:#fbbf24}.v-rojo{color:#f87171}.v-azul{color:#60a5fa}.v-blanco{color:#fff}
+.sec-label{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#8b97ab;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:#2a3349}
+/* 4 grupos */
+.grupos-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:10px}
+.grupo{background:#141b2b;border:1px solid #2a3349;border-radius:12px;padding:16px;border-top:4px solid #3a4257}
+.grupo.g-verde{border-top-color:#4ade80}.grupo.g-amar{border-top-color:#fbbf24}
+.grupo.g-rojo{border-top-color:#f87171}.grupo.g-gris{border-top-color:#64748b}
+.g-head{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.g-icon{font-size:16px}
+.g-titulo{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;color:#fff;flex:1;text-transform:uppercase;letter-spacing:.3px}
+.g-count{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#aab4c5}
+.g-sub{font-size:11px;color:#6b7689;margin-bottom:10px}
+.g-chips{display:flex;flex-wrap:wrap;gap:6px}
+.g-chip{font-size:13px;padding:5px 11px;border-radius:16px;cursor:pointer;font-weight:600;border:1px solid;transition:all .15s}
+.g-chip:hover{filter:brightness(1.3);transform:translateY(-1px)}
+.g-chip.g-verde{background:rgba(74,222,128,.12);color:#4ade80;border-color:rgba(74,222,128,.35)}
+.g-chip.g-amar{background:rgba(251,191,36,.12);color:#fbbf24;border-color:rgba(251,191,36,.35)}
+.g-chip.g-rojo{background:rgba(248,113,113,.12);color:#f87171;border-color:rgba(248,113,113,.35)}
+.g-chip.g-gris{background:rgba(100,116,139,.1);color:#94a3b8;border-color:rgba(100,116,139,.25);font-size:12px;padding:4px 9px}
+.g-vnc{font-size:10px;opacity:.8}
+.g-empty{color:#4b5568;font-size:12px;font-style:italic}
+/* FICHA DETALLE */
+.ficha{background:#141b2b;border:1px solid #2a3349;border-radius:12px;padding:0;overflow:hidden;margin-bottom:10px}
+.ficha-empty{color:#6b7689;font-size:13px;text-align:center;padding:36px 10px;font-style:italic}
+.ficha-hd{background:linear-gradient(135deg,#1a2338,#243150);padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px}
+.ficha-loc{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1}
+.ficha-sub{font-size:11px;color:#8b97ab;text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.ficha-badge{font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap}
+.fb-actuar{background:rgba(74,222,128,.15);color:#4ade80}
+.fb-intentar{background:rgba(251,191,36,.15);color:#fbbf24}
+.fb-no{background:rgba(248,113,113,.15);color:#f87171}
+.fb-none{background:rgba(139,151,171,.12);color:#8b97ab}
+.ficha-body{padding:18px 20px}
+.bloque-tit{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#7a8aa5;margin:0 0 10px;padding-top:4px}
+/* Bloque datos electorales */
+.datos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:8px}
+.dato{background:#0f1726;border:1px solid #232d42;border-radius:8px;padding:10px 12px}
+.dato-lbl{font-size:9px;color:#6b7689;text-transform:uppercase;letter-spacing:.4px}
+.dato-val{font-size:14px;color:#e8e8e8;font-weight:600;margin-top:2px}
+.dato-val.ps{color:#4ade80}
+/* Barras mirada */
+.mirada-bars{margin-top:4px}
+.mbar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.mbar-lbl{font-size:12px;width:130px;flex-shrink:0;color:#aab4c5}
+.mbar-track{flex:1;height:22px;background:#0f1726;border-radius:5px;overflow:hidden;position:relative}
+.mbar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:#0e1420;min-width:28px;transition:width .4s}
+.mf-actuar{background:#4ade80}.mf-intentar{background:#fbbf24}.mf-no{background:#f87171}
+.mbar-pct{font-size:13px;font-weight:700;width:42px;text-align:right}
+/* Vínculos por categoría con incidencia */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.cat-item{background:#0f1726;border:1px solid #232d42;border-radius:8px;padding:10px 12px;position:relative}
+.cat-item.vacia{opacity:.5}
+.cat-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.cat-ico{font-size:17px}
+.cat-name{font-size:12px;font-weight:700;color:#cdd6e5;flex:1}
+.cat-n{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:#fff}
+.cat-bar{height:5px;background:#1c2537;border-radius:3px;overflow:hidden;margin-bottom:5px}
+.cat-bar-fill{height:100%;border-radius:3px}
+.cat-foot{display:flex;justify-content:space-between;align-items:center}
+.cat-pct{font-size:12px;font-weight:700;color:#aab4c5}
+.cat-inc{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+.inc-alta{background:rgba(74,222,128,.15);color:#4ade80}
+.inc-media{background:rgba(251,191,36,.15);color:#fbbf24}
+.inc-baja{background:rgba(139,151,171,.12);color:#8b97ab}
+.inc-cero{background:rgba(100,116,139,.08);color:#5a6678}
+.vnc-detalle{margin-top:14px;border-top:1px solid #232d42;padding-top:12px}
+.vd-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
+.vd-ico{font-size:16px}
+.vd-nombre{font-weight:700;font-size:13px;color:#e8e8e8}
+.vd-cat{font-size:10px;color:#60a5fa;text-transform:uppercase}
+.vd-det{font-size:12px;color:#99a3b5}
+/* Mapa */
+.map-panel{background:#141b2b;border:1px solid #2a3349;border-radius:12px;padding:16px;position:relative}
+.map-title{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:#8b97ab;margin-bottom:10px;text-align:center}
+.map-wrap{position:relative;width:100%;max-width:580px;margin:0 auto;background:#0e1420;border-radius:8px}
+#mapaBg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;opacity:0.20;pointer-events:none;z-index:0}
+#mapSvg{position:relative;z-index:1;width:100%;height:auto;display:block}
+.map-leg{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+.ml-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#8b97ab}
+.ml-dot{width:11px;height:11px;border-radius:50%}
+.loading{text-align:center;padding:50px;color:#6b7689;font-family:'Oswald',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px}
+.dot-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div>
+    <div class="hdr-title">🌹 ¿Dónde estamos? · PS Castellanos</div>
+    <div class="hdr-sub" id="lastUpdate">Cargando...</div>
+  </div>
+  <button class="reload-btn" onclick="loadData()">↺ Actualizar</button>
+</div>
+<div class="hdr-stripe"></div>
+<div class="container">
+  <div id="main"><div class="loading">Cargando datos...</div></div>
+</div>
+<script>
+const SUPA_URL="https://ikaadszatnbmzjrjvmkv.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrYWFkc3phdG5ibXpqcmp2bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mjc1ODMsImV4cCI6MjA5NzEwMzU4M30.QS4ClCaryH56pGAVc4ICS_eHC1LZmvQFrR4KNri3GSs";
+const PXMAP =   {    rafaela:[442.8,468.0], sunchales:[438.0,218.4], frontera:[69.2,698.4],    san_vicente:[448.8,922.0], humberto:[604.8,137.2], maria_juana:[298.4,906.8],    susana:[481.6,605.6], col_aldao:[298.8,250.4], angelica:[463.2,776.0],    ataliva:[545.2,272.8], aurelia:[560.0,662.0], bauer_sigel:[136.8,537.2],    bella_italia:[562.0,529.6], col_bicha:[215.2,130.4], col_bigand:[318.4,345.6],    castellanos_c:[304.4,455.2], col_cello:[224.4,672.0], col_iturraspe:[406.0,716.0],    col_margarita:[374.0,904.0], col_raquel:[494.4,121.6], coronel_fraga:[152.8,432.0],    plaza_cluc:[333.2,688.8], egusquiza:[396.8,363.2], esmeralda:[156.0,849.2],    est_cluc:[320.4,760.4], eusebia:[207.2,222.0], eustolia:[276.0,807.6],    fidela:[256.0,332.4], galisteo:[611.6,303.2], garibaldi:[244.4,886.4],    hugentobler:[288.4,190.8], josefina:[110.4,645.6], lehmann:[526.0,386.0],    maua:[676.0,51.6], pte_roca:[400.0,472.0], pueblo_marini:[182.0,305.6],    ramona:[170.4,366.4], saguier:[348.8,571.6], san_antonio:[302.0,473.2],    sta_clara:[243.2,591.2], tacural:[411.6,123.2], tacurales:[288.0,112.0],    vila:[230.8,448.8], villa_san_jose:[398.0,582.0], virginia:[614.4,27.2],    zenon_pereyra:[178.0,799.2]  };
+const BASEDATA = [{"id":"rafaela","n":"Rafaela","muni":true,"psEjec":false,"centroPS":true,"gob":"Viotti Luis 'Leo' (UNIDOS)","el":83002,"vg":27766,"pop":101470,"congresal":""},{"id":"sunchales","n":"Sunchales","muni":true,"psEjec":true,"centroPS":true,"gob":"Pinotti Pablo (PS)","el":19552,"vg":7009,"pop":23379,"congresal":"Ochat Andrea · Galli Funes J.A."},{"id":"frontera","n":"Frontera","muni":true,"psEjec":false,"centroPS":true,"gob":"Milanesio Fabio (UNIDOS)","el":7243,"vg":1894,"pop":9787,"congresal":"Pérez Susana · Pérez Carlos"},{"id":"san_vicente","n":"San Vicente","muni":true,"psEjec":false,"centroPS":false,"gob":"Aira Gonzalo (UNIDOS)","el":5427,"vg":3357,"pop":5902,"congresal":""},{"id":"humberto","n":"Humberto Primo","muni":true,"psEjec":false,"centroPS":true,"gob":"Gilabert Mauro (UNIDOS)","el":4677,"vg":1903,"pop":5379,"congresal":""},{"id":"maria_juana","n":"María Juana","muni":true,"psEjec":false,"centroPS":true,"gob":"Maciel Zulma (UNIDOS)","el":4157,"vg":1596,"pop":4740,"congresal":"Bazzoni Amadeo"},{"id":"susana","n":"Susana","muni":true,"psEjec":false,"centroPS":true,"gob":"Perino Jorge (UNIDOS)","el":2580,"vg":615,"pop":1717,"congresal":"Tabín Duggo Juan Pablo"},{"id":"col_aldao","n":"Colonia Aldao","muni":false,"psEjec":true,"centroPS":false,"gob":"Eberhardt Lorena (PS/UNIDOS)","el":1692,"vg":1012,"pop":1720,"congresal":""},{"id":"angelica","n":"Angélica","muni":false,"psEjec":false,"centroPS":false,"gob":"Andres Marcos (Más p/SFE)","el":1201,"vg":932,"pop":1329,"congresal":""},{"id":"ataliva","n":"Ataliva","muni":false,"psEjec":false,"centroPS":false,"gob":"Alvarez Jose M. (UNIDOS)","el":1777,"vg":868,"pop":2015,"congresal":""},{"id":"aurelia","n":"Aurelia","muni":false,"psEjec":false,"centroPS":false,"gob":"Morel Roberto (Esf.Vecinal)","el":138,"vg":79,"pop":77,"congresal":""},{"id":"bauer_sigel","n":"Bauer y Sigel","muni":false,"psEjec":false,"centroPS":false,"gob":"Serrani Franco (UNIDOS)","el":247,"vg":146,"pop":232,"congresal":""},{"id":"bella_italia","n":"Bella Italia","muni":false,"psEjec":false,"centroPS":false,"gob":"Perotti Hector (Más p/SFE)","el":1499,"vg":849,"pop":1768,"congresal":""},{"id":"col_bicha","n":"Col. Bicha","muni":false,"psEjec":false,"centroPS":false,"gob":"Alochis Miguel (UNIDOS)","el":179,"vg":79,"pop":222,"congresal":""},{"id":"col_bigand","n":"Col. Bigand","muni":false,"psEjec":false,"centroPS":false,"gob":"Oggero Adrian (Más p/SFE)","el":51,"vg":40,"pop":null,"congresal":""},{"id":"castellanos_c","n":"Castellanos","muni":false,"psEjec":false,"centroPS":false,"gob":"Audino Diego (UNIDOS)","el":305,"vg":168,"pop":211,"congresal":""},{"id":"col_cello","n":"Colonia Cello","muni":false,"psEjec":false,"centroPS":false,"gob":"Heck Ma. del Carmen (UNIDOS)","el":174,"vg":104,"pop":109,"congresal":""},{"id":"col_iturraspe","n":"Col. Iturraspe","muni":false,"psEjec":true,"centroPS":false,"gob":"Picco Dario (PS/UNIDOS)","el":48,"vg":31,"pop":null,"congresal":""},{"id":"col_margarita","n":"Col. Margarita","muni":false,"psEjec":true,"centroPS":false,"gob":"Muratore Maria S. (PS/UNIDOS)","el":313,"vg":249,"pop":248,"congresal":""},{"id":"col_raquel","n":"Colonia Raquel","muni":false,"psEjec":true,"centroPS":true,"gob":"Peter Luciana (PS/UNIDOS)","el":500,"vg":148,"pop":97,"congresal":"Gallo Verónica J."},{"id":"coronel_fraga","n":"Coronel Fraga","muni":false,"psEjec":false,"centroPS":false,"gob":"Palacio Marisabel (UNIDOS)","el":283,"vg":236,"pop":312,"congresal":""},{"id":"plaza_cluc","n":"Plaza Clucellas","muni":false,"psEjec":false,"centroPS":false,"gob":"Bono Gabriel (UNIDOS)","el":1290,"vg":602,"pop":1849,"congresal":""},{"id":"egusquiza","n":"Egusquiza","muni":false,"psEjec":false,"centroPS":false,"gob":"Celis Maria F. (UNIDOS)","el":376,"vg":223,"pop":357,"congresal":""},{"id":"esmeralda","n":"Esmeralda","muni":false,"psEjec":false,"centroPS":false,"gob":"Berra Luis A. (UNIDOS)","el":514,"vg":322,"pop":590,"congresal":""},{"id":"est_cluc","n":"Est. Clucellas","muni":false,"psEjec":false,"centroPS":false,"gob":"Peretti Eduardo (UNIDOS)","el":778,"vg":516,"pop":861,"congresal":""},{"id":"eusebia","n":"Eusebia y Carolina","muni":false,"psEjec":true,"centroPS":false,"gob":"Gimenez Susana (PS/UNIDOS)","el":718,"vg":319,"pop":753,"congresal":"Gimenez Susana"},{"id":"eustolia","n":"Eustolia","muni":false,"psEjec":false,"centroPS":false,"gob":"Beltramo Juan M. (Más p/SFE)","el":141,"vg":121,"pop":17,"congresal":""},{"id":"fidela","n":"Fidela","muni":false,"psEjec":false,"centroPS":false,"gob":"Ovena Jorge A. (UNIDOS)","el":88,"vg":53,"pop":null,"congresal":""},{"id":"galisteo","n":"Galisteo","muni":false,"psEjec":false,"centroPS":false,"gob":"Canavese Javier (UNIDOS)","el":159,"vg":132,"pop":null,"congresal":""},{"id":"garibaldi","n":"Garibaldi","muni":false,"psEjec":false,"centroPS":false,"gob":"Gamboa Maribel (Más p/SFE)","el":168,"vg":138,"pop":169,"congresal":""},{"id":"hugentobler","n":"Hugentobler","muni":false,"psEjec":false,"centroPS":false,"gob":"Milanesio Luciano (Más p/SFE)","el":46,"vg":33,"pop":null,"congresal":""},{"id":"josefina","n":"Josefina","muni":false,"psEjec":false,"centroPS":false,"gob":"Sicardi Jorgelina (UNIDOS)","el":1659,"vg":445,"pop":915,"congresal":""},{"id":"lehmann","n":"Lehmann","muni":false,"psEjec":false,"centroPS":false,"gob":"Bett Marcelo (UNIDOS)","el":2649,"vg":1213,"pop":3102,"congresal":""},{"id":"maua","n":"Maúa","muni":false,"psEjec":true,"centroPS":false,"gob":"Garbagnoli Ricardo (PS/UNIDOS)","el":53,"vg":23,"pop":null,"congresal":""},{"id":"pte_roca","n":"Presidente Roca","muni":false,"psEjec":false,"centroPS":false,"gob":"Montenegro Jessica (SVyL)","el":746,"vg":528,"pop":644,"congresal":""},{"id":"pueblo_marini","n":"Pueblo Marini","muni":false,"psEjec":false,"centroPS":false,"gob":"Ferrer Amalia (Más p/SFE)","el":104,"vg":60,"pop":65,"congresal":""},{"id":"ramona","n":"Ramona","muni":false,"psEjec":false,"centroPS":true,"gob":"Barbero Jose A. (U.Vecinal)","el":1575,"vg":1224,"pop":1846,"congresal":"Tabín Duggo Juan Pablo"},{"id":"saguier","n":"Saguier","muni":false,"psEjec":false,"centroPS":false,"gob":"Ramos Sergio (UNIDOS)","el":645,"vg":310,"pop":null,"congresal":""},{"id":"san_antonio","n":"San Antonio","muni":false,"psEjec":false,"centroPS":false,"gob":"Previotto Mauro (UNIDOS)","el":298,"vg":146,"pop":251,"congresal":""},{"id":"sta_clara","n":"Sta. Clara de Saguier","muni":false,"psEjec":false,"centroPS":false,"gob":"Tivano Sergio (Más p/SFE)","el":1801,"vg":1124,"pop":1990,"congresal":"Gallo Verónica"},{"id":"tacural","n":"Tacural","muni":false,"psEjec":false,"centroPS":false,"gob":"Sola Adrian (Más p/SFE)","el":1339,"vg":678,"pop":1267,"congresal":""},{"id":"tacurales","n":"Tacurales","muni":false,"psEjec":false,"centroPS":false,"gob":"Chiappero Damian (UNIDOS)","el":162,"vg":68,"pop":73,"congresal":""},{"id":"vila","n":"Vila","muni":false,"psEjec":false,"centroPS":false,"gob":"Borgatello Ma.L. (UNIDOS)","el":1292,"vg":1053,"pop":1408,"congresal":""},{"id":"villa_san_jose","n":"Villa San José","muni":false,"psEjec":false,"centroPS":false,"gob":"Forni Julio C. (UNIDOS)","el":346,"vg":207,"pop":278,"congresal":""},{"id":"virginia","n":"Virginia","muni":false,"psEjec":false,"centroPS":false,"gob":"Fraire Pedro (UNIDOS)","el":168,"vg":106,"pop":174,"congresal":""},{"id":"zenon_pereyra","n":"Zenón Pereyra","muni":false,"psEjec":true,"centroPS":true,"gob":"Gallo Verónica (PS/UNIDOS)","el":1117,"vg":521,"pop":2034,"congresal":"Gallo Verónica J."}];
+const BD={}; BASEDATA.forEach(b=>BD[b.id]=b);
+const EVAL_DEF={
+  actuar:{ico:'✅',txt:'Tenemos oportunidades',col:'#4ade80'},
+  intentar:{ico:'🔄',txt:'Hay que intentarlo',col:'#fbbf24'},
+  no:{ico:'🚫',txt:'Hay que profundizar',col:'#f87171'}
+};
+// Categorías FIJAS (siempre se muestran todas, incluso en cero) — con SALUD
+const CATS=[
+  {id:'persona',ico:'👤',name:'Referentes'},
+  {id:'escuela',ico:'🎓',name:'Educación'},
+  {id:'club',ico:'⚽',name:'Deporte'},
+  {id:'salud',ico:'🏥',name:'Salud'},
+  {id:'iglesia',ico:'⛪',name:'Comunitario'},
+  {id:'institucion',ico:'🏛',name:'Institucional'},
+  {id:'comercio',ico:'🏪',name:'Comercial'},
+  {id:'cultural',ico:'🎭',name:'Cultural'},
+  {id:'otro',ico:'📌',name:'Otro'}
+];
+const CATMAP={}; CATS.forEach(c=>CATMAP[c.id]=c);
+
+let DATA={byLoc:{},evals:[],vncs:[]};
+
+async function supa(path){
+  const r=await fetch(SUPA_URL+"/rest/v1/"+path,{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}});
+  return r.json();
+}
+function consenso(evals){
+  const c={actuar:0,intentar:0,no:0};
+  evals.forEach(e=>{ if(e.evaluacion!=='no_se') c[e.evaluacion]=(c[e.evaluacion]||0)+1; });
+  const tot=c.actuar+c.intentar+c.no;
+  if(tot===0) return {tipo:null,c,tot};
+  let max='actuar',mv=c.actuar;
+  if(c.intentar>mv){max='intentar';mv=c.intentar;}
+  if(c.no>mv){max='no';mv=c.no;}
+  return {tipo:max,c,tot};
+}
+function incidencia(pct){
+  if(pct>=40) return {lbl:'Alta',cls:'inc-alta'};
+  if(pct>=20) return {lbl:'Media',cls:'inc-media'};
+  if(pct>0) return {lbl:'Baja',cls:'inc-baja'};
+  return {lbl:'—',cls:'inc-cero'};
+}
+
+async function loadData(){
+  document.getElementById('lastUpdate').textContent='Actualizando...';
+  const [evals,vncs]=await Promise.all([
+    supa('evaluaciones?select=localidad_id,localidad_n,evaluacion,autor'),
+    supa('vinculos?select=localidad,localidad_n,nombre,tipo,vinculo,oportunidad')
+  ]);
+  const vncsClean=(vncs||[]).filter(v=>v.nombre!=='PRUEBA_DIAGNOSTICO_BORRAR');
+  const byLoc={};
+  BASEDATA.forEach(b=>byLoc[b.id]={evals:[],vncs:[],cons:null});
+  evals.forEach(e=>{ if(byLoc[e.localidad_id]) byLoc[e.localidad_id].evals.push(e); });
+  vncsClean.forEach(v=>{ if(byLoc[v.localidad]) byLoc[v.localidad].vncs.push(v); });
+  BASEDATA.forEach(b=>{ byLoc[b.id].cons=consenso(byLoc[b.id].evals); });
+  DATA={byLoc,evals,vncs:vncsClean};
+  const now=new Date().toLocaleString('es-AR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+  const utiles=evals.filter(e=>e.evaluacion!=='no_se').length;
+  const participantes=new Set(evals.map(e=>e.autor)).size;
+  document.getElementById('lastUpdate').textContent=utiles+' opiniones · '+participantes+' participantes · '+vncsClean.length+' vínculos · '+now;
+  render();
+}
+
+function render(){
+  const {byLoc,evals,vncs}=DATA;
+  const utiles=evals.filter(e=>e.evaluacion!=='no_se');
+  const participantes=new Set(evals.map(e=>e.autor)).size;
+  const trabajar=[],avanzar=[],noprio=[],faltan=[];
+  BASEDATA.forEach(b=>{
+    const c=byLoc[b.id].cons;
+    if(!c.tipo) faltan.push(b);
+    else if(c.tipo==='actuar') trabajar.push(b);
+    else if(c.tipo==='intentar') avanzar.push(b);
+    else if(c.tipo==='no') noprio.push(b);
+  });
+  const grupo=(titulo,sub,arr,cls,icon)=>{
+    const chips=arr.length?arr.map(b=>{
+      const nv=byLoc[b.id].vncs.length;
+      return '<span class="g-chip '+cls+'" onclick="showFicha(\''+b.id+'\')">'+b.n+(nv>0?' <span class="g-vnc">'+nv+'🔗</span>':'')+'</span>';
+    }).join(''):'<span class="g-empty">—</span>';
+    return '<div class="grupo '+cls+'"><div class="g-head"><span class="g-icon">'+icon+'</span><span class="g-titulo">'+titulo+'</span><span class="g-count">'+arr.length+'</span></div><div class="g-sub">'+sub+'</div><div class="g-chips">'+chips+'</div></div>';
+  };
+  let html=`
+  <div class="kpi-row">
+    <div class="kpi-box"><div class="kpi-val v-verde">${trabajar.length}</div><div class="kpi-lbl">Donde trabajar</div></div>
+    <div class="kpi-box"><div class="kpi-val v-amar">${avanzar.length}</div><div class="kpi-lbl">Podemos avanzar</div></div>
+    <div class="kpi-box"><div class="kpi-val v-azul">${participantes}</div><div class="kpi-lbl">Participantes</div></div>
+    <div class="kpi-box"><div class="kpi-val v-blanco">${vncs.length}</div><div class="kpi-lbl">Vínculos</div></div>
+  </div>
+  <div class="sec-label">① Mapa de decisión</div>
+  <div class="grupos-wrap">
+    ${grupo('Donde vamos a trabajar','Consenso: hay oportunidad',trabajar,'g-verde','🟢')}
+    ${grupo('Donde podemos avanzar','Señal positiva, vale el intento',avanzar,'g-amar','🟡')}
+    ${grupo('Por ahora no priorizamos','Sin oportunidad clara',noprio,'g-rojo','🔴')}
+    ${grupo('Faltan relevar','Necesitamos más miradas',faltan,'g-gris','⚪')}
+  </div>
+  <div class="sec-label">② Ficha de la localidad</div>
+  <div class="ficha" id="fichaBox"><div class="ficha-empty">👆 Tocá una localidad (arriba o en el mapa) para ver su ficha completa</div></div>
+  <div class="sec-label">③ El territorio (respaldo visual)</div>
+  <div class="map-panel">
+    <div class="map-wrap" id="mapWrap">
+      <img id="mapaBg" src="mapa_castellanos.png" alt="Mapa" onerror="this.style.display='none'">
+      <svg id="mapSvg" viewBox="0 0 775 1004" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="map-leg">
+      <span class="ml-item"><span class="ml-dot" style="background:#4ade80"></span>Trabajar</span>
+      <span class="ml-item"><span class="ml-dot" style="background:#fbbf24"></span>Avanzar</span>
+      <span class="ml-item"><span class="ml-dot" style="background:#f87171"></span>No priorizar</span>
+      <span class="ml-item"><span class="ml-dot" style="background:#3a4257"></span>Falta relevar</span>
+    </div>
+  </div>`;
+  document.getElementById('main').innerHTML=html;
+  drawMap();
+}
+
+function drawMap(){
+  const svg=document.getElementById('mapSvg'); if(!svg) return;
+  const {byLoc}=DATA;
+  let s='';
+  BASEDATA.forEach(b=>{
+    const p=PXMAP[b.id]; if(!p) return;
+    const c=byLoc[b.id].cons;
+    const col=c.tipo?EVAL_DEF[c.tipo].col:'#3a4257';
+    const r=c.tipo?(8+Math.min(c.tot,5)*2):6;
+    const pulse=c.tipo==='actuar'?' class="dot-pulse"':'';
+    s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+r+'" fill="'+col+'" fill-opacity="0.9" stroke="#0e1420" stroke-width="1.5" style="cursor:pointer"'+pulse+' onclick="showFicha(\''+b.id+'\')"><title>'+b.n+'</title></circle>';
+  });
+  svg.innerHTML=s;
+}
+
+function showFicha(id){
+  const bd=BD[id]; const ld=DATA.byLoc[id]; if(!bd||!ld) return;
+  const c=ld.cons;
+  const box=document.getElementById('fichaBox');
+  // Badge
+  let badge,bcls;
+  if(c.tipo){ const d=EVAL_DEF[c.tipo]; badge=d.ico+' '+d.txt; bcls='fb-'+c.tipo; }
+  else { badge='Sin lectura aún'; bcls='fb-none'; }
+  // Bloque 1: datos electorales
+  const gobPS = bd.psEjec;
+  let datosHTML='<div class="bloque-tit">📋 Lo que ya sabíamos</div><div class="datos-grid">'
+    +'<div class="dato"><div class="dato-lbl">Tipo</div><div class="dato-val">'+(bd.muni?'Municipio':'Comuna')+'</div></div>'
+    +'<div class="dato"><div class="dato-lbl">Gobierna</div><div class="dato-val'+(gobPS?' ps':'')+'">'+(bd.gob||'—')+'</div></div>'
+    +'<div class="dato"><div class="dato-lbl">Electores</div><div class="dato-val">'+(bd.el?bd.el.toLocaleString('es'):'—')+'</div></div>'
+    +'<div class="dato"><div class="dato-lbl">Centro PS</div><div class="dato-val'+(bd.centroPS?' ps':'')+'">'+(bd.centroPS?'Sí':'No')+'</div></div>'
+    +(bd.congresal?'<div class="dato"><div class="dato-lbl">Congresales PS</div><div class="dato-val ps">'+bd.congresal+'</div></div>':'')
+    +'</div>';
+  // Bloque 2: mirada del equipo en %
+  let miradaHTML='<div class="bloque-tit">📊 La mirada del equipo</div>';
+  if(c.tot>0){
+    const pa=Math.round(c.c.actuar/c.tot*100), pi=Math.round(c.c.intentar/c.tot*100), pn=Math.round(c.c.no/c.tot*100);
+    const row=(lbl,pct,cls)=> pct>0?'<div class="mbar-row"><span class="mbar-lbl">'+lbl+'</span><div class="mbar-track"><div class="mbar-fill '+cls+'" style="width:'+pct+'%">'+(pct>=12?pct+'%':'')+'</div></div><span class="mbar-pct">'+pct+'%</span></div>':'';
+    miradaHTML+='<div class="mirada-bars">'+row('✅ Oportunidad',pa,'mf-actuar')+row('🔄 Intentarlo',pi,'mf-intentar')+row('🚫 Profundizar',pn,'mf-no')+'</div>'
+      +'<div style="font-size:11px;color:#6b7689;margin-top:6px">Sobre '+c.tot+' opinion'+(c.tot>1?'es':'')+' del equipo</div>';
+  } else {
+    miradaHTML+='<div style="font-size:13px;color:#6b7689;font-style:italic">Todavía nadie con conocimiento evaluó esta localidad.</div>';
+  }
+  // Bloque 3: vínculos por categoría con % e incidencia (TODAS las categorías)
+  const totVnc=ld.vncs.length;
+  const porCat={}; CATS.forEach(cat=>porCat[cat.id]=0);
+  ld.vncs.forEach(v=>{ if(porCat[v.tipo]!==undefined) porCat[v.tipo]++; else porCat.otro++; });
+  let catsHTML='<div class="bloque-tit">🔗 Vínculos por categoría ('+totVnc+')</div><div class="cat-grid">';
+  CATS.forEach(cat=>{
+    const n=porCat[cat.id];
+    const pct= totVnc>0?Math.round(n/totVnc*100):0;
+    const inc=incidencia(pct);
+    catsHTML+='<div class="cat-item'+(n===0?' vacia':'')+'"><div class="cat-top"><span class="cat-ico">'+cat.ico+'</span><span class="cat-name">'+cat.name+'</span><span class="cat-n">'+n+'</span></div>'
+      +'<div class="cat-bar"><div class="cat-bar-fill" style="width:'+pct+'%;background:'+(pct>=40?'#4ade80':pct>=20?'#fbbf24':pct>0?'#8b97ab':'transparent')+'"></div></div>'
+      +'<div class="cat-foot"><span class="cat-pct">'+pct+'%</span><span class="cat-inc '+inc.cls+'">'+inc.lbl+'</span></div></div>';
+  });
+  catsHTML+='</div>';
+  // Detalle de los vínculos cargados
+  let detHTML='';
+  if(totVnc>0){
+    detHTML='<div class="vnc-detalle">';
+    ld.vncs.forEach(v=>{
+      const cat=CATMAP[v.tipo]||{ico:'📌',name:v.tipo};
+      detHTML+='<div class="vd-row"><span class="vd-ico">'+cat.ico+'</span><div><div class="vd-nombre">'+v.nombre+' <span class="vd-cat">· '+cat.name+'</span></div>'+(v.vinculo?'<div class="vd-det">'+v.vinculo+'</div>':'')+'</div></div>';
+    });
+    detHTML+='</div>';
+  }
+  box.innerHTML='<div class="ficha-hd"><div><div class="ficha-loc">'+bd.n+'</div><div class="ficha-sub">Departamento Castellanos</div></div><div class="ficha-badge '+bcls+'">'+badge+'</div></div>'
+    +'<div class="ficha-body">'+datosHTML+miradaHTML+catsHTML+detHTML+'</div>';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+loadData();
+</script>
+</body>
+</html>
