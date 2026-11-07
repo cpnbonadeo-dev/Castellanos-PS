@@ -133,6 +133,13 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;ba
 .mrow label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#7a8aaa;margin-bottom:4px}
 .mrow input,.mrow select,.mrow textarea{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #dde3f0;background:#f8faff;color:#1a2236;font-size:13px;font-family:inherit}
 .mrow input:focus,.mrow select:focus,.mrow textarea:focus{outline:none;border-color:#e63946;background:#fff}
+.tipo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media(max-width:420px){.tipo-grid{grid-template-columns:repeat(4,1fr);gap:5px}}
+.tipo-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px 4px;border-radius:10px;border:1.5px solid #dde3f0;background:#f8faff;cursor:pointer;font-size:22px;transition:all .12s;line-height:1}
+.tipo-btn span{font-size:9px;font-weight:700;color:#7a8aaa;text-transform:uppercase;letter-spacing:.2px}
+.tipo-btn:hover{border-color:#e63946;background:#fff}
+.tipo-btn.sel{border-color:#e63946;background:#ffecec;box-shadow:0 2px 8px rgba(230,57,70,.2)}
+.tipo-btn.sel span{color:#e63946}
 .mrow textarea{min-height:70px;resize:vertical}
 .req{color:#e63946}
 .merr{padding:4px 20px 0;color:#e63946;font-size:12px;min-height:16px}
@@ -239,39 +246,33 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;ba
 <!-- MODAL VÍNCULO -->
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)cerrarModal()">
   <div class="modal">
-    <div class="modal-title">🔗 Registrar contacto u oportunidad</div>
+    <div class="modal-title">🔗 Sumar un contacto</div>
     <div class="modal-loc" id="mLoc">—</div>
     <input type="hidden" id="mLocId">
     <div class="mrow">
-      <label>Nombre <span class="req">*</span></label>
-      <input type="text" id="mNombre" placeholder="Persona, club, institución...">
+      <label>¿Quién es? <span class="req">*</span></label>
+      <input type="text" id="mNombre" placeholder="Nombre de la persona, club o institución">
     </div>
     <div class="mrow">
-      <label>Tipo</label>
-      <select id="mTipo">
-        <option value="persona">👤 Persona</option>
-        <option value="institucion">🏛 Institución</option>
-        <option value="club">🏟 Club u organización social</option>
-        <option value="escuela">🎓 Escuela o cooperadora</option>
-        <option value="iglesia">⛪ Iglesia u organización comunitaria</option>
-        <option value="comercio">🏪 Comercio o actividad productiva</option>
-        <option value="cultural">🎭 Espacio cultural o deportivo</option>
-        <option value="otro">📌 Otro</option>
-      </select>
+      <label>¿De qué tipo es? <span class="req">*</span></label>
+      <input type="hidden" id="mTipo" value="">
+      <div class="tipo-grid" id="tipoGrid">
+        <button type="button" class="tipo-btn" data-tipo="persona" onclick="pickTipo(this)">👤<span>Persona</span></button>
+        <button type="button" class="tipo-btn" data-tipo="escuela" onclick="pickTipo(this)">🎓<span>Educación</span></button>
+        <button type="button" class="tipo-btn" data-tipo="club" onclick="pickTipo(this)">⚽<span>Deporte</span></button>
+        <button type="button" class="tipo-btn" data-tipo="iglesia" onclick="pickTipo(this)">⛪<span>Comunitario</span></button>
+        <button type="button" class="tipo-btn" data-tipo="institucion" onclick="pickTipo(this)">🏛<span>Institución</span></button>
+        <button type="button" class="tipo-btn" data-tipo="comercio" onclick="pickTipo(this)">🏪<span>Comercio</span></button>
+        <button type="button" class="tipo-btn" data-tipo="cultural" onclick="pickTipo(this)">🎭<span>Cultural</span></button>
+        <button type="button" class="tipo-btn" data-tipo="otro" onclick="pickTipo(this)">📌<span>Otro</span></button>
+      </div>
     </div>
     <div class="mrow">
-      <label>¿Cómo me vinculo / cómo puedo acercarme? <span class="req">*</span></label>
-      <textarea id="mVinculo" placeholder="Ej: Lo conozco del club, es familiar..."></textarea>
+      <label>¿Cómo llegás a esa persona? <span class="req">*</span></label>
+      <input type="text" id="mVinculo" placeholder="Ej: lo conozco del club, es familiar, es mi vecino">
     </div>
-    <div class="mrow">
-      <label>¿Qué oportunidad veo?</label>
-      <textarea id="mOportunidad" placeholder="Ej: Podría organizar una reunión, tiene llegada a..."></textarea>
-    </div>
-
-    <div class="mrow">
-      <label>Observaciones</label>
-      <textarea id="mObs" placeholder="Cualquier detalle adicional..."></textarea>
-    </div>
+    <input type="hidden" id="mOportunidad" value="">
+    <input type="hidden" id="mObs" value="">
     <div class="merr" id="mErr"></div>
     <div class="macts">
       <button class="mbtn mbtn-red" id="mBtn" onclick="guardarVinculo()">💾 Guardar</button>
@@ -617,11 +618,17 @@ async function evaluar(locId, locN, tipo){
 }
 
 // ── MODAL VÍNCULO ──────────────────────────────────────────────
+function pickTipo(btn){
+  document.querySelectorAll('#tipoGrid .tipo-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('mTipo').value=btn.dataset.tipo;
+}
 function abrirModal(locId,locN){
   document.getElementById('mLocId').value=locId;
   document.getElementById('mLoc').textContent='📍 '+locN;
   ['mNombre','mVinculo','mOportunidad','mObs'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('mTipo').value='persona';
+  document.getElementById('mTipo').value='';
+  document.querySelectorAll('#tipoGrid .tipo-btn').forEach(b=>b.classList.remove('sel'));
   document.getElementById('mErr').textContent='';
   document.getElementById('mBtn').disabled=false;
   document.getElementById('mBtn').textContent='💾 Guardar';
@@ -639,8 +646,10 @@ async function guardarVinculo(){
   const vinculo=document.getElementById('mVinculo').value.trim();
   const err=document.getElementById('mErr');
   const btn=document.getElementById('mBtn');
-  if(!nombre){err.textContent='El nombre es obligatorio.';return;}
-  if(!vinculo){err.textContent='Completá cómo te vinculás.';return;}
+  const tipo=document.getElementById('mTipo').value;
+  if(!nombre){err.textContent='Poné el nombre del contacto.';return;}
+  if(!tipo){err.textContent='Elegí de qué tipo es (tocá un ícono).';return;}
+  if(!vinculo){err.textContent='Contá cómo llegás a esa persona.';return;}
   err.textContent=''; btn.disabled=true; btn.textContent='Guardando...';
   const payload={
     autor:sess?.nombre||'anónimo', autor_id:sess?.dni||'',
